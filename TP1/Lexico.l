@@ -51,11 +51,8 @@ TEXTO 		\"({CARACTER}|" ")+\"
 
 {DIGITO}+		{ yylval.intval = atoi(yytext); if (imprimir) printf("Flex Entero: %s (%d)\n", yytext,yylval.intval); return ENTERO;}
 
-{DIGITO}+"."{DIGITO}* { yylval.val = atof(yytext); if (imprimir) printf("Flex Float: %s (%f)\n", yytext,yylval.val); return FLOAT;}
-
+({DIGITO}+"."{DIGITO}*|{DIGITO}*"."{DIGITO}+) { yylval.val = atof(yytext); if (imprimir) printf("Flex Float: %s (%f)\n", yytext,yylval.val); return FLOAT;}
 
 "\n"      		
 "\t"
-" "		
-
-
+" "	
