@@ -6,7 +6,9 @@
 int yystopparser=0;
 FILE  *yyin;
 
-int yyerror(const char *); 
+void printRule(const char *, const char *);
+void printTokenInfo(const char*, const char*);
+int yyerror(const char *);
 
 %}
 
@@ -45,25 +47,35 @@ char *str_val;
 %%
 
 program : programa {printf("Compilacion OK");}
-programa: programa sentencia; 
-programa: sentencia; 
-sentencia: seleccion;
-sentencia: expresion PUNTO_Y_COMA;
-seleccion: IF P_A condicion P_C L_A programa L_C {printf("Regla de seleccion");};
-condicion: comparacion;
-condicion: condicion OP_AND comparacion;
-condicion: condicion OP_OR comparacion;
-comparacion: expresion comparador expresion;
-comparador: CMP_MAYOR | CMP_MENOR | CMP_MAYOR_IGUAL | CMP_MENOR_IGUAL | CMP_IGUAL;
-expresion: asignacion;
-asignacion: ID ASIG expresion;
-expresion: expresion OP_SUMA termino;
-expresion: expresion OP_RESTA termino;
-expresion: termino
-termino: termino OP_MUL factor;
-termino: termino OP_DIV factor;
-termino: factor;
-factor: P_A expresion P_C | ID | ENTERO | FLOAT;
+programa: programa sentencia {printRule("PROGRAMA", "PROGRAMA SENTENCIA");}; 
+programa: sentencia {printRule("PROGRAMA", "SENTENCIA");}; 
+sentencia: seleccion {printRule("SENTENCIA", "SELECCION");};
+sentencia: asignacion {printRule("SENTENCIA", "ASIGNACION");};
+seleccion: IF P_A condicion P_C L_A programa L_C {printRule("SELECCION", "SENTENCIA IF SIMPLE");}; 
+condicion: comparacion {printRule("CONDICION", "COMPARACION");};
+condicion: condicion OP_AND comparacion {printRule("CONDICION", "COMPARACION ANIDADA AND");};
+condicion: condicion OP_OR comparacion {printRule("CONDICION", "COMPARACION ANIDADA OR");};
+comparacion: expresion comparador expresion {printRule("COMPARACION", "EXPRESION COMPARADOR COMPARADOR EXPRESION");};
+comparador: 
+      CMP_MAYOR {printRule("COMPARADOR", "OP_CMP_MAYOR");} 
+    | CMP_MENOR {printRule("COMPARADOR", "OP_CMP_MENOR");} 
+    | CMP_MAYOR_IGUAL {printRule("COMPARADOR", "OP_CMP_MAYOR_IGUAL");} 
+    | CMP_MENOR_IGUAL {printRule("COMPARADOR", "OP_CMP_MENOR_IGUAL");} 
+    | CMP_IGUAL  {printRule("COMPARADOR", "OP_CMP_IGUAL");};
+expresion: asignacion {printRule("EXPRESION", "ASIGNACION");};
+asignacion: ID ASIG expresion PUNTO_Y_COMA {printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");};
+expresion: expresion OP_SUMA termino {printRule("EXPRESION", "EXPRESION OP_SUMA TERMINO");};
+expresion: expresion OP_RESTA termino {printRule("EXPRESION", "EXPRESION OP_RESTA TERMINO");};
+expresion: termino  {printRule("EXPRESION", "TERMINO");};
+termino: termino OP_MUL factor {printRule("TERMINO", "TERMINO OP_MUL FACTOR");};
+termino: termino OP_DIV factor {printRule("TERMINO", "TERMINO OP_DIV FACTOR");};
+termino: factor {printRule("TERMINO", "FACTOR");};
+factor: 
+    P_A expresion P_C {printRule("FACTOR", "(EXPRESION)");}
+    | ID {printRule("FACTOR", "ID");}
+    | ENTERO {printRule("FACTOR", "ENTERO");}
+    | FLOAT  {printRule("FACTOR", "FLOAT");}
+    | STRING {printRule("FACTOR", "STRING");};
 
 %%
 

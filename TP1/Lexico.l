@@ -14,8 +14,8 @@ FILE  *yyin;
 DIGITO		[0-9]
 LETRA		[a-zA-Z]
 ID			{LETRA}({LETRA}|{DIGITO}|_)*
-ESPACIO 	[" "]
-CARACTER 	[a-z,A-Z,0-9,=,>,<,!,:,+,-,*,/]
+CARACTER 	[a-z,A-Z,0-9,=,>,<,!,:,+,\-,*,/,¿,?,_,","]
+TEXTO 		\"({CARACTER}|" ")+\"
 
 %%
 ":="		{ return ASIG;}
@@ -37,11 +37,14 @@ CARACTER 	[a-z,A-Z,0-9,=,>,<,!,:,+,-,*,/]
 ";"			{ return PUNTO_Y_COMA;}
 "IF"		{ return IF;}
 
-{ID}			{ yylval.str_val = yytext; printf( "Identificador en léxico: %s (%s)\n", yytext,yylval.str_val) ; return ID;}
+{TEXTO}			{ yylval.str_val = yytext; printf( "Flex: String (%s)\n", yytext) ; return STRING;}
 
-{DIGITO}+		{ yylval.intval = atoi(yytext); printf( "Entero en léxico: %s (%d)\n", yytext,yylval.intval) ; return ENTERO;}
+{ID}			{ yylval.str_val = yytext; printf( "Flex: ID (%s)\n", yytext) ; return ID;}
 
-{DIGITO}+"."{DIGITO}* { yylval.val = atof(yytext); printf( "Float en léxico: %s (%f)\n", yytext,yylval.val) ; return FLOAT;}
+{DIGITO}+		{ yylval.intval = atoi(yytext); printf( "Flex Entero: %s (%d)\n", yytext,yylval.intval) ; return ENTERO;}
+
+{DIGITO}+"."{DIGITO}* { yylval.val = atof(yytext); printf( "Flex Float: %s (%f)\n", yytext,yylval.val) ; return FLOAT;}
+
 
 "\n"      		
 "\t"		
