@@ -80,7 +80,7 @@ expresion: asignacion {printRule("EXPRESION", "ASIGNACION");};
 asignacion: ID ASIG expresion PUNTO_Y_COMA {printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");};
 expresion: expresion OP_SUMA termino {printRule("EXPRESION", "EXPRESION OP_SUMA TERMINO");};
 expresion: expresion OP_RESTA termino {printRule("EXPRESION", "EXPRESION OP_RESTA TERMINO");};
-expresion: termino  {printRule("EXPRESION", "TERMINO");};
+expresion: termino {printRule("EXPRESION", "TERMINO");};
 termino: termino OP_MUL factor {printRule("TERMINO", "TERMINO OP_MUL FACTOR");};
 termino: termino OP_DIV factor {printRule("TERMINO", "TERMINO OP_DIV FACTOR");};
 termino: factor {printRule("TERMINO", "FACTOR");};

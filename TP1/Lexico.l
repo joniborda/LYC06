@@ -45,16 +45,17 @@ TEXTO 		\"({CARACTER}|" ")+\"
 "DISPLAY"	{ return SALIDA;}
 "GET"		{ return ENTRADA;}
 
-{TEXTO}			{ yylval.str_val = yytext; if (imprimir) printf( "Flex: String (%s)\n", yytext); return STRING;}
+{TEXTO}			{ yylval.str_val = yytext; if (imprimir) printf("Flex: String (%s)\n", yytext); return STRING;}
 
-{ID}			{ yylval.str_val = yytext; if (imprimir) printf( "Flex: ID (%s)\n", yytext); return ID;}
+{ID}			{ yylval.str_val = yytext; if (imprimir) printf("Flex: ID (%s)\n", yytext); return ID;}
 
-{DIGITO}+		{ yylval.intval = atoi(yytext); if (imprimir) printf( "Flex Entero: %s (%d)\n", yytext,yylval.intval); return ENTERO;}
+{DIGITO}+		{ yylval.intval = atoi(yytext); if (imprimir) printf("Flex Entero: %s (%d)\n", yytext,yylval.intval); return ENTERO;}
 
-{DIGITO}+"."{DIGITO}* { yylval.val = atof(yytext); if (imprimir) printf( "Flex Float: %s (%f)\n", yytext,yylval.val); return FLOAT;}
+{DIGITO}+"."{DIGITO}* { yylval.val = atof(yytext); if (imprimir) printf("Flex Float: %s (%f)\n", yytext,yylval.val); return FLOAT;}
 
 
 "\n"      		
-"\t"		
+"\t"
+" "		
 
 
