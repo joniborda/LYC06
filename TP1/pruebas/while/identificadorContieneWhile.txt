@@ -1,0 +1,3 @@
+WHILE (5 > a) {
+	miIF:="el identificador contiene WHILE dentro";
+}
