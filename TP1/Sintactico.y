@@ -30,6 +30,7 @@ char *str_val;
 %token OP_DIV
 %token OP_AND
 %token OP_OR
+%token OP_NOT
 %token CMP_MAYOR
 %token CMP_MENOR
 %token CMP_MAYOR_IGUAL
@@ -65,8 +66,9 @@ seleccion: IF P_A condicion P_C L_A programa L_C {printRule("SELECCION", "SENTEN
 seleccion: IF P_A condicion P_C L_A programa L_C ELSE L_A programa L_C {printRule("SELECCION", "SENTENCIA IF SIMPLE CON ELSE");}; 
 iteracion: WHILE P_A condicion P_C L_A programa L_C {printRule("ITERACION", "WHILE");};
 condicion: comparacion {printRule("CONDICION", "COMPARACION");};
-condicion: condicion OP_AND comparacion {printRule("CONDICION", "COMPARACION ANIDADA AND");};
-condicion: condicion OP_OR comparacion {printRule("CONDICION", "COMPARACION ANIDADA OR");};
+condicion: OP_NOT comparacion {printRule("CONDICION", "CONDICION NEGADA");};
+condicion: comparacion OP_AND comparacion {printRule("CONDICION", "COMPARACION ANIDADA AND");};
+condicion: comparacion OP_OR comparacion {printRule("CONDICION", "COMPARACION ANIDADA OR");};
 comparacion: expresion comparador expresion {printRule("COMPARACION", "EXPRESION COMPARADOR COMPARADOR EXPRESION");};
 comparador: 
       CMP_MAYOR {printRule("COMPARADOR", "OP_CMP_MAYOR");} 

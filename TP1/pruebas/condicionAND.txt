@@ -1,0 +1,7 @@
+IF(a > 5 AND a == 1){
+	DISPLAY "ABC";
+}
+
+WHILE(b > 6 AND j == 1){
+	DISPLAY "AAA";
+}

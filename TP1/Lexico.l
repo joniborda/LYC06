@@ -25,6 +25,7 @@ TEXTO 		\"({CARACTER}|" ")+\"
 "/"			{ return OP_DIV;}
 "AND"		{ return OP_AND;}
 "OR"		{ return OP_OR;}
+"NOT"		{ return OP_NOT;}
 ">"			{ return CMP_MAYOR;}
 "<"			{ return CMP_MENOR;}	
 ">="		{ return CMP_MAYOR_IGUAL;}

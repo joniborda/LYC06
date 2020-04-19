@@ -1,0 +1,7 @@
+IF(NOT a == 5){
+	DISPLAY "ABC";
+}
+
+WHILE(NOT a > 4){
+	DISPLAY "AAA";
+}
