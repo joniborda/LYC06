@@ -1,0 +1,2 @@
+DISPLAY a;
+DISPLAY b;

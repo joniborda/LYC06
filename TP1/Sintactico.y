@@ -6,7 +6,6 @@
 int yystopparser=0;
 FILE  *yyin;
 
-
 void printRule(const char *, const char *);
 void printTokenInfo(const char*, const char*);
 int yyerror(const char *);
@@ -44,7 +43,8 @@ char *str_val;
 %token IF
 %token ELSE
 %token WHILE
-
+%token ENTRADA
+%token SALIDA
 %start program
 
 %%
@@ -54,7 +54,13 @@ programa: programa sentencia {printRule("PROGRAMA", "PROGRAMA SENTENCIA");};
 programa: sentencia {printRule("PROGRAMA", "SENTENCIA");}; 
 sentencia: seleccion {printRule("SENTENCIA", "SELECCION");};
 sentencia: asignacion {printRule("SENTENCIA", "ASIGNACION");};
-sentencia: iteracion;
+sentencia: iteracion {printRule("SENTENCIA", "ITERACION");};
+sentencia: entrada PUNTO_Y_COMA {printRule("SENTENCIA", "ENTRADA");};
+sentencia: salida PUNTO_Y_COMA {printRule("SENTENCIA", "SALIDA");};
+entrada: ENTRADA ID {printRule("ENTRADA", "ID");};
+salida: 
+      SALIDA STRING {printRule("SALIDA", "STRING");} 
+    | SALIDA ID {printRule("SALIDA", "ID");};
 seleccion: IF P_A condicion P_C L_A programa L_C {printRule("SELECCION", "SENTENCIA IF SIMPLE");};
 seleccion: IF P_A condicion P_C L_A programa L_C ELSE L_A programa L_C {printRule("SELECCION", "SENTENCIA IF SIMPLE CON ELSE");}; 
 iteracion: WHILE P_A condicion P_C L_A programa L_C {printRule("ITERACION", "WHILE");};

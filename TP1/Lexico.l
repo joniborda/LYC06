@@ -38,6 +38,8 @@ TEXTO 		\"({CARACTER}|" ")+\"
 "IF"		{ return IF;}
 "ELSE"		{ return ELSE;}
 "WHILE"		{ return WHILE;}
+"DISPLAY"	{ return SALIDA;}
+"GET"		{ return ENTRADA;}
 
 {TEXTO}			{ yylval.str_val = yytext; printf( "Flex: String (%s)\n", yytext) ; return STRING;}
 
