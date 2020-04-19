@@ -1,0 +1,5 @@
+IF (5 > a) {
+	miIF:="el identificador contiene IF dentro";
+} ELSE {
+	a:=5;
+}
