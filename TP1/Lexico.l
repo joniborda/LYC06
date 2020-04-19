@@ -13,7 +13,7 @@ FILE  *yyin;
 
 DIGITO		[0-9]
 LETRA		[a-zA-Z]
-ID			{LETRA} ({LETRA}|{DIGITO} |_)*
+ID			{LETRA}({LETRA}|{DIGITO}|_)*
 ESPACIO 	[" "]
 CARACTER 	[a-z,A-Z,0-9,=,>,<,!,:,+,-,*,/]
 

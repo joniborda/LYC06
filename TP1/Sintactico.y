@@ -39,11 +39,11 @@ char *str_val;
 %token IF
 
 %%
-
-programa': programa {printf("Compilacon OK");}; 
-programa: sentencia; 
+programa: program; 
+program: program sentencia; 
+program: sentencia; 
 sentencia: seleccion;
-seleccion: IF (condicion) L_A programa L_C;
+seleccion: IF P_A condicion P_C L_A program L_C {printf("Regla de seleccion")};
 condicion: comparacion; 
 condicion: condicion OP_AND comparacion;
 condicion: condicion OP_OR comparacion;
@@ -55,8 +55,7 @@ expresion: termino
 termino: termino OP_MUL factor;
 termino: termino OP_DIV factor;
 termino: factor;
-factor: (expresion) | ID | ENTERO | FLOAT;
-	
+factor: P_A expresion P_C | ID | ENTERO | FLOAT;
 %%
 int main(int argc,char *argv[])
 {
