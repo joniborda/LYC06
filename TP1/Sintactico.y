@@ -6,6 +6,7 @@
 int yystopparser=0;
 FILE  *yyin;
 
+
 void printRule(const char *, const char *);
 void printTokenInfo(const char*, const char*);
 int yyerror(const char *);
@@ -85,7 +86,9 @@ factor:
 %%
 
 void printRule(const char *lhs, const char *rhs) {
-    printf("%s -> %s\n", lhs, rhs);
+    if (YYDEBUG) {
+      printf("%s -> %s\n", lhs, rhs);
+    }
     return;
 }
 
