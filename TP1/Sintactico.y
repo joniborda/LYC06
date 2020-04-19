@@ -6,6 +6,8 @@
 int yystopparser=0;
 FILE  *yyin;
 
+int yyerror(const char *); 
+
 %}
 
 %union {
@@ -38,17 +40,23 @@ char *str_val;
 %token PUNTO_Y_COMA
 %token IF
 
+%start program
+
 %%
-programa: program; 
-program: program sentencia; 
-program: sentencia; 
+
+program : programa {printf("Compilacion OK");}
+programa: programa sentencia; 
+programa: sentencia; 
 sentencia: seleccion;
-seleccion: IF P_A condicion P_C L_A program L_C {printf("Regla de seleccion")};
-condicion: comparacion; 
+sentencia: expresion PUNTO_Y_COMA;
+seleccion: IF P_A condicion P_C L_A programa L_C {printf("Regla de seleccion");};
+condicion: comparacion;
 condicion: condicion OP_AND comparacion;
 condicion: condicion OP_OR comparacion;
 comparacion: expresion comparador expresion;
 comparador: CMP_MAYOR | CMP_MENOR | CMP_MAYOR_IGUAL | CMP_MENOR_IGUAL | CMP_IGUAL;
+expresion: asignacion;
+asignacion: ID ASIG expresion;
 expresion: expresion OP_SUMA termino;
 expresion: expresion OP_RESTA termino;
 expresion: termino
@@ -56,7 +64,24 @@ termino: termino OP_MUL factor;
 termino: termino OP_DIV factor;
 termino: factor;
 factor: P_A expresion P_C | ID | ENTERO | FLOAT;
+
 %%
+
+void printRule(const char *lhs, const char *rhs) {
+    printf("%s -> %s\n", lhs, rhs);
+    return;
+}
+
+void printTokenInfo(const char* tokenType, const char* lexeme) {
+    printf("TOKEN: %s LEXEME: %s\n", tokenType, lexeme);
+}
+
+int yyerror(const char *s) {
+    printf("Syntax Error\n");
+    printf("%s\n", s);
+    return(1);
+}
+
 int main(int argc,char *argv[])
 {
   if ((yyin = fopen(argv[1], "rt")) == NULL){
@@ -70,8 +95,3 @@ int main(int argc,char *argv[])
   return 0;
 }
 
-int yyerror(void){
-  printf("Syntax Error\n");
-	system ("Pause");
-	exit (1);
-}
