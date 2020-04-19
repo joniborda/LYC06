@@ -112,6 +112,7 @@ void printTokenInfo(const char* tokenType, const char* lexeme) {
 int yyerror(const char *s) {
     printf("Syntax Error\n");
     printf("%s\n", s);
+    exit(1);
     return(1);
 }
 
