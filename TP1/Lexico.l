@@ -16,6 +16,8 @@ LETRA		[a-zA-Z]
 ID			{LETRA}({LETRA}|{DIGITO}|_)*
 CARACTER 	[a-z,A-Z,0-9,=,>,<,!,:,+,\-,*,/,¿,?,_,","]
 TEXTO 		\"({CARACTER}|" ")+\"
+SUBCOMENTARIO   "/***"({CARACTER}|" "|\")*"***/"
+COMENTARIO  "***/"({CARACTER}|" "|\"|{SUBCOMENTARIO})*"/***"
 
 %%
 ":="		{ return ASIG;}
@@ -50,8 +52,14 @@ TEXTO 		\"({CARACTER}|" ")+\"
 
 {DIGITO}+"."{DIGITO}* { yylval.val = atof(yytext); printf( "Flex Float: %s (%f)\n", yytext,yylval.val) ; return FLOAT;}
 
+{COMENTARIO}
 
 "\n"      		
 "\t"		
+
+
+
+
+
 
 
