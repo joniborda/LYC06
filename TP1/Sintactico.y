@@ -49,12 +49,30 @@ char *str_val;
 %token WHILE
 %token ENTRADA
 %token SALIDA
+%token INICIA_DEC
+%token FIN_DEC
+%token TIPO_FLOAT
+%token TIPO_INT
+%token TIPO_STRING
 %token BETWEEN
 %start program
 
 %%
 
-program : programa {printf("\nCOMPILACION OK\n");}
+program : bloque_declaraciones algoritmo {printf("\nCOMPILACION OK\n");}
+
+bloque_declaraciones: INICIA_DEC {printf("INICIO DECLARACIONES\n");} declaraciones FIN_DEC {printf("FIN DECLARACIONES\n");}
+declaraciones:
+		declaracion {printRule("DECLARACIONES", "DECLARACION");}
+		| declaraciones declaracion {printRule("DECLARACIONES", "DECLARACIONES DECLARACION");}
+declaracion:
+		TIPO_FLOAT lista_variables {printRule("DECLARACION", "TIPO_FLOAT : LISTA_VARIABLES");}
+		| TIPO_INT lista_variables {printRule("DECLARACION", "TIPO_INT : LISTA_VARIABLES");}
+		| TIPO_STRING lista_variables {printRule("DECLARACION", "TIPO_STRING : LISTA_VARIABLES");}
+lista_variables:
+		ID {printRule("LISTA_VARIABLES", "ID");}
+		| ID PUNTO_Y_COMA lista_variables {printRule("LISTA_VARIABLES", "ID PUNTO_Y_COMA LISTA_VARIABLES");}
+algoritmo: programa {printf("\nCOMPILACION OK\n");}
 programa: programa sentencia {printRule("PROGRAMA", "PROGRAMA SENTENCIA");}; 
 programa: sentencia {printRule("PROGRAMA", "SENTENCIA");}; 
 sentencia: seleccion {printRule("SENTENCIA", "SELECCION");};

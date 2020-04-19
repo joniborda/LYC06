@@ -49,6 +49,11 @@ COMENTARIO  "***/"({CARACTER}|" "|\"|{SUBCOMENTARIO})*"/***"
 "WHILE"		{ return WHILE;}
 "DISPLAY"	{ return SALIDA;}
 "GET"		{ return ENTRADA;}
+"DEFVAR"	{ return INICIA_DEC;}
+"ENDVAR"	{ return FIN_DEC;}
+"FLOAT"		{ return TIPO_FLOAT;}
+"INT"		{ return TIPO_INT;}
+"STRING"	{ return TIPO_STRING;}
 "BETWEEN"	{ return BETWEEN;}
 
 {TEXTO}			{ yylval.str_val = yytext; if (imprimir) printf("Flex: String (%s)\n", yytext); return STRING;}
