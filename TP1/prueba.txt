@@ -1,6 +1,12 @@
-IF (5 > a) {
-	a:="HOLA COMO ESTAS SOY UN STRING, MUY LARGO ???? _";
-} ELSE {
-	b:= 4 + 5;
-	c:= 2 + 4;
+IF(BETWEEN (variable1, [expresion1; expresion2])){
+	a:=1;
+}
+WHILE(BETWEEN (a, [b ; 12])){
+	b:=3;
+}
+IF(a > 5 AND BETWEEN (z, [2.3 ; 11.22])){
+	c:=4;
+}
+WHILE(BETWEEN (z, [a+b*(4+b) ; 11.22]) OR 1 > 1){
+	a:=6;
 }

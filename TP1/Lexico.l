@@ -40,16 +40,22 @@ COMENTARIO  "***/"({CARACTER}|" "|\"|{SUBCOMENTARIO})*"/***"
 ")"			{ return P_C;}
 "{"			{ return L_A;}
 "}"			{ return L_C;}
+"["			{ return C_A;}
+"]"			{ return C_C;}
+","			{ return COMA;}
 ";"			{ return PUNTO_Y_COMA;}
 "IF"		{ return IF;}
 "ELSE"		{ return ELSE;}
 "WHILE"		{ return WHILE;}
 "DISPLAY"	{ return SALIDA;}
 "GET"		{ return ENTRADA;}
+"BETWEEN"	{ return BETWEEN;}
 
 {TEXTO}			{ yylval.str_val = yytext; if (imprimir) printf("Flex: String (%s)\n", yytext); return STRING;}
 
 {ID}			{ yylval.str_val = yytext; if (imprimir) printf("Flex: ID (%s)\n", yytext); return ID;}
+
+{DIGITO}+		{ yylval.intval = atoi(yytext); if (imprimir) printf("Flex Entero: %s (%d)\n", yytext,yylval.intval); return ENTERO;}
 
 ({DIGITO}+"."{DIGITO}*|{DIGITO}*"."{DIGITO}+) { yylval.val = atof(yytext); if (imprimir) printf("Flex Float: %s (%f)\n", yytext,yylval.val); return FLOAT;}
 

@@ -40,12 +40,16 @@ char *str_val;
 %token P_C
 %token L_A
 %token L_C
+%token C_A
+%token C_C
 %token PUNTO_Y_COMA
+%token COMA
 %token IF
 %token ELSE
 %token WHILE
 %token ENTRADA
 %token SALIDA
+%token BETWEEN
 %start program
 
 %%
@@ -69,6 +73,7 @@ condicion: comparacion {printRule("CONDICION", "COMPARACION");};
 condicion: OP_NOT comparacion {printRule("CONDICION", "CONDICION NEGADA");};
 condicion: comparacion OP_AND comparacion {printRule("CONDICION", "COMPARACION ANIDADA AND");};
 condicion: comparacion OP_OR comparacion {printRule("CONDICION", "COMPARACION ANIDADA OR");};
+comparacion: BETWEEN P_A ID COMA C_A expresion PUNTO_Y_COMA expresion C_C P_C {printRule("COMPARACION", "BETWEEN");};
 comparacion: expresion comparador expresion {printRule("COMPARACION", "EXPRESION COMPARADOR COMPARADOR EXPRESION");};
 comparador: 
       CMP_MAYOR {printRule("COMPARADOR", "OP_CMP_MAYOR");} 
