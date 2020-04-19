@@ -1,5 +1,5 @@
 IF (5 > a) {
-	miIF:="el identificador contiene IF dentro";
+	mi:="if con else";
 } ELSE {
 	a:=5;
 }
