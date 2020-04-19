@@ -1,6 +1,6 @@
 flex Lexico.l
 pause
-bison -dyv Sintactico.y
+bison -dyv --debug Sintactico.y
 pause
 gcc.exe lex.yy.c y.tab.c -o Primera.exe
 pause

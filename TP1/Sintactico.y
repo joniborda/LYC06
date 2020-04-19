@@ -5,11 +5,6 @@
 #include "y.tab.h"
 int yystopparser=0;
 FILE  *yyin;
-int yydebug = 0;
-
-#ifdef YYDEBUG
-  yydebug = 1;
-#endif
 
 void printRule(const char *, const char *);
 void printTokenInfo(const char*, const char*);
@@ -99,7 +94,7 @@ factor:
 %%
 
 void printRule(const char *lhs, const char *rhs) {
-    if (yydebug){
+    if (YYDEBUG) {
       printf("%s -> %s\n", lhs, rhs);
     }
     return;
