@@ -7,7 +7,7 @@ pause
 
 cd pruebas
 for %%x in (*) do (
-	..\Primera.exe %%x
+	..\Primera.exe %%x noImprimir
 )
 cd ..\
 del lex.yy.c
