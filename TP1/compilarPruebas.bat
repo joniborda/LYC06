@@ -16,7 +16,7 @@ for %%x in (*) do (
 	..\..\Primera.exe %%x
     @echo %%x
 )
-
+cd ..\..\
 del lex.yy.c
 del y.tab.c
 del y.output

@@ -42,18 +42,21 @@ char *str_val;
 %token PUNTO_Y_COMA
 %token IF
 %token ELSE
+%token WHILE
 
 %start program
 
 %%
 
-program : programa {printf("Compilacion OK");}
+program : programa {printf("\nCOMPILACION OK\n");}
 programa: programa sentencia {printRule("PROGRAMA", "PROGRAMA SENTENCIA");}; 
 programa: sentencia {printRule("PROGRAMA", "SENTENCIA");}; 
 sentencia: seleccion {printRule("SENTENCIA", "SELECCION");};
 sentencia: asignacion {printRule("SENTENCIA", "ASIGNACION");};
+sentencia: iteracion;
 seleccion: IF P_A condicion P_C L_A programa L_C {printRule("SELECCION", "SENTENCIA IF SIMPLE");};
 seleccion: IF P_A condicion P_C L_A programa L_C ELSE L_A programa L_C {printRule("SELECCION", "SENTENCIA IF SIMPLE CON ELSE");}; 
+iteracion: WHILE P_A condicion P_C L_A programa L_C {printRule("ITERACION", "WHILE");};
 condicion: comparacion {printRule("CONDICION", "COMPARACION");};
 condicion: condicion OP_AND comparacion {printRule("CONDICION", "COMPARACION ANIDADA AND");};
 condicion: condicion OP_OR comparacion {printRule("CONDICION", "COMPARACION ANIDADA OR");};
