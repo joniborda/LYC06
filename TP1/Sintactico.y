@@ -116,7 +116,11 @@ int main(int argc,char *argv[])
 	 printf("\nNo se puede abrir el archivo: %s\n", argv[1]);
   }
   else{
-	 yyparse();
+    // si al ejecutar Primera.exe paso un tercer parametro, no va a imprimir
+    if (argc > 2) {
+      noImprimir();
+    }
+    yyparse();
   }
 
   fclose(yyin);
