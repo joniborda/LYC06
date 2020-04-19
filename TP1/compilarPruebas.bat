@@ -5,18 +5,11 @@ pause
 gcc.exe lex.yy.c y.tab.c -o Primera.exe
 pause
 
-cd pruebas\if
+cd pruebas
 for %%x in (*) do (
-	..\..\Primera.exe %%x
-    @echo %%x
+	..\Primera.exe %%x
 )
-pause
-cd ..\while
-for %%x in (*) do (
-	..\..\Primera.exe %%x
-    @echo %%x
-)
-cd ..\..\
+cd ..\
 del lex.yy.c
 del y.tab.c
 del y.output
