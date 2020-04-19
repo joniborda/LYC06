@@ -36,6 +36,7 @@ TEXTO 		\"({CARACTER}|" ")+\"
 "}"			{ return L_C;}
 ";"			{ return PUNTO_Y_COMA;}
 "IF"		{ return IF;}
+"ELSE"		{ return ELSE;}	
 
 {TEXTO}			{ yylval.str_val = yytext; printf( "Flex: String (%s)\n", yytext) ; return STRING;}
 

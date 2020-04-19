@@ -41,6 +41,7 @@ char *str_val;
 %token L_C
 %token PUNTO_Y_COMA
 %token IF
+%token ELSE
 
 %start program
 
@@ -51,7 +52,8 @@ programa: programa sentencia {printRule("PROGRAMA", "PROGRAMA SENTENCIA");};
 programa: sentencia {printRule("PROGRAMA", "SENTENCIA");}; 
 sentencia: seleccion {printRule("SENTENCIA", "SELECCION");};
 sentencia: asignacion {printRule("SENTENCIA", "ASIGNACION");};
-seleccion: IF P_A condicion P_C L_A programa L_C {printRule("SELECCION", "SENTENCIA IF SIMPLE");}; 
+seleccion: IF P_A condicion P_C L_A programa L_C {printRule("SELECCION", "SENTENCIA IF SIMPLE");};
+seleccion: IF P_A condicion P_C L_A programa L_C ELSE L_A programa L_C {printRule("SELECCION", "SENTENCIA IF SIMPLE CON ELSE");}; 
 condicion: comparacion {printRule("CONDICION", "COMPARACION");};
 condicion: condicion OP_AND comparacion {printRule("CONDICION", "COMPARACION ANIDADA AND");};
 condicion: condicion OP_OR comparacion {printRule("CONDICION", "COMPARACION ANIDADA OR");};
