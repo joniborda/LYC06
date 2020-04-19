@@ -6,16 +6,16 @@
 FILE  *yyin;
 
 %}
+
 %option noyywrap  
 %option yylineno 
 
 
-DIGITO			[0-9]
-LETRA			[a-zA-Z]
-ID			{LETRA}({LETRA}|{DIGITO}|_)*
-espacio [" "]
-caracter [a-z,A-Z,0-9,=,>,<,!,:,+,-,*,/]
-texto "'"({caracter}+|{espacio})*"'"
+DIGITO		[0-9]
+LETRA		[a-zA-Z]
+ID			{LETRA} ({LETRA}|{DIGITO} |_)*
+ESPACIO 	[" "]
+CARACTER 	[a-z,A-Z,0-9,=,>,<,!,:,+,-,*,/]
 
 %%
 ":="		{ return ASIG;}
@@ -23,15 +23,23 @@ texto "'"({caracter}+|{espacio})*"'"
 "-"			{ return OP_RESTA;}
 "*"			{ return OP_MUL;}
 "/"			{ return OP_DIV;}
+"AND"		{ return OP_AND;}
+"OR"		{ return OP_OR;}
+">"			{ return CMP_MAYOR;}
+"<"			{ return CMP_MENOR;}	
+">="		{ return CMP_MAYOR_IGUAL;}
+"<="		{ return CMP_MENOR_IGUAL;}
+"=="		{ return CMP_IGUAL;}
 "("			{ return P_A;}
 ")"			{ return P_C;}
+"{"			{ return L_A;}
+"}"			{ return L_C;}
 ";"			{ return PUNTO_Y_COMA;}
+"IF"		{ return IF;}
 
 {ID}			{ yylval.str_val = yytext; printf( "Identificador en léxico: %s (%s)\n", yytext,yylval.str_val) ; return ID;}
 
 {DIGITO}+		{ yylval.intval = atoi(yytext); printf( "Entero en léxico: %s (%d)\n", yytext,yylval.intval) ; return ENTERO;}
-
-{texto}		{ yylval.str_val = yytext; printf( "String en léxico: %s (%s)\n", yytext,yylval.str_val) ; return STRING;}
 
 {DIGITO}+"."{DIGITO}* { yylval.val = atof(yytext); printf( "Float en léxico: %s (%f)\n", yytext,yylval.val) ; return FLOAT;}
 
