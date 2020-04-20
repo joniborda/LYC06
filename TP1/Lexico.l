@@ -14,7 +14,7 @@ FILE  *yyin;
 DIGITO		[0-9]
 LETRA		[a-zA-Z]
 ID			{LETRA}({LETRA}|{DIGITO}|_)*
-CARACTER 	[a-z,A-Z,0-9,=,>,<,!,:,+,\-,*,/,�,?,_,","]
+CARACTER 	[a-z,A-Z,0-9,=,>,<,!,:,+,".",\-,*,/,�,?,_,","]
 TEXTO 		\"({CARACTER}|" ")+\"
 
 SUBCOMENTARIO   "/***"({CARACTER}|" "|\")+"***/"
