@@ -28,6 +28,7 @@ char *str_val;
 %token OP_DIV
 %token OP_AND
 %token OP_OR
+%token OP_NOT
 %token CMP_MAYOR
 %token CMP_MENOR
 %token CMP_MAYOR_IGUAL
@@ -37,13 +38,24 @@ char *str_val;
 %token P_C
 %token L_A
 %token L_C
+%token C_A
+%token C_C
 %token PUNTO_Y_COMA
+%token COMA
 %token IF
 %token ELSE
 %token <intval> ENTERO
 %token <val> FLOAT
 %token <str_val>STRING
-
+%token WHILE
+%token ENTRADA
+%token SALIDA
+%token INICIA_DEC
+%token FIN_DEC
+%token TIPO_FLOAT
+%token TIPO_INT
+%token TIPO_STRING
+%token BETWEEN
 %start program
 
 %left OP_SUMA OP_RESTA
@@ -54,16 +66,39 @@ char *str_val;
 
 %%
 
-program : programa {printf("Compilacion OK");}
+program : bloque_declaraciones algoritmo {printf("\nCOMPILACION OK\n");}
+
+bloque_declaraciones: INICIA_DEC {printf("INICIO DECLARACIONES\n");} declaraciones FIN_DEC {printf("FIN DECLARACIONES\n");}
+declaraciones:
+		declaracion {printRule("DECLARACIONES", "DECLARACION");}
+		| declaraciones declaracion {printRule("DECLARACIONES", "DECLARACIONES DECLARACION");}
+declaracion:
+		TIPO_FLOAT lista_variables {printRule("DECLARACION", "TIPO_FLOAT : LISTA_VARIABLES");}
+		| TIPO_INT lista_variables {printRule("DECLARACION", "TIPO_INT : LISTA_VARIABLES");}
+		| TIPO_STRING lista_variables {printRule("DECLARACION", "TIPO_STRING : LISTA_VARIABLES");}
+lista_variables:
+		ID {printRule("LISTA_VARIABLES", "ID");}
+		| ID PUNTO_Y_COMA lista_variables {printRule("LISTA_VARIABLES", "ID PUNTO_Y_COMA LISTA_VARIABLES");}
+algoritmo: programa {printf("\nCOMPILACION OK\n");}
 programa: programa sentencia {printRule("PROGRAMA", "PROGRAMA SENTENCIA");}; 
 programa: sentencia {printRule("PROGRAMA", "SENTENCIA");}; 
 sentencia: seleccion {printRule("SENTENCIA", "SELECCION");};
 sentencia: asignacion {printRule("SENTENCIA", "ASIGNACION");};
+sentencia: iteracion {printRule("SENTENCIA", "ITERACION");};
+sentencia: entrada PUNTO_Y_COMA {printRule("SENTENCIA", "ENTRADA");};
+sentencia: salida PUNTO_Y_COMA {printRule("SENTENCIA", "SALIDA");};
+entrada: ENTRADA ID {printRule("ENTRADA", "ID");};
+salida: 
+      SALIDA STRING {printRule("SALIDA", "STRING");} 
+    | SALIDA ID {printRule("SALIDA", "ID");};
 seleccion: IF P_A condicion P_C L_A programa L_C {printRule("SELECCION", "SENTENCIA IF SIMPLE");};
 seleccion: IF P_A condicion P_C L_A programa L_C ELSE L_A programa L_C {printRule("SELECCION", "SENTENCIA IF SIMPLE CON ELSE");}; 
+iteracion: WHILE P_A condicion P_C L_A programa L_C {printRule("ITERACION", "WHILE");};
 condicion: comparacion {printRule("CONDICION", "COMPARACION");};
-condicion: condicion OP_AND comparacion {printRule("CONDICION", "COMPARACION ANIDADA AND");};
-condicion: condicion OP_OR comparacion {printRule("CONDICION", "COMPARACION ANIDADA OR");};
+condicion: OP_NOT comparacion {printRule("CONDICION", "CONDICION NEGADA");};
+condicion: comparacion OP_AND comparacion {printRule("CONDICION", "COMPARACION ANIDADA AND");};
+condicion: comparacion OP_OR comparacion {printRule("CONDICION", "COMPARACION ANIDADA OR");};
+comparacion: BETWEEN P_A ID COMA C_A expresion PUNTO_Y_COMA expresion C_C P_C {printRule("COMPARACION", "BETWEEN");};
 comparacion: expresion comparador expresion {printRule("COMPARACION", "EXPRESION COMPARADOR COMPARADOR EXPRESION");};
 comparador: 
       CMP_MAYOR {printRule("COMPARADOR", "OP_CMP_MAYOR");} 
@@ -99,10 +134,13 @@ factor : ID {printRule("FACTOR", "ID");}
         |STRING { $<str_val>$ = $<str_val>1; printRule("FACTOR", "STRING");}
         ;  
 
+
 %%
 
 void printRule(const char *lhs, const char *rhs) {
-    printf("%s -> %s\n", lhs, rhs);
+    if (YYDEBUG) {
+      printf("%s -> %s\n", lhs, rhs);
+    }
     return;
 }
 
@@ -113,6 +151,7 @@ void printTokenInfo(const char* tokenType, const char* lexeme) {
 int yyerror(const char *s) {
     printf("Syntax Error\n");
     printf("%s\n", s);
+    exit(1);
     return(1);
 }
 
@@ -122,7 +161,11 @@ int main(int argc,char *argv[])
 	 printf("\nNo se puede abrir el archivo: %s\n", argv[1]);
   }
   else{
-	 yyparse();
+    // si al ejecutar Primera.exe paso un tercer parametro, no va a imprimir
+    if (argc > 2) {
+      noImprimir();
+    }
+    yyparse();
   }
 
   fclose(yyin);

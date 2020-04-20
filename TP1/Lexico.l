@@ -4,7 +4,10 @@
 #include <conio.h>
 #include "y.tab.h"
 FILE  *yyin;
-
+int imprimir = 1;
+void noImprimir() {
+	imprimir = 0;
+}
 %}
 
 %option noyywrap  
@@ -16,6 +19,8 @@ LETRA		[a-zA-Z]
 ID			{LETRA}({LETRA}|{DIGITO}|_)*
 CARACTER 	[a-z,A-Z,0-9,=,>,<,!,:,+,".",\-,*,/,�,?,_,","]
 TEXTO 		\"({CARACTER}|" ")+\"
+SUBCOMENTARIO   "/***"({CARACTER}|" "|\")*"***/"
+COMENTARIO  "***/"({CARACTER}|" "|\"|{SUBCOMENTARIO})*"/***"
 
 SUBCOMENTARIO   "/***"({CARACTER}|" "|\")+"***/"
 COMENTARIO  "***/"({CARACTER}|" "|\"|{SUBCOMENTARIO})+"/***"
@@ -28,6 +33,7 @@ COMENTARIO  "***/"({CARACTER}|" "|\"|{SUBCOMENTARIO})+"/***"
 "/"			{ return OP_DIV;}
 "AND"		{ return OP_AND;}
 "OR"		{ return OP_OR;}
+"NOT"		{ return OP_NOT;}
 ">"			{ return CMP_MAYOR;}
 "<"			{ return CMP_MENOR;}	
 ">="		{ return CMP_MAYOR_IGUAL;}
@@ -37,20 +43,31 @@ COMENTARIO  "***/"({CARACTER}|" "|\"|{SUBCOMENTARIO})+"/***"
 ")"			{ return P_C;}
 "{"			{ return L_A;}
 "}"			{ return L_C;}
+"["			{ return C_A;}
+"]"			{ return C_C;}
+","			{ return COMA;}
 ";"			{ return PUNTO_Y_COMA;}
 "IF"		{ return IF;}
-"ELSE"		{ return ELSE;}	
+"ELSE"		{ return ELSE;}
+"WHILE"		{ return WHILE;}
+"DISPLAY"	{ return SALIDA;}
+"GET"		{ return ENTRADA;}
+"DEFVAR"	{ return INICIA_DEC;}
+"ENDVAR"	{ return FIN_DEC;}
+"FLOAT"		{ return TIPO_FLOAT;}
+"INT"		{ return TIPO_INT;}
+"STRING"	{ return TIPO_STRING;}
+"BETWEEN"	{ return BETWEEN;}
 
-{TEXTO}			{ yylval.str_val = yytext; printf( "Flex: String (%s)\n", yytext) ; return STRING;}
+{TEXTO}			{ yylval.str_val = yytext; if (imprimir) printf("Flex: String (%s)\n", yytext); return STRING;}
 
-{ID}			{ yylval.str_val = yytext; printf( "Flex: ID (%s)\n", yytext) ; return ID;}
+{ID}			{ yylval.str_val = yytext; if (imprimir) printf("Flex: ID (%s)\n", yytext); return ID;}
 
-{DIGITO}+		{ yylval.intval = atoi(yytext); printf( "Flex Entero: %s (%d)\n", yytext,yylval.intval) ; return ENTERO;}
+{DIGITO}+		{ yylval.intval = atoi(yytext); if (imprimir) printf("Flex Entero: %s (%d)\n", yytext,yylval.intval); return ENTERO;}
 
-{DIGITO}+"."{DIGITO}+ { yylval.val = atof(yytext); printf( "Flex Float: %s (%f)\n", yytext,yylval.val) ; return FLOAT;}
+({DIGITO}+"."{DIGITO}*|{DIGITO}*"."{DIGITO}+) { yylval.val = atof(yytext); if (imprimir) printf("Flex Float: %s (%f)\n", yytext,yylval.val); return FLOAT;}
 
 {COMENTARIO}
 "\n"      		
-"\t"		
-
-
+"\t"
+" "	

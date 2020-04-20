@@ -1,0 +1,6 @@
+DEFVAR
+	FLOAT a1
+ENDVAR
+IF (5 > a) {
+	mi:="sentencia simple";
+}
