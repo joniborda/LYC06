@@ -14,14 +14,12 @@ int yyerror(const char *);
 
 %union {
 int intval;
-double val;
+float val;
 char *str_val;
 }
 
 %token <str_val>ID
-%token <int>ENTERO
-%token <double>FLOAT
-%token <str_val>STRING
+
 
 %token ASIG
 %token OP_SUMA
@@ -42,8 +40,17 @@ char *str_val;
 %token PUNTO_Y_COMA
 %token IF
 %token ELSE
+%token <intval> ENTERO
+%token <val> FLOAT
+%token <str_val>STRING
 
 %start program
+
+%left OP_SUMA OP_RESTA
+%left OP_MUL OP_DIV
+
+%type <intval> expresionentera
+%type <val> expresionfloatante
 
 %%
 
@@ -64,20 +71,33 @@ comparador:
     | CMP_MAYOR_IGUAL {printRule("COMPARADOR", "OP_CMP_MAYOR_IGUAL");} 
     | CMP_MENOR_IGUAL {printRule("COMPARADOR", "OP_CMP_MENOR_IGUAL");} 
     | CMP_IGUAL  {printRule("COMPARADOR", "OP_CMP_IGUAL");};
-expresion: asignacion {printRule("EXPRESION", "ASIGNACION");};
-asignacion: ID ASIG expresion PUNTO_Y_COMA {printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");};
-expresion: expresion OP_SUMA termino {printRule("EXPRESION", "EXPRESION OP_SUMA TERMINO");};
-expresion: expresion OP_RESTA termino {printRule("EXPRESION", "EXPRESION OP_RESTA TERMINO");};
-expresion: termino  {printRule("EXPRESION", "TERMINO");};
-termino: termino OP_MUL factor {printRule("TERMINO", "TERMINO OP_MUL FACTOR");};
-termino: termino OP_DIV factor {printRule("TERMINO", "TERMINO OP_DIV FACTOR");};
-termino: factor {printRule("TERMINO", "FACTOR");};
-factor: 
-    P_A expresion P_C {printRule("FACTOR", "(EXPRESION)");}
-    | ID {printRule("FACTOR", "ID");}
-    | ENTERO {printRule("FACTOR", "ENTERO");}
-    | FLOAT  {printRule("FACTOR", "FLOAT");}
-    | STRING {printRule("FACTOR", "STRING");};
+
+asignacion: ID ASIG expresion PUNTO_Y_COMA { printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");};
+asignacion: ID ASIG factor PUNTO_Y_COMA {printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");};
+
+expresion :  expresionentera {printf("response %d ....",$1 );}
+            |expresionfloatante {printf("response %f ....",$1 );}
+            ;
+
+expresionentera : ENTERO
+        | expresionentera OP_SUMA expresionentera {$$ = $1 + $3;}
+        | expresionentera OP_RESTA expresionentera {$$ = $1 - $3;}
+        | expresionentera OP_MUL expresionentera {$$ = $1 * $3;}
+        | expresionentera OP_DIV expresionentera {$$ = $1 / $3;}
+        | P_A expresionentera P_C { $$ = $2;printRule("EXPRESION", "(EXPRESIONentera)");}
+        ;
+
+expresionfloatante : FLOAT {$<val>$ = $<val>1;}
+        | expresionfloatante OP_SUMA expresionfloatante {$$ = $1 + $3;}
+        | expresionfloatante OP_RESTA expresionfloatante {$$ = $1 - $3;}
+        | expresionfloatante OP_MUL expresionfloatante {$$ = $1 * $3;}
+        | expresionfloatante OP_DIV expresionfloatante {$$ = $1 / $3;}
+        | P_A expresionfloatante P_C {$$ = $2;printRule("EXPRESION", "(EXPRESION_FLOAT)");}
+        ;
+
+factor : ID {printRule("FACTOR", "ID");}
+        |STRING { $<str_val>$ = $<str_val>1; printRule("FACTOR", "STRING");}
+        ;  
 
 %%
 
