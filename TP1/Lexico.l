@@ -22,9 +22,6 @@ TEXTO 		\"({CARACTER}|" ")+\"
 SUBCOMENTARIO   "/***"({CARACTER}|" "|\")*"***/"
 COMENTARIO  "***/"({CARACTER}|" "|\"|{SUBCOMENTARIO})*"/***"
 
-SUBCOMENTARIO   "/***"({CARACTER}|" "|\")+"***/"
-COMENTARIO  "***/"({CARACTER}|" "|\"|{SUBCOMENTARIO})+"/***"
-
 %%
 ":="		{ return ASIG;}
 "+"			{ return OP_SUMA;}
