@@ -1,0 +1,5 @@
+Nombre                        Tipo        Valor                         Longitud    
+a                            ID                                                    
+b                            ID                                                    
+2                            CONST_INT   2                                         
+5                            CONST_INT   5                                         

@@ -1,10 +1,14 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <conio.h>
 #include "y.tab.h"
+#include "archivos_punto_H/tabla_simbolo.h"
+#include "archivos_punto_H/constantes.h"
 FILE  *yyin;
 int imprimir = 1;
+void idFuncion();
 void noImprimir() {
 	imprimir = 0;
 }
@@ -58,13 +62,21 @@ COMENTARIO  "***/"({CARACTER}|" "|\"|{SUBCOMENTARIO})*"/***"
 
 {TEXTO}			{ yylval.str_val = yytext; if (imprimir) printf("Flex: String (%s)\n", yytext); return STRING;}
 
-{ID}			{ yylval.str_val = yytext; if (imprimir) printf("Flex: ID (%s)\n", yytext); return ID;}
+{ID}			{ yylval.str_val = yytext; if (imprimir) printf("Flex: ID (%s)\n", yytext); 
+					insertarTokenEnTS("ID", yylval.str_val, strlen(yytext), "");
+					return ID;}
 
-{DIGITO}+		{ yylval.intval = atoi(yytext); if (imprimir) printf("Flex Entero: %s (%d)\n", yytext,yylval.intval); return ENTERO;}
+{DIGITO}+		{idFuncion();return ENTERO;}
 
 ({DIGITO}+"."{DIGITO}*|{DIGITO}*"."{DIGITO}+) { yylval.val = atof(yytext); if (imprimir) printf("Flex Float: %s (%f)\n", yytext,yylval.val); return FLOAT;}
 
 {COMENTARIO}
 "\n"      		
 "\t"
-" "	
+" "
+%%
+void idFuncion() {
+	yylval.intval = atoi(yytext); 
+	if (imprimir) printf("Flex Entero: %s (%d)\n", yytext,yylval.intval);
+	insertarTokenEnTS("CONST_INT", strdup(yytext), 0, yytext);
+}

@@ -4,6 +4,8 @@
     #include <conio.h>
     #include <string.h>
     #include "y.tab.h"
+    #include "archivos_punto_H/tabla_simbolo.h"
+    #include "archivos_punto_H/constantes.h"
     int yystopparser=0;
     FILE  *yyin;
 
@@ -68,7 +70,7 @@
 %%
 
 program: 
-    bloque_declaraciones algoritmo {printf("\nCOMPILACION OK\n");}
+    bloque_declaraciones algoritmo {printf("\nCOMPILACION OK\n");crearArchivoTS();}
 
 bloque_declaraciones: 
     INICIA_DEC {printf("INI DEC\n");} declaraciones FIN_DEC {printf("FIN DEC\n");}
