@@ -60,6 +60,7 @@ char *str_val;
 
 %left OP_SUMA OP_RESTA
 %left OP_MUL OP_DIV
+%right MENOS_UNARIO
 
 %type <intval> expresionEntera
 %type <val> expresionFlotante
@@ -114,20 +115,23 @@ expresion :  expresionEntera {printf("resultado %d ....", $1);}
             |expresionFlotante {printf("resultado %f ....", $1);}
             ;
 
-expresionEntera : ENTERO { printRule("expresion entera", "entero");}
-        | expresionEntera OP_SUMA expresionEntera {$$ = $1 + $3; printRule("expresion entera", "suma");}
-        | expresionEntera OP_RESTA expresionEntera {$$ = $1 - $3; printRule("expresion entera", "resta");}
-        | expresionEntera OP_MUL expresionEntera {$$ = $1 * $3; printRule("expresion entera", "multi");}
-        | expresionEntera OP_DIV expresionEntera {$$ = $1 / $3; printRule("expresion entera", "div");}
-        | P_A expresionEntera P_C { $$ = $2; printRule("EXPRESION", "(EXPRESIONEntera)");}
-        ;
+expresionEntera : 
+    ENTERO { printf("res = %d", $$); printRule("exp ent", "entero");}
+  | OP_RESTA expresionEntera %prec MENOS_UNARIO { $<intval>$ = $<intval>2 * -1; printRule("exp", "exp int neg");}
+  | expresionEntera OP_SUMA expresionEntera {$$ = $1 + $3; printf("%d = %d + %d ", $$, $1, $3); printRule("exp ent", "suma");}
+  | expresionEntera OP_RESTA expresionEntera {$$ = $1 - $3; printf("%d = %d - %d ", $$, $1, $3); printRule("exp ent", "resta");}
+  | expresionEntera OP_MUL expresionEntera {$$ = $1 * $3; printf("%d = %d * %d ", $$, $1, $3); printRule("exp ent", "multi");}
+  | expresionEntera OP_DIV expresionEntera {$$ = $1 / $3; printf("%d = %d / %d ", $$, $1, $3);printRule("exp ent", "div");}
+  | P_A expresionEntera P_C { $$ = $2; printRule("EXP", "(EXP_ENT)");}
+  ;
 
-expresionFlotante : FLOAT {$<val>$ = $<val>1; printRule("expresion flotante", "float");}
-        | expresionFlotante OP_SUMA expresionFlotante {$$ = $1 + $3; printRule("expresion flotante ", "suma");}
-        | expresionFlotante OP_RESTA expresionFlotante {$$ = $1 - $3; printRule("expresion flotante", "resta");}
-        | expresionFlotante OP_MUL expresionFlotante {$$ = $1 * $3; printRule("expresion flotante", "multi");}
-        | expresionFlotante OP_DIV expresionFlotante {$$ = $1 / $3; printRule("expresion flotante", "div");}
-        | P_A expresionFlotante P_C {$$ = $2;printRule("EXPRESION", "(EXPRESION_FLOAT)");}
+expresionFlotante : FLOAT {$<val>$ = $<val>1; printf("res = %f ", $$); printRule("exp float", "float");}
+        | OP_RESTA expresionFlotante %prec MENOS_UNARIO { $<val>$ = -$<val>2; printRule("exp", "exp float neg");}
+        | expresionFlotante OP_SUMA expresionFlotante {$$ = $1 + $3; printRule("exp float", "suma");}
+        | expresionFlotante OP_RESTA expresionFlotante {$$ = $1 - $3; printRule("exp float", "resta");}
+        | expresionFlotante OP_MUL expresionFlotante {$$ = $1 * $3; printRule("exp float", "multi");}
+        | expresionFlotante OP_DIV expresionFlotante {$$ = $1 / $3; printRule("exp float", "div");}
+        | P_A expresionFlotante P_C {$$ = $2; printRule("EXP", "(EXP_FLOAT)");}
         ;
 
 factor : ID {printRule("FACTOR", "ID");}
