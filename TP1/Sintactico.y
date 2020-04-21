@@ -2,6 +2,7 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <conio.h>
+    #include <string.h>
     #include "y.tab.h"
     int yystopparser=0;
     FILE  *yyin;
@@ -9,7 +10,7 @@
     void printRule(const char *, const char *);
     void printTokenInfo(const char*, const char*);
     int yyerror(const char *);
-
+    void limiteString(const char *);
 %}
 
 %union {
@@ -148,7 +149,7 @@ expresionEntera :
     ;
 
 expresionFlotante:
-    FLOAT {$<val>$ = $<val>1; printf("res = %f ", $$); printRule("exp float", "float");}
+    FLOAT {printf("res = %f ", $$); printRule("exp float", "float");}
     | OP_RESTA expresionFlotante %prec MENOS_UNARIO { $<val>$ = -$<val>2; printRule("exp", "exp float neg");}
     | expresionFlotante OP_SUMA expresionFlotante {$$ = $1 + $3; printRule("exp float", "suma");}
     | expresionFlotante OP_RESTA expresionFlotante {$$ = $1 - $3; printRule("exp float", "resta");}
@@ -159,7 +160,7 @@ expresionFlotante:
 
 factor: 
     ID {printRule("FACTOR", "ID");}
-    |STRING { $<str_val>$ = $<str_val>1; printRule("FACTOR", "STRING");}
+    |STRING { limiteString($1); $<str_val>$ = $<str_val>1; printRule("FACTOR", "STRING");}
     ;  
 
 %%
@@ -180,6 +181,15 @@ int yyerror(const char *s) {
     printf("%s\n", s);
     exit(1);
     return(1);
+}
+
+void limiteString(const char *str) {
+    //Se resta dos a la longitud del string por las comillas
+    if(strlen(str) - 2 > 30) {
+    printf("Error: El string supero los 30 caracteres\nvariable: %s", str);
+    exit(1);
+    }
+    return;
 }
 
 int main(int argc,char *argv[]) {
