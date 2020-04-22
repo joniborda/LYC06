@@ -1,3 +1,7 @@
+DEFVAR
+	FLOAT a
+ENDVAR
+
 IF (5 > a) {
 	mi:="if con else";
 } ELSE {

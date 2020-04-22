@@ -1,3 +1,7 @@
+DEFVAR
+	FLOAT a
+ENDVAR
+
 WHILE (5 > a) {
 	mi:="sentencia while simple";
 }

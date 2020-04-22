@@ -1,3 +1,7 @@
+DEFVAR
+	FLOAT a
+ENDVAR
+
 a:="string";
 b:=5;
 c:=3.21;

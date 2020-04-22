@@ -1,4 +1,4 @@
 Nombre                        Tipo        Valor                         Longitud    
 a                            CONST_ID                                              
 b                            CONST_ID                                              
-9999999.9999999999           CONST_FLOAT 9999999.9999999999                        
+2                            CONST_INT   2                                         

@@ -1,3 +1,7 @@
+DEFVAR
+	FLOAT a
+ENDVAR
+
 IF(NOT a == 5){
 	DISPLAY "ABC";
 }

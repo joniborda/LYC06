@@ -1,3 +1,7 @@
+DEFVAR
+	FLOAT a
+ENDVAR
+
 GET abc;
 WHILE (a>4){
 	GET bbbb;

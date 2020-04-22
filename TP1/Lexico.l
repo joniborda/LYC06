@@ -65,16 +65,16 @@ COMENTARIO  "***/"({CARACTER}|" "|\"|{SUBCOMENTARIO})*"/***"
 "STRING"	{ return TIPO_STRING;}
 "BETWEEN"	{ return BETWEEN;}
 
-{TEXTO}			{ textoFuncion(); return STRING;}
+{TEXTO}			{ textoFuncion(); return STRING; }
 
-{ID}			{ idFuncion(); return ID;}
+{ID}			{ idFuncion(); return ID; }
 
-{DIGITO}+		{ enteroFuncion(); return ENTERO;}
+{DIGITO}+		{ enteroFuncion(); return ENTERO; }
 
-({DIGITO}+"."{DIGITO}*|{DIGITO}*"."{DIGITO}+) { floatFuncion(); return FLOAT;}
+({DIGITO}+"."{DIGITO}*|{DIGITO}*"."{DIGITO}+) { floatFuncion(); return FLOAT; }
 
 {COMENTARIO}
-"\n"      		
+"\n"
 "\t"
 " "
 %%
@@ -82,27 +82,39 @@ COMENTARIO  "***/"({CARACTER}|" "|\"|{SUBCOMENTARIO})*"/***"
 void textoFuncion() {
 	yylval.str_val = yytext;
 	//Se resta dos a la longitud del string por las comillas
-    if(strlen(yytext) - 2 > 30) {printf("Error: El string supero los 30 caracteres\nvariable: %s", yytext); exit(1);}
+    if(strlen(yytext) - 2 > LIMITE_STR) {
+		printf("Error: El string supero los 30 caracteres\n\tvariable: %s", yytext);
+		exit(1);
+	}
 	if (imprimir) printf("Flex: String (%s)\n", yytext);
 	insertarTokenEnTS("CONST_STRING", strdup(yytext), 0, yytext);
 }
 
 void idFuncion() {
-	yylval.str_val = yytext; 
+	yylval.str_val = yytext;
 	if (imprimir) printf("Flex: ID (%s)\n", yytext);
 	insertarTokenEnTS("CONST_ID", yylval.str_val, strlen(yytext), "");
 }
 
 void enteroFuncion() {
 	yylval.intval = atoi(yytext);
-	if(yylval.intval>65535) {printf("ERROR: La constante entera supera el máximo del límite permitido (16bits)."); exit(1);}
+
+	if(yylval.intval > LIMITE_INT) {
+		printf("ERROR: La constante entera supera el máximo del límite permitido (16bits).");
+		exit(1);
+	}
+
 	if (imprimir) printf("Flex Entero: %s (%d)\n", yytext,yylval.intval);
 	insertarTokenEnTS("CONST_INT", strdup(yytext), 0, yytext);
 }
 
 void floatFuncion() {
 	yylval.val = atof(yytext);
-	if(atof(yytext)>9999999.9999999999) {printf("ERROR: La constante float supera el máximo del límite permitido (32bits)."); exit(1);}
+	//Ver tema del limite máximo, debido a que trunca.
+	if(atof(yytext) > LIMITE_FLOAT) {
+		printf("ERROR: La constante float supera el máximo del límite permitido (32bits).");
+		exit(1);
+	}
 	if (imprimir) printf("Flex Float: %s (%f)\n", yytext,yylval.val);
 	insertarTokenEnTS("CONST_FLOAT", strdup(yytext), 0, yytext);
 }

@@ -1,3 +1,7 @@
+DEFVAR
+	FLOAT a
+ENDVAR
+
 IF (5 > a) {
 	a:="HOLA COMO ESTAS SOY UN STRING, MUY LARGO ???? _";
 } ELSE {

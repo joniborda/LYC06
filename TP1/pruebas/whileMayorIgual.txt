@@ -1,3 +1,7 @@
+DEFVAR
+	FLOAT a
+ENDVAR
+
 WHILE (a >= 5) {
 	miIF:="while mayor igual";
 }

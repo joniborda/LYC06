@@ -1,3 +1,7 @@
+DEFVAR
+	FLOAT a
+ENDVAR
+
 WHILE (5 > a) {
 	miWHILE:="el identificador contiene WHILE dentro";
 }

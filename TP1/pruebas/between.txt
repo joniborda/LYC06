@@ -1,3 +1,7 @@
+DEFVAR
+	FLOAT a
+ENDVAR
+
 IF(BETWEEN (variable1, [expresion1; expresion2])){
 	a:=1;
 }

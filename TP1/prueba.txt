@@ -1,6 +1,7 @@
 DEFVAR
 	FLOAT a
 ENDVAR
-b:="99sssssssssssssssssssssssssssssss99999.9999999999";
+b:=2 + 2;
+
 ***/w:="hola"no admite punto y coma en los cometarios/***
 ***/_2:="hola"no admite el ID _2/***
