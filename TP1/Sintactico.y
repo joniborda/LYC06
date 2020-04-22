@@ -168,7 +168,7 @@ comparador:
 asignacion: 
     ID ASIG expresion PUNTO_Y_COMA {printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");}
     ;
-
+// expresion deberia ser directamente un STRING porque sino puedo hacer operaciones con un string ya que es un factor
 expresion: 
     asignacion {printRule("EXPRESION", "ASIGNACION");}
     | expresion OP_SUMA termino {
