@@ -166,25 +166,32 @@ comparador:
     | CMP_IGUAL  {printRule("COMPARADOR", "OP_CMP_IGUAL");};
 
 asignacion: 
-    ID ASIG expresion PUNTO_Y_COMA {printf("\n%d\n",$<intval>3);printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");} 
-    | ID ASIG factor PUNTO_Y_COMA {printf("\n%s\n",$1);printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");}
+    ID ASIG expresion PUNTO_Y_COMA {printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");}
     ;
 
 expresion: 
     asignacion {printRule("EXPRESION", "ASIGNACION");}
-    | expresion OP_SUMA termino {printRule("EXPRESION", "EXPRESION OP_SUMA TERMINO");}
-    | expresion OP_RESTA termino {printRule("EXPRESION", "EXPRESION OP_RESTA TERMINO");}
+    | expresion OP_SUMA termino {
+        printRule("EXPRESION", "EXPRESION OP_SUMA TERMINO");
+    }
+    | expresion OP_RESTA termino {
+        printRule("EXPRESION", "EXPRESION OP_RESTA TERMINO");
+    }
     | termino  {printRule("EXPRESION", "TERMINO");}
     ;
 
 termino: 
-    termino OP_MUL factor {printRule("TERMINO", "TERMINO OP_MUL FACTOR");}
-    | termino OP_DIV factor {printRule("TERMINO", "TERMINO OP_DIV FACTOR");}
+    termino OP_MUL factor {
+        printRule("TERMINO", "TERMINO OP_MUL FACTOR");
+    }
+    | termino OP_DIV factor {
+        printRule("TERMINO", "TERMINO OP_DIV FACTOR");
+    }
     | factor {printRule("TERMINO", "FACTOR");}
     ;
 
 factor: 
-    P_A expresion P_C {printRule("FACTOR", "(EXPRESION)");}
+      P_A expresion P_C {printRule("FACTOR", "(EXPRESION)");}
     | ID {printRule("FACTOR", "ID");}
     | ENTERO {printRule("FACTOR", "ENTERO");}
     | FLOAT  {printRule("FACTOR", "FLOAT");}
