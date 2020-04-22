@@ -1,0 +1,5 @@
+Nombre                        Tipo        Valor                         Longitud    
+a                            CONST_ID                                              
+5                            CONST_INT   5                                         
+mi                           CONST_ID                                              
+"if con else"                CONST_STRING"if con else"                             
