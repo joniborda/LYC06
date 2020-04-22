@@ -3,5 +3,5 @@ DEFVAR
 ENDVAR
 
 WHILE (5 > a) {
-	miWHILE:="el identificador contiene WHILE dentro";
+	miWHILE:="el id contiene WHILE dentro";
 }

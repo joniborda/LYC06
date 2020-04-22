@@ -3,5 +3,5 @@ DEFVAR
 ENDVAR
 
 IF (5 > a) {
-	miIF:="el identificador contiene IF dentro";
+	miIF:="el id contiene IF dentro";
 }

@@ -3,7 +3,7 @@ DEFVAR
 ENDVAR
 
 IF (5 > a) {
-	a:="HOLA COMO ESTAS SOY UN STRING, MUY LARGO ???? _";
+	a:="SOY UN,STRING MUY LARGO ???? _";
 } ELSE {
 	b:= 4 + 5;
 	c:= 2 + 4;
