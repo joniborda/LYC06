@@ -12,7 +12,6 @@
     void printRule(const char *, const char *);
     void printTokenInfo(const char*, const char*);
     int yyerror(const char *);
-    void limiteString(const char *);
 %}
 
 %union {
@@ -131,9 +130,9 @@ comparador:
     | CMP_IGUAL  {printRule("COMPARADOR", "OP_CMP_IGUAL");};
 
 asignacion: 
-    ID ASIG expresion PUNTO_Y_COMA {printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");};
+    ID ASIG expresion PUNTO_Y_COMA {printf("\n%d\n",$1);printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");};
 asignacion: 
-    ID ASIG factor PUNTO_Y_COMA {printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");};
+    ID ASIG factor PUNTO_Y_COMA {printf("\n%d\n",$1);printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");};
 
 expresion:  
     expresionEntera {printf("resultado %d ....", $1);}
@@ -151,7 +150,7 @@ expresionEntera :
     ;
 
 expresionFlotante:
-    FLOAT {printf("res = %f ", $$); printRule("exp float", "float");}
+    FLOAT {$<val>$ = $<val>1;printf("res = %f ", $1); printRule("exp float", "float");}
     | OP_RESTA expresionFlotante %prec MENOS_UNARIO { $<val>$ = -$<val>2; printRule("exp", "exp float neg");}
     | expresionFlotante OP_SUMA expresionFlotante {$$ = $1 + $3; printRule("exp float", "suma");}
     | expresionFlotante OP_RESTA expresionFlotante {$$ = $1 - $3; printRule("exp float", "resta");}
@@ -162,7 +161,7 @@ expresionFlotante:
 
 factor: 
     ID {printRule("FACTOR", "ID");}
-    |STRING { limiteString($1); $<str_val>$ = $<str_val>1; printRule("FACTOR", "STRING");}
+    |STRING { $<str_val>$ = $<str_val>1; printRule("FACTOR", "STRING");}
     ;  
 
 %%
@@ -183,15 +182,6 @@ int yyerror(const char *s) {
     printf("%s\n", s);
     exit(1);
     return(1);
-}
-
-void limiteString(const char *str) {
-    //Se resta dos a la longitud del string por las comillas
-    if(strlen(str) - 2 > 30) {
-    printf("Error: El string supero los 30 caracteres\nvariable: %s", str);
-    exit(1);
-    }
-    return;
 }
 
 int main(int argc,char *argv[]) {
