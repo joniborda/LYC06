@@ -87,7 +87,7 @@ declaraciones:
     | declaraciones declaracion {printRule("DECS", "DECS DEC");}
 
 declaracion:
-	| TIPO_INT lista_variables {
+	TIPO_INT lista_variables {
         printRule("DEC", "TIPO_INT : LISTA_VARIABLES");
         actualizarTipo("INTEGER");
     }
@@ -147,19 +147,19 @@ iteracion:
     WHILE P_A condicion P_C L_A programa L_C {printRule("ITERACION", "WHILE");};
 
 condicion: 
-      comparacion {printRule("CONDICION", "COMPARACION");}
+    comparacion {printRule("CONDICION", "COMPARACION");}
     | OP_NOT comparacion {printRule("CONDICION", "CONDICION NEGADA");}
     | comparacion OP_AND comparacion {printRule("CONDICION", "COMPARACION ANIDADA AND");}
     | comparacion OP_OR comparacion {printRule("CONDICION", "COMPARACION ANIDADA OR");}
     ;
 
 comparacion: 
-      BETWEEN P_A ID COMA C_A expresion PUNTO_Y_COMA expresion C_C P_C {printRule("COMPARACION", "BETWEEN");}
+    BETWEEN P_A ID COMA C_A expresion PUNTO_Y_COMA expresion C_C P_C {printRule("COMPARACION", "BETWEEN");}
     | expresion comparador expresion {printRule("COMPARACION", "EXPRESION COMPARADOR COMPARADOR EXPRESION");}
     ;
 
 comparador: 
-      CMP_MAYOR {printRule("COMPARADOR", "OP_CMP_MAYOR");} 
+    CMP_MAYOR {printRule("COMPARADOR", "OP_CMP_MAYOR");} 
     | CMP_MENOR {printRule("COMPARADOR", "OP_CMP_MENOR");} 
     | CMP_MAYOR_IGUAL {printRule("COMPARADOR", "OP_CMP_MAYOR_IGUAL");} 
     | CMP_MENOR_IGUAL {printRule("COMPARADOR", "OP_CMP_MENOR_IGUAL");} 
@@ -171,20 +171,20 @@ asignacion:
     ;
 
 expresion: 
-      asignacion {printRule("EXPRESION", "ASIGNACION");}
+    asignacion {printRule("EXPRESION", "ASIGNACION");}
     | expresion OP_SUMA termino {printRule("EXPRESION", "EXPRESION OP_SUMA TERMINO");}
     | expresion OP_RESTA termino {printRule("EXPRESION", "EXPRESION OP_RESTA TERMINO");}
     | termino  {printRule("EXPRESION", "TERMINO");}
     ;
 
 termino: 
-      termino OP_MUL factor {printRule("TERMINO", "TERMINO OP_MUL FACTOR");}
+    termino OP_MUL factor {printRule("TERMINO", "TERMINO OP_MUL FACTOR");}
     | termino OP_DIV factor {printRule("TERMINO", "TERMINO OP_DIV FACTOR");}
     | factor {printRule("TERMINO", "FACTOR");}
     ;
 
 factor: 
-      P_A expresion P_C {printRule("FACTOR", "(EXPRESION)");}
+    P_A expresion P_C {printRule("FACTOR", "(EXPRESION)");}
     | ID {printRule("FACTOR", "ID");}
     | ENTERO {printRule("FACTOR", "ENTERO");}
     | FLOAT  {printRule("FACTOR", "FLOAT");}
