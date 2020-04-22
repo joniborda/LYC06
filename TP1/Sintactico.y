@@ -90,7 +90,7 @@ declaracion:
         printRule("DEC", "TIPO_INT : LISTA_VARIABLES");
         actualizarTipo("INTEGER");
     }
-	TIPO_FLOAT lista_variables {
+	| TIPO_FLOAT lista_variables {
         printRule("DEC", "TIPO_FLOAT : LISTA_VARIABLES");
         printf("ultimo tipo de variable %s\n", "float");
         actualizarTipo("FLOAT");
