@@ -7,14 +7,18 @@ pause
 
 @cd pruebas
 @for %%x in (*) do @(
-	@..\Primera.exe %%x noImprimir || (
-	  	@cd ..\
-	  	@echo
-	  	@echo /****************** ERROR ***************/
-	  	delete.bat
+	@echo --------------------- %%x ---------------------
+	
+	@if	 "ts.txt" NEQ "%%x" (
+		@..\Primera.exe %%x noImprimir || (
+		  	@cd ..\
+		  	@echo .
+		  	@echo /****************** ERROR ***************/
+		  	delete.bat
+		)
 	)
 )
-cd ..\
-delete.bat
+@cd ..\
+@delete.bat
 
 @pause
