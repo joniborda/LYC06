@@ -86,7 +86,7 @@ lista_variables:
 	| ID PUNTO_Y_COMA lista_variables {printRule("LISTA_VARIABLES", "ID PUNTO_Y_COMA LISTA_VARIABLES");}
 
 algoritmo: 
-    programa {printf("\nCOMPILACION OK\n");}
+    programa {printRule("ALGORITMO", "PROGRAMA");}
 
 programa:
      programa sentencia {printRule("PROGRAMA", "PROGRAMA SENTENCIA");}
