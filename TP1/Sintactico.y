@@ -62,6 +62,7 @@
 %token TIPO_STRING
 %token BETWEEN
 
+
 %left OP_SUMA OP_RESTA
 %left OP_MUL OP_DIV
 %right MENOS_UNARIO
@@ -115,9 +116,9 @@ algoritmo:
     programa {printRule("ALGORITMO", "PROGRAMA");}
 
 programa:
-     programa sentencia {printRule("PROGRAMA", "PROGRAMA SENTENCIA");}
-    |sentencia {printRule("PROGRAMA", "SENTENCIA");}
-    ; 
+    sentencia {printRule("PROGRAMA", "SENTENCIA");}
+    | programa sentencia {printRule("PROGRAMA", "PROGRAMA SENTENCIA");}
+    ;
 
 sentencia: 
     seleccion {printRule("SENTENCIA", "SELECCION");}
@@ -137,7 +138,9 @@ salida:
 
 seleccion: 
     IF P_A condicion P_C L_A programa L_C {printRule("SELECCION", "SENTENCIA IF SIMPLE");}
-    | IF P_A condicion P_C L_A programa L_C ELSE L_A programa L_C {printRule("SELECCION", "SENTENCIA IF SIMPLE CON ELSE");}
+    | IF P_A condicion P_C L_A programa L_C ELSE L_A programa L_C {
+        printRule("SELECCION", "SENTENCIA IF SIMPLE CON ELSE");
+    }
     ;
 
 iteracion: 
@@ -177,7 +180,7 @@ expresion:
 termino: 
       termino OP_MUL factor {printRule("TERMINO", "TERMINO OP_MUL FACTOR");}
     | termino OP_DIV factor {printRule("TERMINO", "TERMINO OP_DIV FACTOR");}
-    | termino: factor {printRule("TERMINO", "FACTOR");}
+    | factor {printRule("TERMINO", "FACTOR");}
     ;
 
 factor: 
