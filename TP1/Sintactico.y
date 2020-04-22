@@ -8,10 +8,14 @@
     #include "archivos_punto_H/constantes.h"
     int yystopparser=0;
     FILE  *yyin;
+    char *ids[100]; // Ids para guardar el tipo
+    int idIndex = 0; // max numero de Ids guardados
 
     void printRule(const char *, const char *);
     void printTokenInfo(const char*, const char*);
     int yyerror(const char *);
+    void agregarVariable();
+    void actualizarTipo(char *);
 %}
 
 %union {
@@ -67,23 +71,45 @@
 %%
 
 program: 
-    bloque_declaraciones algoritmo {printf("\nCOMPILACION OK\n");crearArchivoTS();}
+    bloque_declaraciones algoritmo {
+        printf("\nCOMPILACION OK\n");
+        tsCrearArchivo();
+    }
 
 bloque_declaraciones: 
-    INICIA_DEC {printf("INI DEC\n");} declaraciones FIN_DEC {printf("FIN DEC\n");}
+    INICIA_DEC {printf("INI DEC\n");} declaraciones FIN_DEC {
+        printf("FIN DEC\n");
+    }
 
 declaraciones:
     declaracion {printRule("DECS", "DEC");}
     | declaraciones declaracion {printRule("DECS", "DECS DEC");}
 
 declaracion:
-	TIPO_FLOAT lista_variables {printRule("DEC", "TIPO_FLOAT : LISTA_VARIABLES");}
-	| TIPO_INT lista_variables {printRule("DEC", "TIPO_INT : LISTA_VARIABLES");}
-	| TIPO_STRING lista_variables {printRule("DEC", "TIPO_STRING : LISTA_VARIABLES");}
+	| TIPO_INT lista_variables {
+        printRule("DEC", "TIPO_INT : LISTA_VARIABLES");
+        actualizarTipo("INTEGER");
+    }
+	TIPO_FLOAT lista_variables {
+        printRule("DEC", "TIPO_FLOAT : LISTA_VARIABLES");
+        printf("ultimo tipo de variable %s\n", "float");
+        actualizarTipo("FLOAT");
+    }
+	| TIPO_STRING lista_variables {
+        printRule("DEC", "TIPO_STRING : LISTA_VARIABLES");
+        printf("ultimo tipo de variable %s\n", "string");
+        actualizarTipo("STRING");
+    }
 
 lista_variables:
-	ID {printRule("LISTA_VARIABLES", "ID");}
-	| ID PUNTO_Y_COMA lista_variables {printRule("LISTA_VARIABLES", "ID PUNTO_Y_COMA LISTA_VARIABLES");}
+	ID {
+        printRule("LISTA_VARIABLES", "ID");
+        agregarVariable();
+    }
+	| lista_variables PUNTO_Y_COMA ID  {
+        printRule("LISTA_VARIABLES", "ID PUNTO_Y_COMA LISTA_VARIABLES");
+        agregarVariable();
+    }
 
 algoritmo: 
     programa {printRule("ALGORITMO", "PROGRAMA");}
@@ -179,6 +205,32 @@ int yyerror(const char *s) {
     printf("%s\n", s);
     exit(1);
     return(1);
+}
+
+/**
+ * Guarda la variable que se encuentra parseando en la lista de Ids
+ * OJO Pide memoria
+ */
+void agregarVariable() {
+    char * aux = (char *) malloc(sizeof(char) * (strlen(yylval.str_val) + 1));
+    strcpy(aux, yylval.str_val);
+    ids[idIndex] = aux;
+    idIndex++;
+    printf("variable %s\n", aux);
+    return;
+}
+
+/**
+ * Actualiza los tipo de datos de los IDs que tiene acumulado
+ * Despues deberia limpia el array de IDs
+ */
+void actualizarTipo(char *tipo) {
+    printf("ultimo tipo de variable %s\n", tipo);
+    int i;
+    for (i = 0; i < idIndex; i++) {
+        tsActualizarTipos(ids[i], tipo);
+    }
+    idIndex = 0;
 }
 
 int main(int argc,char *argv[]) {

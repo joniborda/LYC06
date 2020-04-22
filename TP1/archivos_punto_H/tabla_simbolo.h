@@ -16,7 +16,8 @@ struct struct_tablaSimbolos
 };
 struct struct_tablaSimbolos tablaSimbolos[10000];
 
-void insertarTokenEnTS(char *, char *, int, char *);
-int crearArchivoTS();
+void tsInsertarToken(char *, char *, int, char *);
+int tsCrearArchivo();
+void tsActualizarTipos(char *, char *);
 
 #endif

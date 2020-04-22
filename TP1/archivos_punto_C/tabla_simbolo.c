@@ -2,7 +2,7 @@
 
 int posicion_en_ts = 0; // Incremento Longitud en la estructura tabla de simbolos
 
-void insertarTokenEnTS(char *tipo, char *nombre, int longitud, char *valor)
+void tsInsertarToken(char *tipo, char *nombre, int longitud, char *valor)
 {
 	int i;
 
@@ -28,18 +28,18 @@ void insertarTokenEnTS(char *tipo, char *nombre, int longitud, char *valor)
 	posicion_en_ts++;
 }
 
-int crearArchivoTS()
+int tsCrearArchivo()
 {
 	FILE *archivo;
 	int i;
-	archivo = fopen("tabla_simbolo.txt", "w");
+	archivo = fopen("ts.txt", "w");
 	if (!archivo)
 	{
 		return ERROR;
 	}
 
 	// Cabecera del archivo
-	fprintf(archivo, "%-30s%-12s%-30s%-12s\n", "Nombre", "Tipo", "Valor", "Longitud");
+	fprintf(archivo, "%-30s%-13s%-30s%-12s\n", "Nombre", "Tipo", "Valor", "Longitud");
 
 	// Se escribe linea por linea
 	for (i = 0; i < posicion_en_ts; i++)
@@ -50,11 +50,11 @@ int crearArchivoTS()
 			|| (strcmp(tablaSimbolos[i].tipo, "FLOAT") == 0) 
 			|| (strcmp(tablaSimbolos[i].tipo, "STRING") == 0))
 			{
-				fprintf(archivo, "%-30s%-12s\n", tablaSimbolos[i].nombre, tablaSimbolos[i].tipo);
+				fprintf(archivo, "%-30s%-13s\n", tablaSimbolos[i].nombre, tablaSimbolos[i].tipo);
 			}
 			else
 			{
-				fprintf(archivo, "%-29s%-12s%-30s%-12s\n",
+				fprintf(archivo, "%-30s%-13s%-30s%-12s\n",
 				tablaSimbolos[i].nombre, tablaSimbolos[i].tipo, tablaSimbolos[i].valor, tablaSimbolos[i].longitud);
 			}
 		}
@@ -63,3 +63,18 @@ int crearArchivoTS()
 
 	return TODO_OK;
 }
+
+/**
+ * Busca el ID en la tabla de simbolos y actualiza su tipo de dato
+ */
+void tsActualizarTipos(char * auxID, char * tipoDato)
+{
+	int i;
+	for (i = 0; i < posicion_en_ts; i++) {
+		if (strcmp(tablaSimbolos[i].nombre, auxID) == 0) {
+			strcpy(tablaSimbolos[i].tipo, tipoDato);
+			printf("Guardando %s=%s\n", tablaSimbolos[i].nombre, tablaSimbolos[i].tipo);
+		}
+	}		
+}
+

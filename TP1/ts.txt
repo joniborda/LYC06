@@ -1,0 +1,8 @@
+Nombre                        Tipo         Valor                         Longitud    
+a                             INTEGER      
+b                             INTEGER      
+c                             INTEGER      
+d                             FLOAT        
+e                             STRING       
+2                             CONST_INT    2                                         
+"algo"                        CONST_STRING "algo"                                    

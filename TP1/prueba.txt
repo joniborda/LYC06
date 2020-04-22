@@ -1,7 +1,10 @@
 DEFVAR
-	FLOAT a
+	INT a; b; c
+	FLOAT d
+	STRING e
 ENDVAR
 b:=2 + 2;
+c:="algo";
 
 ***/w:="hola"no admite punto y coma en los cometarios/***
 ***/_2:="hola"no admite el ID _2/***
