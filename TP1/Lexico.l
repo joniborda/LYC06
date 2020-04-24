@@ -63,8 +63,9 @@ COMENTARIO  "***/"({CARACTER}|" "|\"|{SUBCOMENTARIO})*"/***"
 "FLOAT"		{ return TIPO_FLOAT;}
 "INT"		{ return TIPO_INT;}
 "STRING"	{ return TIPO_STRING;}
-":"		{ return DECS_2PTOS;}
+":"			{ return DECS_2PTOS;}
 "BETWEEN"	{ return BETWEEN;}
+"FACT"		{ return FACT;}
 
 {TEXTO}			{ textoFuncion(); return STRING; }
 

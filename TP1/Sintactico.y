@@ -62,6 +62,7 @@
 %token TIPO_STRING
 %token DECS_2PTOS
 %token BETWEEN
+%token FACT
 
 
 %left OP_SUMA OP_RESTA
@@ -205,7 +206,11 @@ factor:
     | ID {printRule("FACTOR", "ID");}
     | ENTERO {printRule("FACTOR", "ENTERO");}
     | FLOAT  {printRule("FACTOR", "FLOAT");}
-    | STRING {printRule("FACTOR", "STRING");};
+    | STRING {printRule("FACTOR", "STRING");}
+	| funcion {printRule("FACTOR", "FUNCION");};
+	
+funcion:
+	FACT P_A expresion P_C {printRule("FUNCION", "FACTORIAL(exp)");}
 
 %%
 
