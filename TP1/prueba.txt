@@ -1,7 +1,7 @@
 DEFVAR
-	INT a; b; c
-	FLOAT d
-	STRING e
+	INT : a; b; c
+	FLOAT : d
+	STRING : e
 ENDVAR
 b:=2 + 2;
 c:="algo";

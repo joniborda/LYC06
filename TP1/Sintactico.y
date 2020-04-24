@@ -60,6 +60,7 @@
 %token TIPO_FLOAT
 %token TIPO_INT
 %token TIPO_STRING
+%token DECS_2PTOS
 %token BETWEEN
 
 
@@ -81,26 +82,29 @@ bloque_declaraciones:
     INICIA_DEC {printf("INI DEC\n");} declaraciones FIN_DEC {
         printf("FIN DEC\n");
     }
+	;
 
 declaraciones:
     declaracion {printRule("DECS", "DEC");}
     | declaraciones declaracion {printRule("DECS", "DECS DEC");}
+	;
 
 declaracion:
-	TIPO_INT lista_variables {
+	TIPO_INT DECS_2PTOS lista_variables {
         printRule("DEC", "TIPO_INT : LISTA_VARIABLES");
         actualizarTipo("INTEGER");
     }
-	| TIPO_FLOAT lista_variables {
+	| TIPO_FLOAT DECS_2PTOS lista_variables {
         printRule("DEC", "TIPO_FLOAT : LISTA_VARIABLES");
         printf("ultimo tipo de variable %s\n", "float");
         actualizarTipo("FLOAT");
     }
-	| TIPO_STRING lista_variables {
+	| TIPO_STRING DECS_2PTOS lista_variables {
         printRule("DEC", "TIPO_STRING : LISTA_VARIABLES");
         printf("ultimo tipo de variable %s\n", "string");
         actualizarTipo("STRING");
     }
+	;
 
 lista_variables:
 	ID {
@@ -111,9 +115,11 @@ lista_variables:
         printRule("LISTA_VARIABLES", "ID PUNTO_Y_COMA LISTA_VARIABLES");
         agregarVariable();
     }
+	;
 
 algoritmo: 
     programa {printRule("ALGORITMO", "PROGRAMA");}
+	;
 
 programa:
     sentencia {printRule("PROGRAMA", "SENTENCIA");}
