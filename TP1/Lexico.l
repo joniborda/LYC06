@@ -66,6 +66,7 @@ COMENTARIO  "***/"({CARACTER}|" "|\"|{SUBCOMENTARIO})*"/***"
 ":"			{ return DECS_2PTOS;}
 "BETWEEN"	{ return BETWEEN;}
 "FACT"		{ return FACT;}
+"COMB"		{ return COMB;}
 
 {TEXTO}			{ textoFuncion(); return STRING; }
 

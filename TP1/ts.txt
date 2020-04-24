@@ -5,6 +5,8 @@ c                             INTEGER
 d                             FLOAT        
 e                             STRING       
 2                             CONST_INT    2                                         
-7                             CONST_INT    7                                         
-10                            CONST_INT    10                                        
+5                             CONST_INT    5                                         
+100                           CONST_INT    100                                       
+"OK"                          CONST_STRING "OK"                                      
+"NO"                          CONST_STRING "NO"                                      
 "algo"                        CONST_STRING "algo"                                    

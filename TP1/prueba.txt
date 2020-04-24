@@ -5,8 +5,12 @@ DEFVAR
 ENDVAR
 b:=2 + 2;
 a:=FACT(b);
-d:=FACT(7 + 2);
-b:= 2 + FACT(a*d + 10);
+d:=COMB(a,2);
+IF ( FACT(5) > 100 ) {
+	e:="OK";
+} ELSE {
+	e:="NO";
+}
 c:="algo";
 
 ***/w:="hola"no admite punto y coma en los cometarios/***

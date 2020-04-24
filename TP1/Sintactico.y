@@ -63,6 +63,7 @@
 %token DECS_2PTOS
 %token BETWEEN
 %token FACT
+%token COMB
 
 
 %left OP_SUMA OP_RESTA
@@ -207,11 +208,13 @@ factor:
     | ENTERO {printRule("FACTOR", "ENTERO");}
     | FLOAT  {printRule("FACTOR", "FLOAT");}
     | STRING {printRule("FACTOR", "STRING");}
-	| funcion {printRule("FACTOR", "FUNCION");};
+	| funcion {printRule("FACTOR", "FUNCION");}
+	;
 	
 funcion:
 	FACT P_A expresion P_C {printRule("FUNCION", "FACTORIAL(exp)");}
-
+	| COMB P_A expresion COMA expresion P_C	{printRule("FUNCION", "COMBINATORIO(exp,exp)");}
+	;
 %%
 
 void printRule(const char *lhs, const char *rhs) {
