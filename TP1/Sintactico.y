@@ -16,6 +16,7 @@
     int yyerror(const char *);
     void agregarVariable();
     void actualizarTipo(int);
+    void verificarNumerico(void *);
 %}
 
 %union {
@@ -166,7 +167,7 @@ condicion:
     ;
 
 comparacion: 
-    BETWEEN P_A ID COMA C_A expresion PUNTO_Y_COMA expresion C_C P_C {printRule("COMPARACION", "BETWEEN");}
+    BETWEEN P_A ID {verificarNumerico($3);} COMA C_A expresion PUNTO_Y_COMA expresion C_C P_C {printRule("COMPARACION", "BETWEEN");}
     | expresion comparador expresion {printRule("COMPARACION", "EXPRESION COMPARADOR COMPARADOR EXPRESION");}
     ;
 
@@ -177,7 +178,7 @@ comparador:
     | CMP_MENOR_IGUAL {printRule("COMPARADOR", "OP_CMP_MENOR_IGUAL");} 
     | CMP_IGUAL  {printRule("COMPARADOR", "OP_CMP_IGUAL");};
 
-asignacion: 
+asignacion:
     ID ASIG expresion PUNTO_Y_COMA {printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");}
 	| ID ASIG STRING PUNTO_Y_COMA {printRule("ASIGNACION", "ID ASIG STRING PUNTO_Y_COMA");}
     ;
@@ -233,7 +234,6 @@ int yyerror(const char *s) {
     printf("Syntax Error\n");
     printf("%s\n", s);
     exit(1);
-    return(1);
 }
 
 /**
@@ -260,6 +260,14 @@ void actualizarTipo(int tipo) {
         tsActualizarTipos(ids[i], tipo);
     }
     idIndex = 0;
+}
+
+void verificarNumerico(void * id) {
+    int tipo = tsObtenerTipo((char *)id);
+    if(!(tipo == T_INTEGER || tipo == T_FLOAT)){
+        printf("Error, el identificador no es numerico");
+        exit(1);
+    }
 }
 
 int main(int argc,char *argv[]) {

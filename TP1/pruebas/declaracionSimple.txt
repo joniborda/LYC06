@@ -1,6 +1,7 @@
 DEFVAR
-	FLOAT a1
+	FLOAT: a
 ENDVAR
+
 IF (5 > a) {
 	mi:="sentencia simple";
 }

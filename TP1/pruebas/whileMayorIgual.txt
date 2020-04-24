@@ -1,5 +1,5 @@
 DEFVAR
-	FLOAT a
+	FLOAT: a
 ENDVAR
 
 WHILE (a >= 5) {
