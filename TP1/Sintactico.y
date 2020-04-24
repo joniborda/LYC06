@@ -15,7 +15,7 @@
     void printTokenInfo(const char*, const char*);
     int yyerror(const char *);
     void agregarVariable();
-    void actualizarTipo(char *);
+    void actualizarTipo(int);
 %}
 
 %union {
@@ -98,17 +98,17 @@ declaraciones:
 declaracion:
 	TIPO_INT DECS_2PTOS lista_variables {
         printRule("DEC", "TIPO_INT : LISTA_VARIABLES");
-        actualizarTipo("INTEGER");
+        actualizarTipo(T_INTEGER);
     }
 	| TIPO_FLOAT DECS_2PTOS lista_variables {
         printRule("DEC", "TIPO_FLOAT : LISTA_VARIABLES");
         printf("ultimo tipo de variable %s\n", "float");
-        actualizarTipo("FLOAT");
+        actualizarTipo(T_FLOAT);
     }
 	| TIPO_STRING DECS_2PTOS lista_variables {
         printRule("DEC", "TIPO_STRING : LISTA_VARIABLES");
         printf("ultimo tipo de variable %s\n", "string");
-        actualizarTipo("STRING");
+        actualizarTipo(T_STRING);
     }
 	;
 
@@ -253,8 +253,8 @@ void agregarVariable() {
  * Actualiza los tipo de datos de los IDs que tiene acumulado
  * Despues deberia limpia el array de IDs
  */
-void actualizarTipo(char *tipo) {
-    printf("ultimo tipo de variable %s\n", tipo);
+void actualizarTipo(int tipo) {
+    printf("ultimo tipo de variable %s\n", obtenerNombreTipo(tipo));
     int i;
     for (i = 0; i < idIndex; i++) {
         tsActualizarTipos(ids[i], tipo);

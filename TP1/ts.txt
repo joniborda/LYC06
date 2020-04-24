@@ -1,7 +1,0 @@
-Nombre                        Tipo         Valor                         Longitud    
-a                             INTEGER      
-b                             INTEGER      
-c                             INTEGER      
-d                             FLOAT        
-e                             STRING       
-4294967297.12354887           CONST_FLOAT  4294967297.12354887                       

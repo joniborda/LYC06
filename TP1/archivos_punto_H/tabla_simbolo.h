@@ -7,17 +7,19 @@
 #include "constantes.h"
 
 // Tabla de simbolos
-struct struct_tablaSimbolos
-{
+struct struct_tablaSimbolos {
     char nombre[100];
-    char tipo[100];
+    int tipo;
     char valor[100];
     char longitud[100];
 };
-struct struct_tablaSimbolos tablaSimbolos[10000];
 
-void tsInsertarToken(char *, char *, int, char *);
+struct struct_tablaSimbolos tablaSimbolos[1000];
+
+void tsInsertarToken(int, char *, int, char *);
 int tsCrearArchivo();
-void tsActualizarTipos(char *, char *);
+void tsActualizarTipos(char *, int);
+int tsObtenerTipo(char *);
+char * obtenerNombreTipo(int);
 
 #endif
