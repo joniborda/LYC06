@@ -77,6 +77,10 @@ program:
         printf("\nCOMPILACION OK\n");
         tsCrearArchivo();
     }
+	| algoritmo {
+        printf("\nCOMPILACION OK\n");
+        tsCrearArchivo();
+    };
 
 bloque_declaraciones: 
     INICIA_DEC {printf("INI DEC\n");} declaraciones FIN_DEC {
