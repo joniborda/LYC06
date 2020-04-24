@@ -4,9 +4,4 @@ b                             INTEGER
 c                             INTEGER      
 d                             FLOAT        
 e                             STRING       
-2                             CONST_INT    2                                         
-5                             CONST_INT    5                                         
-100                           CONST_INT    100                                       
-"OK"                          CONST_STRING "OK"                                      
-"NO"                          CONST_STRING "NO"                                      
-"algo"                        CONST_STRING "algo"                                    
+4294967297.12354887           CONST_FLOAT  4294967297.12354887                       

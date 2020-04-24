@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <conio.h>
+#include <math.h>
 #include "y.tab.h"
 #include "archivos_punto_H/tabla_simbolo.h"
 #include "archivos_punto_H/constantes.h"
@@ -114,10 +115,12 @@ void enteroFuncion() {
 void floatFuncion() {
 	yylval.val = atof(yytext);
 	//Ver tema del limite máximo, debido a que trunca.
-	if(atof(yytext) > LIMITE_FLOAT) {
-		printf("ERROR: La constante float supera el máximo del límite permitido (32bits).");
+	if(log2f(atof(yytext)) > 32) {
+		printf("ERROR: La constante float supera el máximo del límite permitido (32bits).\n");
 		exit(1);
 	}
-	if (imprimir) printf("Flex Float: %s (%f)\n", yytext,yylval.val);
+	if (imprimir) {
+		printf("Flex Float: %s (%f)\n", yytext,yylval.val);
+	}
 	tsInsertarToken("CONST_FLOAT", strdup(yytext), 0, yytext);
 }

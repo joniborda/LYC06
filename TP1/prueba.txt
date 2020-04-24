@@ -1,17 +1,10 @@
 DEFVAR
 	INT : a; b; c
-	FLOAT : d
+	FLOAT : d; f
 	STRING : e
 ENDVAR
-b:=2 + 2;
-a:=FACT(b);
-d:=COMB(a,2);
-IF ( FACT(5) > 100 ) {
-	e:="OK";
-} ELSE {
-	e:="NO";
-}
-c:="algo";
+f:=12345.45;
+d:=429496729612.12354887;
 
 ***/w:="hola"no admite punto y coma en los cometarios/***
 ***/_2:="hola"no admite el ID _2/***
