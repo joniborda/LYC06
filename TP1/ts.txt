@@ -1,0 +1,6 @@
+Nombre                        Tipo         Valor                         Longitud    
+a                             INTEGER      
+b                             INTEGER      
+c                             INTEGER      
+1                             CTE_INTEGER  1                                         
+z                             IDENTIFICADOR                                          

@@ -1,5 +1,6 @@
 DEFVAR
 	INT : a; b; c
 ENDVAR
-
-DISPLAY h;
+IF(BETWEEN(a, [1;1])){
+	z:= 1;	
+}

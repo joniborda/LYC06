@@ -95,7 +95,7 @@ void textoFuncion() {
 }
 
 void idFuncion() {
-	yylval.str_val = yytext;
+	yylval.str_val = strdup(yytext);
 	if (imprimir) printf("Flex: ID (%s)\n", yytext);
 	tsInsertarToken(T_ID, yylval.str_val, strlen(yytext), "");
 }
