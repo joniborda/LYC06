@@ -7,8 +7,11 @@
     #include "archivos_punto_H/tabla_simbolo.h"
     #include "archivos_punto_H/constantes.h"
     int yystopparser=0;
+    int yylineno;
     FILE  *yyin;
     char *ids[100]; // Ids para guardar el tipo
+    int tipoDato[100];
+    int idTipoDato = 0;
     int idIndex = 0; // max numero de Ids guardados
 
     void printRule(const char *, const char *);
@@ -18,6 +21,8 @@
     void actualizarTipo(int);
     void verificarNumerico(void *);
     void verificarIdDeclarado(void *);
+    void agregarTipoArrayAsignacion(const int);
+    void validarTiposDatoAsignacion(const int);
 %}
 
 %union {
@@ -180,7 +185,7 @@ comparador:
     | CMP_IGUAL  {printRule("COMPARADOR", "OP_CMP_IGUAL");};
 
 asignacion:
-    ID ASIG expresion PUNTO_Y_COMA {verificarIdDeclarado($1); printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");}
+    ID ASIG expresion PUNTO_Y_COMA {verificarIdDeclarado($1); validarTiposDatoAsignacion(tsObtenerTipo($1)); printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");}
 	| ID ASIG STRING PUNTO_Y_COMA {verificarIdDeclarado($1); printRule("ASIGNACION", "ID ASIG STRING PUNTO_Y_COMA");}
     ;
 expresion: 
@@ -206,7 +211,7 @@ termino:
 
 factor: 
       P_A expresion P_C {printRule("FACTOR", "(EXPRESION)");}
-    | ID {verificarIdDeclarado($1); printRule("FACTOR", "ID");}
+    | ID {verificarIdDeclarado($1); agregarTipoArrayAsignacion(tsObtenerTipo($1)); printRule("FACTOR", "ID");}
     | ENTERO {printRule("FACTOR", "ENTERO");}
     | FLOAT  {printRule("FACTOR", "FLOAT");}
 	| funcion {printRule("FACTOR", "FUNCION");}
@@ -231,7 +236,7 @@ void printTokenInfo(const char* tokenType, const char* lexeme) {
 
 int yyerror(const char *s) {
     printf("Syntax Error\n");
-    printf("%s\n", s);
+    printf("Nro. de linea: %d \t %s\n", yylineno, s);
     exit(1);
 }
 
@@ -275,6 +280,21 @@ void verificarIdDeclarado(void *id) {
         printf("El identificador: %s no se encuentra en el bloque de declaraciones.", idChar);
         exit(1);
     }
+}
+
+void agregarTipoArrayAsignacion(const int tipo) {
+    tipoDato[idTipoDato] = tipo;
+    idTipoDato++;
+}
+
+void validarTiposDatoAsignacion(const int tipo) {
+    idTipoDato--;
+    for (; idTipoDato >= 0; idTipoDato--){
+        if(tipo != tipoDato[idTipoDato]){
+            yyerror("Los tipos de las variables no son compabibles");
+        }
+    }
+    printf("Los tipos de datos coinciden!");
 }
 
 int main(int argc,char *argv[]) {
