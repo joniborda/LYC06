@@ -84,14 +84,14 @@ COMENTARIO  "***/"({CARACTER}|" "|\"|{SUBCOMENTARIO})*"/***"
 %%
 
 void textoFuncion() {
-	yylval.str_val = yytext;
+	yylval.str_val = strdup(yytext);
 	//Se resta dos a la longitud del string por las comillas
     if(strlen(yytext) - 2 > LIMITE_STR) {
 		printf("Error: El string supero los 30 caracteres\n\tvariable: %s", yytext);
 		exit(1);
 	}
 	if (imprimir) printf("Flex: String (%s)\n", yytext);
-	tsInsertarToken(CTE_STRING, strdup(yytext), 0, yytext);
+	tsInsertarToken(CTE_STRING, yylval.str_val, 0, yytext);
 }
 
 void idFuncion() {

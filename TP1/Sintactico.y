@@ -264,18 +264,16 @@ void actualizarTipo(int tipo) {
 void verificarNumerico(void * id) {
     int tipo = tsObtenerTipo((char *)id);
     if(!(tipo == T_INTEGER || tipo == T_FLOAT)){
-        printf("Error, el identificador no es numerico");
-        exit(1);
+        yyerror("Error, el identificador no es numerico");
     }
 }
 
 void verificarIdDeclarado(void *id) {
     char *idChar = (char *)id;
-
     int ret = tsObtenerTipo(idChar);
-    printf("Funcion de validacion id declarado %s, retorno %d", idChar, ret);
     if (tsObtenerTipo(idChar) == T_ID) {
-        printf("Identificador no se encuentra en el bloque de declaraciones.");
+        printf("El identificador: %s no se encuentra en el bloque de declaraciones.", idChar);
+        exit(1);
     }
 }
 
