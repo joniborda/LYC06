@@ -147,7 +147,7 @@ entrada:
 
 salida: 
     SALIDA STRING {printRule("SALIDA", "STRING");} 
-    | SALIDA ID {verificarIdDeclarado($2);} {printRule("SALIDA", "ID");}
+    | SALIDA ID {verificarNumerico($2);} {printRule("SALIDA", "ID");}
     ;
 
 seleccion: 
