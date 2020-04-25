@@ -1,9 +1,5 @@
 DEFVAR
 	INT : a; b; c
-	FLOAT : d; f
-	STRING : e
 ENDVAR
 
-IF(BETWEEN(e, [1;1])){
-	a:= 1;	
-}
+DISPLAY h;

@@ -17,6 +17,7 @@
     void agregarVariable();
     void actualizarTipo(int);
     void verificarNumerico(void *);
+    void verificarIdDeclarado(void *);
 %}
 
 %union {
@@ -142,11 +143,11 @@ sentencia:
     ;
 
 entrada: 
-    ENTRADA ID {printRule("ENTRADA", "ID");};
+    ENTRADA ID {verificarIdDeclarado($2);} {printRule("ENTRADA", "ID");};
 
 salida: 
     SALIDA STRING {printRule("SALIDA", "STRING");} 
-    | SALIDA ID {printRule("SALIDA", "ID");}
+    | SALIDA ID {verificarIdDeclarado($2);} {printRule("SALIDA", "ID");}
     ;
 
 seleccion: 
@@ -179,11 +180,9 @@ comparador:
     | CMP_IGUAL  {printRule("COMPARADOR", "OP_CMP_IGUAL");};
 
 asignacion:
-    ID ASIG expresion PUNTO_Y_COMA {printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");}
-	| ID ASIG STRING PUNTO_Y_COMA {printRule("ASIGNACION", "ID ASIG STRING PUNTO_Y_COMA");}
+    ID ASIG expresion PUNTO_Y_COMA {verificarIdDeclarado($1); printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");}
+	| ID ASIG STRING PUNTO_Y_COMA {verificarIdDeclarado($1); printRule("ASIGNACION", "ID ASIG STRING PUNTO_Y_COMA");}
     ;
-// expresion deberia ser directamente un STRING porque sino puedo hacer operaciones con un string ya que es un factor
-// Entonces lo ponemos como asignación directo?
 expresion: 
     asignacion {printRule("EXPRESION", "ASIGNACION");}
     | expresion OP_SUMA termino {
@@ -192,7 +191,7 @@ expresion:
     | expresion OP_RESTA termino {
         printRule("EXPRESION", "EXPRESION OP_RESTA TERMINO");
     }
-    | termino  {printRule("EXPRESION", "TERMINO");}
+    | termino {printRule("EXPRESION", "TERMINO");}
     ;
 
 termino: 
@@ -207,7 +206,7 @@ termino:
 
 factor: 
       P_A expresion P_C {printRule("FACTOR", "(EXPRESION)");}
-    | ID {printRule("FACTOR", "ID");}
+    | ID {verificarIdDeclarado($1); printRule("FACTOR", "ID");}
     | ENTERO {printRule("FACTOR", "ENTERO");}
     | FLOAT  {printRule("FACTOR", "FLOAT");}
 	| funcion {printRule("FACTOR", "FUNCION");}
@@ -267,6 +266,16 @@ void verificarNumerico(void * id) {
     if(!(tipo == T_INTEGER || tipo == T_FLOAT)){
         printf("Error, el identificador no es numerico");
         exit(1);
+    }
+}
+
+void verificarIdDeclarado(void *id) {
+    char *idChar = (char *)id;
+
+    int ret = tsObtenerTipo(idChar);
+    printf("Funcion de validacion id declarado %s, retorno %d", idChar, ret);
+    if (tsObtenerTipo(idChar) == T_ID) {
+        printf("Identificador no se encuentra en el bloque de declaraciones.");
     }
 }
 
