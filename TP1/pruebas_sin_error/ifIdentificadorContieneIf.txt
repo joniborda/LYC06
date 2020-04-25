@@ -1,5 +1,6 @@
 DEFVAR
 	FLOAT: a
+	STRING: miIF
 ENDVAR
 
 IF (5 > a) {

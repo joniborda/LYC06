@@ -1,7 +1,0 @@
-DEFVAR
-	FLOAT: a
-ENDVAR
-
-IF (5 > a) {
-	mi:="sentencia simple";
-}

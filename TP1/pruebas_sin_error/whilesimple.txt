@@ -1,8 +1,8 @@
 DEFVAR
 	FLOAT: a
+	STRING: mi
 ENDVAR
 
 WHILE (5 > a) {
 	mi:="sentencia while simple";
-	a:=10;
 }

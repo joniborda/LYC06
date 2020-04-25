@@ -1,0 +1,10 @@
+DEFVAR
+	FLOAT: a
+	STRING:mi
+ENDVAR
+
+IF (5 > a) {
+	mi:="if con else";
+} ELSE {
+	a:=5;
+}

@@ -1,5 +1,6 @@
 DEFVAR
 	FLOAT: a
+	STRING: miWHILE
 ENDVAR
 
 WHILE (5 > a) {

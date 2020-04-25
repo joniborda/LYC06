@@ -1,5 +1,5 @@
 DEFVAR
-	FLOAT: a
+	FLOAT: a;b;j
 ENDVAR
 
 IF(a > 5 AND a == 1){

@@ -1,8 +1,8 @@
 DEFVAR
-	FLOAT: a1
+	FLOAT: a
 	INT: i2; i3
 	INT: pepe
-	STRING: s1;s2;s3
+	STRING: mi;s1;s2;s3
 ENDVAR
 IF (5 > a) {
 	mi:="sentencia simple";

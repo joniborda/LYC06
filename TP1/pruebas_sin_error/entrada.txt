@@ -1,5 +1,6 @@
 DEFVAR
 	FLOAT: a
+	STRING: abc; bbbb
 ENDVAR
 
 GET abc;

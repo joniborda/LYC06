@@ -1,0 +1,4 @@
+DEFVAR
+	FLOAT: a
+ENDVAR
+a:=0;
