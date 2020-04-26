@@ -296,13 +296,12 @@ void agregarTipoArrayAsignacion(const int tipo) {
 void validarTiposDatoAsignacion(const int tipo) {
     printf("****TIPO DEL ID: %d ****\n", tipo);
 	while(idTipoDato > 0) {
-        printf("******* %d ******* ", tipoDato[idTipoDato-1]);
-        if(tipo != tipoDato[idTipoDato-1]) {
-            if((tipo == T_INTEGER && tipoDato[idTipoDato-1] != CTE_INTEGER) ||
-               (tipo == T_FLOAT && !( tipoDato[idTipoDato-1] == CTE_FLOAT || 
-               tipoDato[idTipoDato-1] == CTE_INTEGER || tipoDato[idTipoDato-1] == T_INTEGER)) ||  
-               (tipo == T_STRING && tipoDato[idTipoDato-1] != CTE_STRING)){
-                yyerror("Los tipos de las variables no son compabibles");
+        if(tipo != tipoDato[idTipoDato - 1]) {
+            if((tipo == T_INTEGER && tipoDato[idTipoDato - 1] != CTE_INTEGER) ||
+               (tipo == T_FLOAT && !( tipoDato[idTipoDato - 1] == CTE_FLOAT || 
+               tipoDato[idTipoDato - 1] == CTE_INTEGER || tipoDato[idTipoDato - 1] == T_INTEGER)) ||  
+               (tipo == T_STRING && tipoDato[idTipoDato - 1] != CTE_STRING)){
+                yyerror("Los tipos de las variables no son compatibles");
             }
         }
 		idTipoDato--;
@@ -311,19 +310,13 @@ void validarTiposDatoAsignacion(const int tipo) {
 }
 
 void validarTiposDatos() {
-    idTipoDato--;
-
-    for (; idTipoDato >= 0; idTipoDato--) {
-        printf("******* %d ******* ", tipoDato[idTipoDato]);
-
-        if (!(tipoDato[idTipoDato] == T_FLOAT || tipoDato[idTipoDato] == T_INTEGER || 
-            tipoDato[idTipoDato] == CTE_FLOAT || tipoDato[idTipoDato] == CTE_INTEGER)){
-                yyerror("Los tipos de las variables no son compabibles");
+	while(idTipoDato > 0) {
+        if (!(tipoDato[idTipoDato - 1] == T_FLOAT || tipoDato[idTipoDato - 1] == T_INTEGER || 
+            tipoDato[idTipoDato - 1] == CTE_FLOAT || tipoDato[idTipoDato - 1] == CTE_INTEGER)){
+                yyerror("Los tipos de las variables no son compatibles");
             }
-    }
-
-    idTipoDato = 0;
-
+		idTipoDato--;
+	}
     printf("Los tipos de datos coinciden!");
 }
 

@@ -87,8 +87,7 @@ void textoFuncion() {
 	int longitud = strlen(yytext)-2;
 	char* subBuff = (char *) malloc(longitud);
 	strncpy(subBuff, yytext+1, longitud);
-	subBuff[longitud] = '\0';	
-	printf("%s", subBuff);
+	subBuff[longitud] = '\0';
 	
 	yylval.str_val = strdup(subBuff);
     if(strlen(subBuff) > LIMITE_STR) {
