@@ -18,15 +18,15 @@
     int yyerror(const char *);
     void printRule(const char *, const char *);
     void agregarVariable();
-    void actualizarTipoDeclaracionID(int); //ok
-    void validarIdNumerico(const int); // ok
-    void verificarIdDeclarado(const int); //ok
-    void agregarTipoDatoArray(const int); //ok
-    void validarTiposDatoAsignacion(const int); // ok
-    int validarExpresionEntera(); // ok
-    int validarExpresionReal(); // ok
-    int validarExpresionString(); // ok
-    void validarComparacion(); // ok
+    void actualizarTipoDeclaracionID(int);
+    void validarIdNumerico(const int);
+    void verificarIdDeclarado(const int);
+    void agregarTipoDatoArray(const int);
+    void validarTiposDatoAsignacion(const int);
+    int validarExpresionEntera();
+    int validarExpresionReal();
+    int validarExpresionString();
+    void validarComparacion();
 %}
 
 %union {
