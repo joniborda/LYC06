@@ -3,6 +3,6 @@ DEFVAR
 	FLOAT : c
 	STRING : z; x
 ENDVAR
-b:= a + b;
+c:= a + 4.5;
 a:= b + 5;
 z:= "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLL";

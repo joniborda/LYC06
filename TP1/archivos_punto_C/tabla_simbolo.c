@@ -47,7 +47,7 @@ int tsCrearArchivo() {
 			else {
 				char dst[32] = "_";
 				fprintf(archivo, "%-32s%-13s%-31s%-12s\n",
-				strcat(dst, tablaSimbolos[i].nombre), obtenerNombreTipo(tablaSimbolos[i].tipo), tablaSimbolos[i].valor, tablaSimbolos[i].longitud);
+				strcat(dst, tablaSimbolos[i].nombre), "", tablaSimbolos[i].valor, tablaSimbolos[i].longitud);
 			}
 		}
 	}
