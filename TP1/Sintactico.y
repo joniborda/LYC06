@@ -177,7 +177,7 @@ condicion:
 
 comparacion: 
     BETWEEN P_A ID {validarIdNumerico(tsObtenerTipo($3));} COMA C_A expresion PUNTO_Y_COMA expresion C_C P_C { validarTiposDatos(); printRule("COMPARACION", "BETWEEN");}
-    | expresion comparador expresion { validarComparacion(); printRule("COMPARACION", "EXPRESION COMPARADOR COMPARADOR EXPRESION");}
+    | expresion comparador expresion { validarComparacion(); printRule("COMPARACION", "EXPRESION COMPARADOR EXPRESION");}
     ;
 
 comparador: 

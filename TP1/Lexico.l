@@ -85,12 +85,11 @@ COMENTARIO  "***/"({CARACTER}|" "|\"|{SUBCOMENTARIO})*"/***"
 
 void textoFuncion() {
 	int longitud = strlen(yytext)-2;
-	char* subBuff = (char *) malloc(longitud);
+	char* subBuff = (char *) malloc(longitud + 1);
 	strncpy(subBuff, yytext+1, longitud);
 	subBuff[longitud] = '\0';
-	
 	yylval.str_val = strdup(subBuff);
-    if(strlen(subBuff) > LIMITE_STR) {
+	if (strlen(subBuff) > LIMITE_STR) {
 		printf("Error: El string supero los 30 caracteres\n\tvariable: %s", yytext);
 		exit(1);
 	}
@@ -108,7 +107,7 @@ void enteroFuncion() {
 	int aux = atoi(yytext);
 	yylval.str_val = strdup(yytext);
 
-	if(aux > LIMITE_INT) {
+	if (aux > LIMITE_INT) {
 		printf("ERROR: La constante entera supera el máximo del límite permitido (16bits).");
 		exit(1);
 	}
