@@ -288,12 +288,12 @@ void agregarTipoArrayAsignacion(const int tipo) {
 }
 
 void validarTiposDatoAsignacion(const int tipo) {
-    idTipoDato--;
-    for (; idTipoDato >= 0; idTipoDato--){
-        if(tipo != tipoDato[idTipoDato]){
+	while(idTipoDato > 0) {
+        if(tipo != tipoDato[idTipoDato - 1]){
             yyerror("Los tipos de las variables no son compabibles");
         }
-    }
+		idTipoDato--;
+	}
     printf("Los tipos de datos coinciden!");
 }
 

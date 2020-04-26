@@ -2,4 +2,5 @@ DEFVAR
 	INT : a; b
 	FLOAT : c
 ENDVAR
-b:= a + 5;
+b:= a + b;
+a:= b + 5;
