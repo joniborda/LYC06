@@ -21,11 +21,14 @@
     void actualizarTipoDeclaracionID(int); //ok
     void validarIdNumerico(const int); // ok
     void verificarIdDeclarado(const int); //ok
-    void agregarTipoArrayAsignacion(const int);
+    void agregarTipoDatoArray(const int); //ok
     void validarTiposDatoAsignacion(const int);
     void validarTiposDatos();
     void validarComparacion();
     int sonCompatibles(const int, const int);	
+    void validarExpresionEntera();
+    void validarExpresionReal();
+    void validarExpresionString();
 %}
 
 %union {
@@ -188,7 +191,7 @@ comparador:
     | CMP_IGUAL  {printRule("COMPARADOR", "OP_CMP_IGUAL");};
 
 asignacion:
-    ID ASIG expresion PUNTO_Y_COMA {verificarIdDeclarado(tsObtenerTipo($1)); printf("**ID: %s**\n", $1);validarTiposDatoAsignacion(tsObtenerTipo($1)); printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");}
+    ID ASIG expresion PUNTO_Y_COMA {verificarIdDeclarado(tsObtenerTipo($1)); validarTiposDatoAsignacion(tsObtenerTipo($1)); printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");}
 	| ID ASIG STRING PUNTO_Y_COMA {verificarIdDeclarado(tsObtenerTipo($1)); printRule("ASIGNACION", "ID ASIG STRING PUNTO_Y_COMA");}
     ;
 expresion: 
@@ -214,9 +217,9 @@ termino:
 
 factor: 
       P_A expresion P_C {printRule("FACTOR", "(EXPRESION)");}
-    | ID {verificarIdDeclarado(tsObtenerTipo($1)); agregarTipoArrayAsignacion(tsObtenerTipo($1)); printRule("FACTOR", "ID");}
-    | ENTERO {agregarTipoArrayAsignacion(tsObtenerTipo($1)); printRule("FACTOR", "ENTERO");}
-    | FLOAT  {agregarTipoArrayAsignacion(tsObtenerTipo($1)); printRule("FACTOR", "FLOAT");}
+    | ID {verificarIdDeclarado(tsObtenerTipo($1)); agregarTipoDatoArray(tsObtenerTipo($1)); printRule("FACTOR", "ID");}
+    | ENTERO {agregarTipoDatoArray(tsObtenerTipo($1)); printRule("FACTOR", "ENTERO");}
+    | FLOAT  {agregarTipoDatoArray(tsObtenerTipo($1)); printRule("FACTOR", "FLOAT");}
 	| funcion {printRule("FACTOR", "FUNCION");}
 	;
 	
@@ -275,27 +278,74 @@ void verificarIdDeclarado(const int tipo) {
     }
 }
 
-void agregarTipoArrayAsignacion(const int tipo) {
+void agregarTipoDatoArray(const int tipo) {
     expresionesTipoDato[indexExpresionesTipoDato] = tipo;
     indexExpresionesTipoDato++;
-    printf("****Guardado: %d ****\n", tipo);
-    //char test[10]; itoa($1, test, 10); agregarTipoArrayAsignacion(tsObtenerTipo(test));
 }
 
+/**
+ * Valida que todos los datos del array de expresiones coincidan con el tipo dado
+ *
+ */
 void validarTiposDatoAsignacion(const int tipo) {
     printf("****TIPO DEL ID: %d ****\n", tipo);
-	while(indexExpresionesTipoDato > 0) {
-        if(tipo != expresionesTipoDato[indexExpresionesTipoDato - 1]) {
-            if((tipo == T_INTEGER && expresionesTipoDato[indexExpresionesTipoDato - 1] != CTE_INTEGER) ||
-               (tipo == T_FLOAT && !( expresionesTipoDato[indexExpresionesTipoDato - 1] == CTE_FLOAT || 
-               expresionesTipoDato[indexExpresionesTipoDato - 1] == CTE_INTEGER || expresionesTipoDato[indexExpresionesTipoDato - 1] == T_INTEGER)) ||  
-               (tipo == T_STRING && expresionesTipoDato[indexExpresionesTipoDato - 1] != CTE_STRING)){
-                yyerror("Los tipos de las variables no son compatibles");
-            }
-        }
-		indexExpresionesTipoDato--;
-	}
+    switch(tipo) {
+        case T_INTEGER:
+            validarExpresionEntera();
+            break;
+        case T_FLOAT:
+            validarExpresionReal();
+            break;
+        case T_STRING:
+            validarExpresionString();
+            break;
+    }
+
     printf("Los tipos de datos coinciden!");
+}
+
+void validarExpresionEntera() {
+
+    while(indexExpresionesTipoDato > 0) {
+
+        printf("** %d = **** %d ****** \n", indexExpresionesTipoDato - 1, expresionesTipoDato[indexExpresionesTipoDato - 1]);
+        if(
+            expresionesTipoDato[indexExpresionesTipoDato - 1] != CTE_INTEGER && 
+            expresionesTipoDato[indexExpresionesTipoDato - 1] != T_INTEGER
+        ) {
+            yyerror("Los tipos de las variables no son compatibles\n");
+        }
+        indexExpresionesTipoDato--;
+    }
+}
+
+void validarExpresionReal() {
+    while(indexExpresionesTipoDato > 0) {
+        printf("****** %d ****** \n", expresionesTipoDato[indexExpresionesTipoDato - 1]);
+        if (!(
+                expresionesTipoDato[indexExpresionesTipoDato - 1] == CTE_FLOAT || 
+                expresionesTipoDato[indexExpresionesTipoDato - 1] == T_FLOAT || 
+                expresionesTipoDato[indexExpresionesTipoDato - 1] == CTE_INTEGER || 
+                expresionesTipoDato[indexExpresionesTipoDato - 1] == T_INTEGER
+            )
+        ) {
+            yyerror("Los tipos de las variables reales no son compatibles\n");
+        }
+        indexExpresionesTipoDato--;
+    }
+}
+
+void validarExpresionString() {
+    while(indexExpresionesTipoDato > 0) {
+        printf("****** %d ****** \n", expresionesTipoDato[indexExpresionesTipoDato - 1]);
+        if(
+            expresionesTipoDato[indexExpresionesTipoDato - 1] != T_STRING || 
+            expresionesTipoDato[indexExpresionesTipoDato - 1] != CTE_STRING
+        ) {
+            yyerror("Los tipos de las variables no son compatibles\n");
+        }
+        indexExpresionesTipoDato--;
+    }
 }
 
 void validarTiposDatos() {
