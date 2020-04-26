@@ -97,81 +97,81 @@ program:
 
 bloque_declaraciones: 
     INICIA_DEC declaraciones FIN_DEC {
-        printRule("BLOQUE_DECLARACIONES", "INICIA_DEC DECLARACIONES FIN_DEC");
+        printRule("<BLOQUE_DECLARACIONES>", "INICIA_DEC <DECLARACIONES> FIN_DEC");
     }
 	;
 
 declaraciones:
-    declaracion {printRule("DECLARACIONES", "DECLARACION");}
-    | declaraciones declaracion {printRule("DECLARACIONES", "DECLARACIONES DECLARACION");}
+    declaracion {printRule("<DECLARACIONES>", "<DECLARACION>");}
+    | declaraciones declaracion {printRule("<DECLARACIONES>", "<DECLARACIONES> <DECLARACION>");}
 	;
 
 declaracion:
 	TIPO_INT DECS_2PTOS lista_variables {
-        printRule("DECLARACION", "TIPO_INT : LISTA_VARIABLES");
+        printRule("<DECLARACION>", "TIPO_INT : <LISTA_VARIABLES>");
         actualizarTipoDeclaracionID(T_INTEGER);
     }
 	| TIPO_FLOAT DECS_2PTOS lista_variables {
-        printRule("DECLARACION", "TIPO_FLOAT : LISTA_VARIABLES");
+        printRule("<DECLARACION>", "TIPO_FLOAT : <LISTA_VARIABLES>");
         actualizarTipoDeclaracionID(T_FLOAT);
     }
 	| TIPO_STRING DECS_2PTOS lista_variables {
-        printRule("DECLARACION", "TIPO_STRING : LISTA_VARIABLES");
+        printRule("<DECLARACION>", "TIPO_STRING : <LISTA_VARIABLES>");
         actualizarTipoDeclaracionID(T_STRING);
     }
 	;
 
 lista_variables:
 	ID {
-        printRule("LISTA_VARIABLES", "ID");
+        printRule("<LISTA_VARIABLES>", "ID");
         agregarVariable();
     }
 	| lista_variables PUNTO_Y_COMA ID  {
-        printRule("LISTA_VARIABLES", "LISTA_VARIABLES PUNTO_Y_COMA ID");
+        printRule("<LISTA_VARIABLES>", "<LISTA_VARIABLES> PUNTO_Y_COMA ID");
         agregarVariable();
     }
 	;
 
 algoritmo: 
-    programa {printRule("ALGORITMO", "PROGRAMA");}
+    programa {printRule("<ALGORITMO>", "<PROGRAMA>");}
 	;
 
 programa:
-    sentencia {printRule("PROGRAMA", "SENTENCIA");}
-    | programa sentencia {printRule("PROGRAMA", "PROGRAMA SENTENCIA");}
+    sentencia {printRule("<PROGRAMA>", "<SENTENCIA>");}
+    | programa sentencia {printRule("<PROGRAMA>", "<PROGRAMA> <SENTENCIA>");}
     ;
 
 sentencia: 
-    seleccion {printRule("SENTENCIA", "SELECCION");}
-    | asignacion {printRule("SENTENCIA", "ASIGNACION");}
-    | iteracion {printRule("SENTENCIA", "ITERACION");}
-    | entrada PUNTO_Y_COMA {printRule("SENTENCIA", "ENTRADA");}
-    | salida PUNTO_Y_COMA {printRule("SENTENCIA", "SALIDA");}
+    seleccion {printRule("<SENTENCIA>", "<SELECCION>");}
+    | asignacion {printRule("<SENTENCIA>", "<ASIGNACION>");}
+    | iteracion {printRule("<SENTENCIA>", "<ITERACION>");}
+    | entrada PUNTO_Y_COMA {printRule("<SENTENCIA>", "<ENTRADA>");}
+    | salida PUNTO_Y_COMA {printRule("<SENTENCIA>", "<SALIDA>");}
     ;
 
 entrada: 
-    ENTRADA ID {verificarIdDeclarado(tsObtenerTipo($2));} {printRule("ENTRADA", "ID");};
+    ENTRADA ID {verificarIdDeclarado(tsObtenerTipo($2));} {printRule("<ENTRADA>", "ID");};
 
 salida: 
-    SALIDA STRING {printRule("SALIDA", "STRING");} 
-    | SALIDA ID {verificarIdDeclarado(tsObtenerTipo($2));} {printRule("SALIDA", "ID");}
+    SALIDA STRING {printRule("<SALIDA>", "STRING");} 
+    | SALIDA ID {verificarIdDeclarado(tsObtenerTipo($2));} {printRule("<SALIDA>", "ID");}
     ;
 
 seleccion: 
-    IF P_A condicion P_C L_A programa L_C {printRule("SELECCION", "IF P_A CONDICION P_C L_A PROGRAMA L_C");}
+    IF P_A condicion P_C L_A programa L_C {printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C");}
     | IF P_A condicion P_C L_A programa L_C ELSE L_A programa L_C {
-        printRule("SELECCION", "IF P_A CONDICION P_C L_A PROGRAMA L_C ELSE L_A PROGRAMA L_C");
+        printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C ELSE L_A <PROGRAMA> L_C");
     }
     ;
 
 iteracion: 
-    WHILE P_A condicion P_C L_A programa L_C {printRule("ITERACION", "WHILE P_A CONDICION P_C L_A PROGRAMA L_C");};
+    WHILE P_A condicion P_C L_A programa L_C {printRule("<ITERACION>", "WHILE P_A <CONDICION> P_C L_A <PROGRAMA> L_C");};
 
 condicion: 
-    comparacion {printRule("CONDICION", "COMPARACION");}
-    | OP_NOT comparacion {printRule("CONDICION", "OP_NOT COMPARACION");}
-    | comparacion OP_AND comparacion {printRule("CONDICION", "COMPARACION OP_AND COMPARACION");}
-    | comparacion OP_OR comparacion {printRule("CONDICION", "COMPARACION OP_OR COMPARACION");}
+    comparacion {printRule("<CONDICION>", "<COMPARACION>");}
+    | OP_NOT comparacion {printRule("<CONDICION>", "OP_NOT <COMPARACION>");}
+    | comparacion OP_AND comparacion {printRule("<CONDICION>", "<COMPARACION> OP_AND <COMPARACION>");}
+    | comparacion OP_OR comparacion {printRule("<CONDICION>", "<COMPARACION> OP_OR <COMPARACION>");}
     ;
 
 comparacion: 
@@ -179,22 +179,25 @@ comparacion:
         if (validarExpresionReal() == ERROR) {
             yyerror("Tipo de datos no compatible (Expresion real)");
         } 
-        printRule("COMPARACION", "BETWEEN P_A ID COMA C_A EXPRESION PUNTO_Y_COMA EXPRESION C_C P_C");
+        printRule("<COMPARACION>", "BETWEEN P_A ID COMA C_A <EXPRESION> PUNTO_Y_COMA <EXPRESION> C_C P_C");
     }
-    | expresion comparador expresion { validarComparacion(); printRule("COMPARACION", "EXPRESION COMPARADOR EXPRESION");}
+    | expresion comparador expresion { validarComparacion(); printRule("<COMPARACION>", "<EXPRESION> <COMPARADOR> <EXPRESION>");}
     ;
 
 comparador: 
-    CMP_MAYOR {printRule("COMPARADOR", "OP_CMP_MAYOR");} 
-    | CMP_MENOR {printRule("COMPARADOR", "OP_CMP_MENOR");} 
-    | CMP_MAYOR_IGUAL {printRule("COMPARADOR", "OP_CMP_MAYOR_IGUAL");} 
-    | CMP_MENOR_IGUAL {printRule("COMPARADOR", "OP_CMP_MENOR_IGUAL");} 
-    | CMP_IGUAL  {printRule("COMPARADOR", "OP_CMP_IGUAL");};
+    CMP_MAYOR {printRule("<COMPARADOR>", "OP_CMP_MAYOR");} 
+    | CMP_MENOR {printRule("<COMPARADOR>", "OP_CMP_MENOR");} 
+    | CMP_MAYOR_IGUAL {printRule("<COMPARADOR>", "OP_CMP_MAYOR_IGUAL");} 
+    | CMP_MENOR_IGUAL {printRule("<COMPARADOR>", "OP_CMP_MENOR_IGUAL");} 
+    | CMP_IGUAL  {printRule("<COMPARADOR>", "OP_CMP_IGUAL");};
 
 asignacion:
-    ID ASIG expresion PUNTO_Y_COMA {verificarIdDeclarado(tsObtenerTipo($1)); validarTiposDatoAsignacion(tsObtenerTipo($1)); printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");}
+    ID ASIG expresion PUNTO_Y_COMA {
+        verificarIdDeclarado(tsObtenerTipo($1)); 
+        validarTiposDatoAsignacion(tsObtenerTipo($1)); 
+        printRule("<ASIGNACION>", "ID ASIG <EXPRESION> PUNTO_Y_COMA");}
 	| ID ASIG STRING PUNTO_Y_COMA {
-        printRule("ASIGNACION", "ID ASIG STRING PUNTO_Y_COMA");
+        printRule("<ASIGNACION>", "ID ASIG STRING PUNTO_Y_COMA");
         verificarIdDeclarado(tsObtenerTipo($1));
         if (tsObtenerTipo($1) != T_STRING) {
             yyerror("Asignacion no permitidad: La variable no es de tipo String");
@@ -202,49 +205,49 @@ asignacion:
     }
     ;
 expresion: 
-    asignacion {printRule("EXPRESION", "ASIGNACION");}
+    asignacion {printRule("<EXPRESION>", "<ASIGNACION>");}
     | expresion OP_SUMA termino {
-        printRule("EXPRESION", "EXPRESION OP_SUMA TERMINO");
+        printRule("<EXPRESION>", "<EXPRESION> OP_SUMA <TERMINO>");
     }
     | expresion OP_RESTA termino {
-        printRule("EXPRESION", "EXPRESION OP_RESTA TERMINO");
+        printRule("<EXPRESION>", "<EXPRESION> OP_RESTA <TERMINO>");
     }
-    | termino {printRule("EXPRESION", "TERMINO");}
+    | termino {printRule("<EXPRESION>", "<TERMINO>");}
     ;
 
 termino: 
     termino OP_MUL factor {
-        printRule("TERMINO", "TERMINO OP_MUL FACTOR");
+        printRule("<TERMINO>", "<TERMINO> OP_MUL <FACTOR>");
     }
     | termino OP_DIV factor {
-        printRule("TERMINO", "TERMINO OP_DIV FACTOR");
+        printRule("<TERMINO>", "<TERMINO> OP_DIV <FACTOR>");
     }
-    | factor {printRule("TERMINO", "FACTOR");}
+    | factor {printRule("<TERMINO>", "<FACTOR>");}
     ;
 
 factor: 
-      P_A expresion P_C {printRule("FACTOR", "(EXPRESION)");}
+      P_A expresion P_C {printRule("<FACTOR>", "(<EXPRESION>)");}
     | ID {
         verificarIdDeclarado(tsObtenerTipo($1));
         agregarTipoDatoArray(tsObtenerTipo($1));
-        printRule("FACTOR", "ID");
+        printRule("<FACTOR>", "ID");
     }
     | ENTERO {
         agregarTipoDatoArray(tsObtenerTipo($1));
-        printRule("FACTOR", "ENTERO");
+        printRule("<FACTOR>", "ENTERO");
     }
     | FLOAT {
         agregarTipoDatoArray(tsObtenerTipo($1));
-        printRule("FACTOR", "FLOAT");
+        printRule("<FACTOR>", "FLOAT");
     }
 	| funcion {
-        printRule("FACTOR", "FUNCION");
+        printRule("<FACTOR>", "<FUNCION>");
     }
 	;
 	
 funcion:
-	FACT P_A expresion P_C {printRule("FUNCION", "FACTORIAL(EXPRESION)");}
-	| COMB P_A expresion COMA expresion P_C	{printRule("FUNCION", "COMBINATORIO(EXPRESION, EXPRESION)");}
+	FACT P_A expresion P_C {printRule("<FUNCION>", "FACTORIAL(<EXPRESION>)");}
+	| COMB P_A expresion COMA expresion P_C	{printRule("<FUNCION>", "COMBINATORIO(<EXPRESION>, <EXPRESION>)");}
 	;
 %%
 
