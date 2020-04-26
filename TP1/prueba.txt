@@ -5,8 +5,4 @@ DEFVAR
 ENDVAR
 b:= a + b;
 a:= b + 5;
-
-IF( a > b AND z == x  + a){  
-	c := 5 + 4 + 3 * c;
-}
-
+z:= "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLL";

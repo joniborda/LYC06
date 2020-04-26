@@ -9,6 +9,7 @@
     int yystopparser=0;
     int yylineno;
     FILE  *yyin;
+    
     char *ids[100]; // Ids para guardar el tipo
     int tipoDato[100];
     int idTipoDato = 0;
@@ -25,6 +26,7 @@
     void validarTiposDatoAsignacion(const int);
     void validarTiposDatos();
     void validarComparacion();
+    int sonCompatibles(const int, const int);	
 %}
 
 %union {
@@ -349,10 +351,15 @@ void validarComparacion (){
     validarTiposDatos();
 }
 
-
-
-void limpiarTipoArrayAsignacion(){
-    idTipoDato=0;
+int sonCompatibles(const int tipo1, const int tipo2) {	
+	if(
+		(tipo1 == T_INTEGER && tipo2 != CTE_INTEGER) ||
+	   	(tipo1 == T_FLOAT && !(tipo2 == CTE_FLOAT || tipo2 == CTE_INTEGER || tipo2 == T_INTEGER)) ||  
+	   	(tipo1 == T_STRING && tipo2 != CTE_STRING)
+	) {
+	    return 0;
+	}
+	return 1;
 }
 
 

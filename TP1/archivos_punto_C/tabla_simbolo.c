@@ -34,7 +34,7 @@ int tsCrearArchivo() {
 	}
 
 	// Cabecera del archivo
-	fprintf(archivo, "%-30s%-13s%-30s%-12s\n", "Nombre", "Tipo", "Valor", "Longitud");
+	fprintf(archivo, "%-32s%-13s%-31s%-12s\n", "Nombre", "Tipo", "Valor", "Longitud");
 
 	// Se escribe linea por linea
 	for (i = 0; i < posicion_en_ts; i++) {
@@ -42,11 +42,12 @@ int tsCrearArchivo() {
 			if ((tablaSimbolos[i].tipo == T_INTEGER)
 			|| (tablaSimbolos[i].tipo == T_FLOAT) 
 			|| (tablaSimbolos[i].tipo == T_STRING)) {
-				fprintf(archivo, "%-30s%-13s\n", tablaSimbolos[i].nombre, obtenerNombreTipo(tablaSimbolos[i].tipo));
+				fprintf(archivo, "%-32s%-13s\n", tablaSimbolos[i].nombre, obtenerNombreTipo(tablaSimbolos[i].tipo));
 			}
 			else {
-				fprintf(archivo, "%-30s%-13s%-30s%-12s\n",
-				tablaSimbolos[i].nombre, obtenerNombreTipo(tablaSimbolos[i].tipo), tablaSimbolos[i].valor, tablaSimbolos[i].longitud);
+				char dst[32] = "_";
+				fprintf(archivo, "%-32s%-13s%-31s%-12s\n",
+				strcat(dst, tablaSimbolos[i].nombre), obtenerNombreTipo(tablaSimbolos[i].tipo), tablaSimbolos[i].valor, tablaSimbolos[i].longitud);
 			}
 		}
 	}
