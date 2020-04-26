@@ -1,0 +1,7 @@
+DEFVAR
+	FLOAT: a
+	STRING: b
+ENDVAR
+IF (a > b) {
+	
+}
