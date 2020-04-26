@@ -64,7 +64,7 @@ void tsActualizarTipos(char * identificador, int tipoDato) {
 	for (i = 0; i < posicion_en_ts; i++) {
 		if (strcmp(tablaSimbolos[i].nombre, identificador) == 0) {
 			tablaSimbolos[i].tipo = tipoDato;
-			printf("Guardando %s=%s\n", tablaSimbolos[i].nombre, obtenerNombreTipo(tablaSimbolos[i].tipo));
+			//printf("Guardando %s=%s\n", tablaSimbolos[i].nombre, obtenerNombreTipo(tablaSimbolos[i].tipo));
 		}
 	}		
 }
@@ -73,7 +73,7 @@ int tsObtenerTipo(char * identificador) {
 	int i;
 	for (i = 0; i < posicion_en_ts; i++) {
 		if (strcmp(tablaSimbolos[i].nombre, identificador) == 0) {
-			printf("Guardando %s=%s\n", tablaSimbolos[i].nombre, obtenerNombreTipo(tablaSimbolos[i].tipo));
+			//printf("Guardando %s=%s\n", tablaSimbolos[i].nombre, obtenerNombreTipo(tablaSimbolos[i].tipo));
 			return tablaSimbolos[i].tipo;
 		}
 	}

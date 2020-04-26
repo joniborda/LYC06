@@ -96,29 +96,27 @@ program:
     };
 
 bloque_declaraciones: 
-    INICIA_DEC {printf("INI DEC\n");} declaraciones FIN_DEC {
-        printf("FIN DEC\n");
+    INICIA_DEC declaraciones FIN_DEC {
+        printRule("BLOQUE_DECLARACIONES", "INICIA_DEC DECLARACIONES FIN_DEC");
     }
 	;
 
 declaraciones:
-    declaracion {printRule("DECS", "DEC");}
-    | declaraciones declaracion {printRule("DECS", "DECS DEC");}
+    declaracion {printRule("DECLARACIONES", "DECLARACION");}
+    | declaraciones declaracion {printRule("DECLARACIONES", "DECLARACIONES DECLARACION");}
 	;
 
 declaracion:
 	TIPO_INT DECS_2PTOS lista_variables {
-        printRule("DEC", "TIPO_INT : LISTA_VARIABLES");
+        printRule("DECLARACION", "TIPO_INT : LISTA_VARIABLES");
         actualizarTipoDeclaracionID(T_INTEGER);
     }
 	| TIPO_FLOAT DECS_2PTOS lista_variables {
-        printRule("DEC", "TIPO_FLOAT : LISTA_VARIABLES");
-        printf("ultimo tipo de variable %s\n", "float");
+        printRule("DECLARACION", "TIPO_FLOAT : LISTA_VARIABLES");
         actualizarTipoDeclaracionID(T_FLOAT);
     }
 	| TIPO_STRING DECS_2PTOS lista_variables {
-        printRule("DEC", "TIPO_STRING : LISTA_VARIABLES");
-        printf("ultimo tipo de variable %s\n", "string");
+        printRule("DECLARACION", "TIPO_STRING : LISTA_VARIABLES");
         actualizarTipoDeclaracionID(T_STRING);
     }
 	;
@@ -129,7 +127,7 @@ lista_variables:
         agregarVariable();
     }
 	| lista_variables PUNTO_Y_COMA ID  {
-        printRule("LISTA_VARIABLES", "ID PUNTO_Y_COMA LISTA_VARIABLES");
+        printRule("LISTA_VARIABLES", "LISTA_VARIABLES PUNTO_Y_COMA ID");
         agregarVariable();
     }
 	;
@@ -160,20 +158,20 @@ salida:
     ;
 
 seleccion: 
-    IF P_A condicion P_C L_A programa L_C {printRule("SELECCION", "SENTENCIA IF SIMPLE");}
+    IF P_A condicion P_C L_A programa L_C {printRule("SELECCION", "IF P_A CONDICION P_C L_A PROGRAMA L_C");}
     | IF P_A condicion P_C L_A programa L_C ELSE L_A programa L_C {
-        printRule("SELECCION", "SENTENCIA IF SIMPLE CON ELSE");
+        printRule("SELECCION", "IF P_A CONDICION P_C L_A PROGRAMA L_C ELSE L_A PROGRAMA L_C");
     }
     ;
 
 iteracion: 
-    WHILE P_A condicion P_C L_A programa L_C {printRule("ITERACION", "WHILE");};
+    WHILE P_A condicion P_C L_A programa L_C {printRule("ITERACION", "WHILE P_A CONDICION P_C L_A PROGRAMA L_C");};
 
 condicion: 
     comparacion {printRule("CONDICION", "COMPARACION");}
-    | OP_NOT comparacion {printRule("CONDICION", "CONDICION NEGADA");}
-    | comparacion OP_AND comparacion {printRule("CONDICION", "COMPARACION ANIDADA AND");}
-    | comparacion OP_OR comparacion {printRule("CONDICION", "COMPARACION ANIDADA OR");}
+    | OP_NOT comparacion {printRule("CONDICION", "OP_NOT COMPARACION");}
+    | comparacion OP_AND comparacion {printRule("CONDICION", "COMPARACION OP_AND COMPARACION");}
+    | comparacion OP_OR comparacion {printRule("CONDICION", "COMPARACION OP_OR COMPARACION");}
     ;
 
 comparacion: 
@@ -181,7 +179,7 @@ comparacion:
         if (validarExpresionReal() == ERROR) {
             yyerror("Tipo de datos no compatible (Expresion real)");
         } 
-        printRule("COMPARACION", "BETWEEN");
+        printRule("COMPARACION", "BETWEEN P_A ID COMA C_A EXPRESION PUNTO_Y_COMA EXPRESION C_C P_C");
     }
     | expresion comparador expresion { validarComparacion(); printRule("COMPARACION", "EXPRESION COMPARADOR EXPRESION");}
     ;
@@ -226,15 +224,27 @@ termino:
 
 factor: 
       P_A expresion P_C {printRule("FACTOR", "(EXPRESION)");}
-    | ID {verificarIdDeclarado(tsObtenerTipo($1)); agregarTipoDatoArray(tsObtenerTipo($1)); printRule("FACTOR", "ID");}
-    | ENTERO {agregarTipoDatoArray(tsObtenerTipo($1)); printRule("FACTOR", "ENTERO");}
-    | FLOAT  {agregarTipoDatoArray(tsObtenerTipo($1)); printRule("FACTOR", "FLOAT");}
-	| funcion {printRule("FACTOR", "FUNCION");}
+    | ID {
+        verificarIdDeclarado(tsObtenerTipo($1));
+        agregarTipoDatoArray(tsObtenerTipo($1));
+        printRule("FACTOR", "ID");
+    }
+    | ENTERO {
+        agregarTipoDatoArray(tsObtenerTipo($1));
+        printRule("FACTOR", "ENTERO");
+    }
+    | FLOAT {
+        agregarTipoDatoArray(tsObtenerTipo($1));
+        printRule("FACTOR", "FLOAT");
+    }
+	| funcion {
+        printRule("FACTOR", "FUNCION");
+    }
 	;
 	
 funcion:
-	FACT P_A expresion P_C {printRule("FUNCION", "FACTORIAL(exp)");}
-	| COMB P_A expresion COMA expresion P_C	{printRule("FUNCION", "COMBINATORIO(exp,exp)");}
+	FACT P_A expresion P_C {printRule("FUNCION", "FACTORIAL(EXPRESION)");}
+	| COMB P_A expresion COMA expresion P_C	{printRule("FUNCION", "COMBINATORIO(EXPRESION, EXPRESION)");}
 	;
 %%
 
@@ -260,7 +270,6 @@ void agregarVariable() {
     strcpy(aux, yylval.str_val);
     idsAsignacionTipo[indexAsignacionTipo] = aux;
     indexAsignacionTipo++;
-    printf("variable %s\n", aux);
     return;
 }
 
