@@ -294,12 +294,12 @@ void agregarTipoArrayAsignacion(const int tipo) {
 void validarTiposDatoAsignacion(const int tipo) {
     printf("****TIPO DEL ID: %d ****\n", tipo);
 	while(idTipoDato > 0) {
-        printf("******* %d ******* ", tipoDato[idTipoDato]);
-        if(tipo != tipoDato[idTipoDato]) {
-            if((tipo == T_INTEGER && tipoDato[idTipoDato] != CTE_INTEGER) ||
-               (tipo == T_FLOAT && !( tipoDato[idTipoDato] == CTE_FLOAT || 
-               tipoDato[idTipoDato] == CTE_INTEGER || tipoDato[idTipoDato] == T_INTEGER)) ||  
-               (tipo == T_STRING && tipoDato[idTipoDato] != CTE_STRING)){
+        printf("******* %d ******* ", tipoDato[idTipoDato-1]);
+        if(tipo != tipoDato[idTipoDato-1]) {
+            if((tipo == T_INTEGER && tipoDato[idTipoDato-1] != CTE_INTEGER) ||
+               (tipo == T_FLOAT && !( tipoDato[idTipoDato-1] == CTE_FLOAT || 
+               tipoDato[idTipoDato-1] == CTE_INTEGER || tipoDato[idTipoDato-1] == T_INTEGER)) ||  
+               (tipo == T_STRING && tipoDato[idTipoDato-1] != CTE_STRING)){
                 yyerror("Los tipos de las variables no son compabibles");
             }
         }
