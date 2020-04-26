@@ -23,6 +23,7 @@
     void verificarIdDeclarado(void *);
     void agregarTipoArrayAsignacion(const int);
     void validarTiposDatoAsignacion(const int);
+    void validarTiposDatos();
 %}
 
 %union {
@@ -173,8 +174,8 @@ condicion:
     ;
 
 comparacion: 
-    BETWEEN P_A ID {verificarNumerico($3);} COMA C_A expresion PUNTO_Y_COMA expresion C_C P_C {printRule("COMPARACION", "BETWEEN");}
-    | expresion comparador expresion {printRule("COMPARACION", "EXPRESION COMPARADOR COMPARADOR EXPRESION");}
+    BETWEEN P_A ID {verificarNumerico($3);} COMA C_A expresion PUNTO_Y_COMA expresion C_C P_C { validarTiposDatos(); printRule("COMPARACION", "BETWEEN");}
+    | expresion comparador expresion { validarTiposDatos(); printRule("COMPARACION", "EXPRESION COMPARADOR COMPARADOR EXPRESION");}
     ;
 
 comparador: 
@@ -286,8 +287,6 @@ void agregarTipoArrayAsignacion(const int tipo) {
     tipoDato[idTipoDato] = tipo;
     idTipoDato++;
     printf("****Guardado: %d ****\n", tipo);
-
-
     //char test[10]; itoa($1, test, 10); agregarTipoArrayAsignacion(tsObtenerTipo(test));
 }
 
@@ -307,9 +306,33 @@ void validarTiposDatoAsignacion(const int tipo) {
             }
         }
     }
+    idTipoDato = 0;
 
     printf("Los tipos de datos coinciden!");
 }
+
+void validarTiposDatos() {
+    idTipoDato--;
+
+    for (; idTipoDato >= 0; idTipoDato--) {
+        printf("******* %d ******* ", tipoDato[idTipoDato]);
+
+        if (!(tipoDato[idTipoDato] == T_FLOAT || tipoDato[idTipoDato] == T_INTEGER || 
+            tipoDato[idTipoDato] == CTE_FLOAT || tipoDato[idTipoDato] == CTE_INTEGER)){
+                yyerror("Los tipos de las variables no son compabibles");
+            }
+    }
+
+    idTipoDato = 0;
+
+    printf("Los tipos de datos coinciden!");
+}
+
+
+void limpiarTipoArrayAsignacion(){
+    idTipoDato=0;
+}
+
 
 int main(int argc,char *argv[]) {
     

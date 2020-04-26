@@ -1,8 +1,10 @@
 DEFVAR
 	INT : a; b
 	FLOAT : c
-	STRING : z; x; y
+	STRING : z; x
 ENDVAR
 
+IF( a > b AND c == z ){  
+	c := 5 + 4 + 3 * c;
+}
 
-a := b + 5 + 4;
