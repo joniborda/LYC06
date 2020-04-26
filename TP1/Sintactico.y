@@ -292,12 +292,8 @@ void agregarTipoArrayAsignacion(const int tipo) {
 }
 
 void validarTiposDatoAsignacion(const int tipo) {
-    idTipoDato--;
-
     printf("****TIPO DEL ID: %d ****\n", tipo);
-    for (; idTipoDato >= 0; idTipoDato--) {
         printf("******* %d ******* ", tipoDato[idTipoDato]);
-
         if(tipo != tipoDato[idTipoDato]) {
             if((tipo == T_INTEGER && tipoDato[idTipoDato] != CTE_INTEGER) ||
                (tipo == T_FLOAT && !( tipoDato[idTipoDato] == CTE_FLOAT || 
@@ -305,10 +301,9 @@ void validarTiposDatoAsignacion(const int tipo) {
                (tipo == T_STRING && tipoDato[idTipoDato] != CTE_STRING)){
                 yyerror("Los tipos de las variables no son compabibles");
             }
+	while(idTipoDato > 0) {
         }
-    }
-    idTipoDato = 0;
-
+		idTipoDato--;
     printf("Los tipos de datos coinciden!");
 }
 
