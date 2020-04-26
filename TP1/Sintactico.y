@@ -10,18 +10,17 @@
     int yylineno;
     FILE  *yyin;
     
-    char *ids[100]; // Ids para guardar el tipo
-    int tipoDato[100];
-    int idTipoDato = 0;
-    int idIndex = 0; // max numero de Ids guardados
+    char * idsAsignacionTipo[100]; // Array de ids para asignarles el tipo en la declaracion de variables
+    int indexAsignacionTipo = 0; // Index para la asignacion de tipos a los ids
+    int expresionesTipoDato[100]; // Array de tipos de datos para validar que las asignaciones y comparaciones son compatibles a nivel tipo de dato
+    int indexExpresionesTipoDato = 0; // Index para la validacion de las asignaciones y comparaciones a nivel tipo de dato
 
-    void printRule(const char *, const char *);
-    void printTokenInfo(const char*, const char*);
     int yyerror(const char *);
+    void printRule(const char *, const char *);
     void agregarVariable();
-    void actualizarTipo(int);
-    void verificarNumerico(void *);
-    void verificarIdDeclarado(void *);
+    void actualizarTipoDeclaracionID(int); //ok
+    void validarIdNumerico(const int); // ok
+    void verificarIdDeclarado(const int); //ok
     void agregarTipoArrayAsignacion(const int);
     void validarTiposDatoAsignacion(const int);
     void validarTiposDatos();
@@ -109,17 +108,17 @@ declaraciones:
 declaracion:
 	TIPO_INT DECS_2PTOS lista_variables {
         printRule("DEC", "TIPO_INT : LISTA_VARIABLES");
-        actualizarTipo(T_INTEGER);
+        actualizarTipoDeclaracionID(T_INTEGER);
     }
 	| TIPO_FLOAT DECS_2PTOS lista_variables {
         printRule("DEC", "TIPO_FLOAT : LISTA_VARIABLES");
         printf("ultimo tipo de variable %s\n", "float");
-        actualizarTipo(T_FLOAT);
+        actualizarTipoDeclaracionID(T_FLOAT);
     }
 	| TIPO_STRING DECS_2PTOS lista_variables {
         printRule("DEC", "TIPO_STRING : LISTA_VARIABLES");
         printf("ultimo tipo de variable %s\n", "string");
-        actualizarTipo(T_STRING);
+        actualizarTipoDeclaracionID(T_STRING);
     }
 	;
 
@@ -152,11 +151,11 @@ sentencia:
     ;
 
 entrada: 
-    ENTRADA ID {verificarIdDeclarado($2);} {printRule("ENTRADA", "ID");};
+    ENTRADA ID {verificarIdDeclarado(tsObtenerTipo($2));} {printRule("ENTRADA", "ID");};
 
 salida: 
     SALIDA STRING {printRule("SALIDA", "STRING");} 
-    | SALIDA ID {verificarNumerico($2);} {printRule("SALIDA", "ID");}
+    | SALIDA ID {verificarIdDeclarado(tsObtenerTipo($2));} {printRule("SALIDA", "ID");}
     ;
 
 seleccion: 
@@ -177,7 +176,7 @@ condicion:
     ;
 
 comparacion: 
-    BETWEEN P_A ID {verificarNumerico($3);} COMA C_A expresion PUNTO_Y_COMA expresion C_C P_C { validarTiposDatos(); printRule("COMPARACION", "BETWEEN");}
+    BETWEEN P_A ID {validarIdNumerico(tsObtenerTipo($3));} COMA C_A expresion PUNTO_Y_COMA expresion C_C P_C { validarTiposDatos(); printRule("COMPARACION", "BETWEEN");}
     | expresion comparador expresion { validarComparacion(); printRule("COMPARACION", "EXPRESION COMPARADOR COMPARADOR EXPRESION");}
     ;
 
@@ -189,8 +188,8 @@ comparador:
     | CMP_IGUAL  {printRule("COMPARADOR", "OP_CMP_IGUAL");};
 
 asignacion:
-    ID ASIG expresion PUNTO_Y_COMA {verificarIdDeclarado($1); printf("**ID: %s**\n", $1);validarTiposDatoAsignacion(tsObtenerTipo($1)); printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");}
-	| ID ASIG STRING PUNTO_Y_COMA {verificarIdDeclarado($1); printRule("ASIGNACION", "ID ASIG STRING PUNTO_Y_COMA");}
+    ID ASIG expresion PUNTO_Y_COMA {verificarIdDeclarado(tsObtenerTipo($1)); printf("**ID: %s**\n", $1);validarTiposDatoAsignacion(tsObtenerTipo($1)); printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");}
+	| ID ASIG STRING PUNTO_Y_COMA {verificarIdDeclarado(tsObtenerTipo($1)); printRule("ASIGNACION", "ID ASIG STRING PUNTO_Y_COMA");}
     ;
 expresion: 
     asignacion {printRule("EXPRESION", "ASIGNACION");}
@@ -215,14 +214,14 @@ termino:
 
 factor: 
       P_A expresion P_C {printRule("FACTOR", "(EXPRESION)");}
-    | ID {verificarIdDeclarado($1); agregarTipoArrayAsignacion(tsObtenerTipo($1)); printRule("FACTOR", "ID");}
+    | ID {verificarIdDeclarado(tsObtenerTipo($1)); agregarTipoArrayAsignacion(tsObtenerTipo($1)); printRule("FACTOR", "ID");}
     | ENTERO {agregarTipoArrayAsignacion(tsObtenerTipo($1)); printRule("FACTOR", "ENTERO");}
     | FLOAT  {agregarTipoArrayAsignacion(tsObtenerTipo($1)); printRule("FACTOR", "FLOAT");}
 	| funcion {printRule("FACTOR", "FUNCION");}
 	;
 	
 funcion:
-	FACT P_A expresion P_C {printRule("FUNCION", "FACTORIAL(exp)");}
+	FACT P_A expresion P_C {validarTiposDatos(); printRule("FUNCION", "FACTORIAL(exp)");}
 	| COMB P_A expresion COMA expresion P_C	{printRule("FUNCION", "COMBINATORIO(exp,exp)");}
 	;
 %%
@@ -232,10 +231,6 @@ void printRule(const char *lhs, const char *rhs) {
         printf("%s -> %s\n", lhs, rhs);
     }
     return;
-}
-
-void printTokenInfo(const char* tokenType, const char* lexeme) {
-    printf("TOKEN: %s LEXEME: %s\n", tokenType, lexeme);
 }
 
 int yyerror(const char *s) {
@@ -251,96 +246,89 @@ int yyerror(const char *s) {
 void agregarVariable() {
     char * aux = (char *) malloc(sizeof(char) * (strlen(yylval.str_val) + 1));
     strcpy(aux, yylval.str_val);
-    ids[idIndex] = aux;
-    idIndex++;
+    idsAsignacionTipo[indexAsignacionTipo] = aux;
+    indexAsignacionTipo++;
     printf("variable %s\n", aux);
     return;
 }
 
 /**
- * Actualiza los tipo de datos de los IDs que tiene acumulado
- * Despues deberia limpia el array de IDs
+ * Actualiza los tipo de datos de los IDs que tiene acumulado en el array
  */
-void actualizarTipo(int tipo) {
-    printf("ultimo tipo de variable %s\n", obtenerNombreTipo(tipo));
+void actualizarTipoDeclaracionID(int tipo) {
     int i;
-    for (i = 0; i < idIndex; i++) {
-        tsActualizarTipos(ids[i], tipo);
+    for (i = 0; i < indexAsignacionTipo; i++) {
+        tsActualizarTipos(idsAsignacionTipo[i], tipo);
     }
-    idIndex = 0;
+    indexAsignacionTipo = 0;
 }
 
-void verificarNumerico(void * id) {
-    int tipo = tsObtenerTipo((char *)id);
+void validarIdNumerico(const int tipo) {
     if(!(tipo == T_INTEGER || tipo == T_FLOAT)){
         yyerror("Error, el identificador no es numerico");
     }
 }
 
-void verificarIdDeclarado(void *id) {
-    char *idChar = (char *)id;
-    int ret = tsObtenerTipo(idChar);
-    if (tsObtenerTipo(idChar) == T_ID) {
-        printf("El identificador: %s no se encuentra en el bloque de declaraciones.", idChar);
-        exit(1);
+void verificarIdDeclarado(const int tipo) {
+    if (tipo == T_ID) {
+        yyerror("Variable indefinida");
     }
 }
 
 void agregarTipoArrayAsignacion(const int tipo) {
-    tipoDato[idTipoDato] = tipo;
-    idTipoDato++;
+    expresionesTipoDato[indexExpresionesTipoDato] = tipo;
+    indexExpresionesTipoDato++;
     printf("****Guardado: %d ****\n", tipo);
     //char test[10]; itoa($1, test, 10); agregarTipoArrayAsignacion(tsObtenerTipo(test));
 }
 
 void validarTiposDatoAsignacion(const int tipo) {
     printf("****TIPO DEL ID: %d ****\n", tipo);
-	while(idTipoDato > 0) {
-        if(tipo != tipoDato[idTipoDato - 1]) {
-            if((tipo == T_INTEGER && tipoDato[idTipoDato - 1] != CTE_INTEGER) ||
-               (tipo == T_FLOAT && !( tipoDato[idTipoDato - 1] == CTE_FLOAT || 
-               tipoDato[idTipoDato - 1] == CTE_INTEGER || tipoDato[idTipoDato - 1] == T_INTEGER)) ||  
-               (tipo == T_STRING && tipoDato[idTipoDato - 1] != CTE_STRING)){
+	while(indexExpresionesTipoDato > 0) {
+        if(tipo != expresionesTipoDato[indexExpresionesTipoDato - 1]) {
+            if((tipo == T_INTEGER && expresionesTipoDato[indexExpresionesTipoDato - 1] != CTE_INTEGER) ||
+               (tipo == T_FLOAT && !( expresionesTipoDato[indexExpresionesTipoDato - 1] == CTE_FLOAT || 
+               expresionesTipoDato[indexExpresionesTipoDato - 1] == CTE_INTEGER || expresionesTipoDato[indexExpresionesTipoDato - 1] == T_INTEGER)) ||  
+               (tipo == T_STRING && expresionesTipoDato[indexExpresionesTipoDato - 1] != CTE_STRING)){
                 yyerror("Los tipos de las variables no son compatibles");
             }
         }
-		idTipoDato--;
+		indexExpresionesTipoDato--;
 	}
     printf("Los tipos de datos coinciden!");
 }
 
 void validarTiposDatos() {
-	while(idTipoDato > 0) {
-        if (!(tipoDato[idTipoDato - 1] == T_FLOAT || tipoDato[idTipoDato - 1] == T_INTEGER || 
-            tipoDato[idTipoDato - 1] == CTE_FLOAT || tipoDato[idTipoDato - 1] == CTE_INTEGER)){
+	while(indexExpresionesTipoDato > 0) {
+        if (!(expresionesTipoDato[indexExpresionesTipoDato - 1] == T_FLOAT || expresionesTipoDato[indexExpresionesTipoDato - 1] == T_INTEGER || 
+            expresionesTipoDato[indexExpresionesTipoDato - 1] == CTE_FLOAT || expresionesTipoDato[indexExpresionesTipoDato - 1] == CTE_INTEGER)){
                 yyerror("Los tipos de las variables no son compatibles");
             }
-		idTipoDato--;
+		indexExpresionesTipoDato--;
 	}
     printf("Los tipos de datos coinciden!");
 }
 
 void validarComparacion (){
 
-    int longArray = idTipoDato;
-    idTipoDato--;
-
-    while ( tipoDato[idTipoDato] == T_STRING ||  tipoDato[idTipoDato] == CTE_STRING ){
-        idTipoDato--;
+    int longArray = indexExpresionesTipoDato;
+    indexExpresionesTipoDato--;
+    while (expresionesTipoDato[indexExpresionesTipoDato] == T_STRING || expresionesTipoDato[indexExpresionesTipoDato] == CTE_STRING){
+        indexExpresionesTipoDato--;
     }
 
-    if (idTipoDato == -1){
+    if (indexExpresionesTipoDato == -1){
         printf("*********** Comparación entre Strings ********");
 
         if (longArray > 2 ){
             printf("*********** Esta comparación no debería permitirse.. ********");
         }
 
-        idTipoDato = 0;
+        indexExpresionesTipoDato = 0;
         return;
     }
 
-    idTipoDato = longArray;
+    indexExpresionesTipoDato = longArray;
     validarTiposDatos();
 }
 

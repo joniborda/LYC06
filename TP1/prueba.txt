@@ -3,6 +3,6 @@ DEFVAR
 	FLOAT : c
 	STRING : z; x
 ENDVAR
-b:= a + b;
-a:= b + 5;
-z:= "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLL";
+IF(FACT(2 + 3 + 4 + c) > c) {
+	a:=b;
+}
