@@ -101,24 +101,27 @@ void idFuncion() {
 }
 
 void enteroFuncion() {
-	yylval.intval = atoi(yytext);
+	int aux = atoi(yytext);
+	yylval.str_val = strdup(yytext);
 
-	if(yylval.intval > LIMITE_INT) {
+	if(aux > LIMITE_INT) {
 		printf("ERROR: La constante entera supera el máximo del límite permitido (16bits).");
 		exit(1);
 	}
 
-	if (imprimir) printf("Flex Entero: %s (%d)\n", yytext,yylval.intval);
+	if (imprimir) printf("Flex Entero: %s (%d)\n", yytext, aux);
 	tsInsertarToken(CTE_INTEGER, strdup(yytext), 0, yytext);
 }
 
 void floatFuncion() {
-	yylval.val = atof(yytext);
+	float aux = atof(yytext);
+	yylval.str_val = strdup(yytext);
+
 	//Ver tema del limite máximo, debido a que trunca.
 	if(log2f(atof(yytext)) > 32) {
 		printf("ERROR: La constante float supera el máximo del límite permitido (32bits).\n");
 		exit(1);
 	}
-	if (imprimir) printf("Flex Float: %s (%f)\n", yytext,yylval.val);
+	if (imprimir) printf("Flex Float: %s (%f)\n", yytext,aux);
 	tsInsertarToken(CTE_FLOAT, strdup(yytext), 0, yytext);
 }

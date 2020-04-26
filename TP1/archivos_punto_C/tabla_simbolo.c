@@ -75,7 +75,8 @@ int tsObtenerTipo(char * identificador) {
 			printf("Guardando %s=%s\n", tablaSimbolos[i].nombre, obtenerNombreTipo(tablaSimbolos[i].tipo));
 			return tablaSimbolos[i].tipo;
 		}
-	}		
+	}
+	return -1;
 }
 
 char * obtenerNombreTipo(const int tipo) {

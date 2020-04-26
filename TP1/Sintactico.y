@@ -32,6 +32,9 @@
 }
 
 %token <str_val>ID
+%token <str_val> ENTERO
+%token <str_val> FLOAT
+%token <str_val>STRING
 
 %token ASIG
 %token OP_SUMA
@@ -56,9 +59,6 @@
 %token COMA
 %token IF
 %token ELSE
-%token <intval> ENTERO
-%token <val> FLOAT
-%token <str_val>STRING
 %token WHILE
 %token ENTRADA
 %token SALIDA
@@ -185,7 +185,7 @@ comparador:
     | CMP_IGUAL  {printRule("COMPARADOR", "OP_CMP_IGUAL");};
 
 asignacion:
-    ID ASIG expresion PUNTO_Y_COMA {verificarIdDeclarado($1); validarTiposDatoAsignacion(tsObtenerTipo($1)); printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");}
+    ID ASIG expresion PUNTO_Y_COMA {verificarIdDeclarado($1); printf("**ID: %s**\n", $1);validarTiposDatoAsignacion(tsObtenerTipo($1)); printRule("ASIGNACION", "ID ASIG EXPRESION PUNTO_Y_COMA");}
 	| ID ASIG STRING PUNTO_Y_COMA {verificarIdDeclarado($1); printRule("ASIGNACION", "ID ASIG STRING PUNTO_Y_COMA");}
     ;
 expresion: 
@@ -212,8 +212,8 @@ termino:
 factor: 
       P_A expresion P_C {printRule("FACTOR", "(EXPRESION)");}
     | ID {verificarIdDeclarado($1); agregarTipoArrayAsignacion(tsObtenerTipo($1)); printRule("FACTOR", "ID");}
-    | ENTERO {printRule("FACTOR", "ENTERO");}
-    | FLOAT  {printRule("FACTOR", "FLOAT");}
+    | ENTERO {agregarTipoArrayAsignacion(tsObtenerTipo($1)); printRule("FACTOR", "ENTERO");}
+    | FLOAT  {agregarTipoArrayAsignacion(tsObtenerTipo($1)); printRule("FACTOR", "FLOAT");}
 	| funcion {printRule("FACTOR", "FUNCION");}
 	;
 	
@@ -285,15 +285,29 @@ void verificarIdDeclarado(void *id) {
 void agregarTipoArrayAsignacion(const int tipo) {
     tipoDato[idTipoDato] = tipo;
     idTipoDato++;
+    printf("****Guardado: %d ****\n", tipo);
+
+
+    //char test[10]; itoa($1, test, 10); agregarTipoArrayAsignacion(tsObtenerTipo(test));
 }
 
 void validarTiposDatoAsignacion(const int tipo) {
     idTipoDato--;
-    for (; idTipoDato >= 0; idTipoDato--){
-        if(tipo != tipoDato[idTipoDato]){
-            yyerror("Los tipos de las variables no son compabibles");
+
+    printf("****TIPO DEL ID: %d ****\n", tipo);
+    for (; idTipoDato >= 0; idTipoDato--) {
+        printf("******* %d ******* ", tipoDato[idTipoDato]);
+
+        if(tipo != tipoDato[idTipoDato]) {
+            if((tipo == T_INTEGER && tipoDato[idTipoDato] != CTE_INTEGER) ||
+               (tipo == T_FLOAT && !( tipoDato[idTipoDato] == CTE_FLOAT || 
+               tipoDato[idTipoDato] == CTE_INTEGER || tipoDato[idTipoDato] == T_INTEGER)) ||  
+               (tipo == T_STRING && tipoDato[idTipoDato] != CTE_STRING)){
+                yyerror("Los tipos de las variables no son compabibles");
+            }
         }
     }
+
     printf("Los tipos de datos coinciden!");
 }
 

@@ -1,5 +1,8 @@
 DEFVAR
 	INT : a; b
 	FLOAT : c
+	STRING : z; x; y
 ENDVAR
-b:= a + 5;
+
+
+a := b + 5 + 4;
