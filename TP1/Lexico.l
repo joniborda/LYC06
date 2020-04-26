@@ -8,15 +8,15 @@
 #include "archivos_punto_H/tabla_simbolo.h"
 #include "archivos_punto_H/constantes.h"
 FILE  *yyin;
-int imprimir = 1;
+int imprimir = 0;
 
 void textoFuncion();
 void idFuncion();
 void enteroFuncion();
 void floatFuncion();
 
-void noImprimir() {
-	imprimir = 0;
+void setImprimir() {
+	imprimir = 1;
 }
 %}
 

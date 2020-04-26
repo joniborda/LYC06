@@ -10,7 +10,7 @@ pause
 	@echo --------------------- %%x ---------------------
 	
 	@if	 "ts.txt" NEQ "%%x" (
-		@..\Primera.exe %%x noImprimir || (
+		@..\Primera.exe %%x || (
 		  	@cd ..\
 		  	@echo .
 		  	@echo /****************** ERROR ***************/
@@ -26,8 +26,8 @@ pause
 	@echo --------------------- %%x ---------------------
 	
 	@if	 "ts.txt" NEQ "%%x" (
-		..\Primera.exe %%x noImprimir
-		..\Primera.exe %%x noImprimir && (
+		..\Primera.exe %%x
+		..\Primera.exe %%x && (
 		  	@echo .
 		  	@echo /***************** DEBERIA ARROJAR ERROR ***************/
 		  	@cd ..\

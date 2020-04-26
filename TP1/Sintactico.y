@@ -389,7 +389,7 @@ int main(int argc,char *argv[]) {
     } else {
         // si al ejecutar Primera.exe paso un tercer parametro, no va a imprimir
         if (argc > 2) {
-            noImprimir();
+            setImprimir();
         }
         yyparse();
     }
