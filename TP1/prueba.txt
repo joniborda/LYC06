@@ -4,7 +4,7 @@ DEFVAR
 	STRING : z; x
 ENDVAR
 
-IF( a > b AND c == z ){  
+IF( a > b AND z == x  + a){  
 	c := 5 + 4 + 3 * c;
 }
 

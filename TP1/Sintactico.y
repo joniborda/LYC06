@@ -24,6 +24,7 @@
     void agregarTipoArrayAsignacion(const int);
     void validarTiposDatoAsignacion(const int);
     void validarTiposDatos();
+    void validarComparacion();
 %}
 
 %union {
@@ -175,7 +176,7 @@ condicion:
 
 comparacion: 
     BETWEEN P_A ID {verificarNumerico($3);} COMA C_A expresion PUNTO_Y_COMA expresion C_C P_C { validarTiposDatos(); printRule("COMPARACION", "BETWEEN");}
-    | expresion comparador expresion { validarTiposDatos(); printRule("COMPARACION", "EXPRESION COMPARADOR COMPARADOR EXPRESION");}
+    | expresion comparador expresion { validarComparacion(); printRule("COMPARACION", "EXPRESION COMPARADOR COMPARADOR EXPRESION");}
     ;
 
 comparador: 
@@ -327,6 +328,31 @@ void validarTiposDatos() {
 
     printf("Los tipos de datos coinciden!");
 }
+
+void validarComparacion (){
+
+    int longArray = idTipoDato;
+    idTipoDato--;
+
+    while ( tipoDato[idTipoDato] == T_STRING ||  tipoDato[idTipoDato] == CTE_STRING ){
+        idTipoDato--;
+    }
+
+    if (idTipoDato == -1){
+        printf("*********** Comparación entre Strings ********");
+
+        if (longArray > 2 ){
+            printf("*********** Esta comparación no debería permitirse.. ********");
+        }
+
+        idTipoDato = 0;
+        return;
+    }
+
+    idTipoDato = longArray;
+    validarTiposDatos();
+}
+
 
 
 void limpiarTipoArrayAsignacion(){
