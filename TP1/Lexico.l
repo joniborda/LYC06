@@ -7,6 +7,7 @@
 #include "y.tab.h"
 #include "archivos_punto_H/tabla_simbolo.h"
 #include "archivos_punto_H/constantes.h"
+#include "archivos_punto_H/arbol_sintactico.h"
 FILE  *yyin;
 int imprimir = 0;
 

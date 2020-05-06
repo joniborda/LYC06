@@ -6,10 +6,16 @@
     #include "y.tab.h"
     #include "archivos_punto_H/tabla_simbolo.h"
     #include "archivos_punto_H/constantes.h"
+    #include "archivos_punto_H/arbol_sintactico.h"
     int yystopparser=0;
     int yylineno;
     FILE  *yyin;
     
+    nodo* F=NULL;
+    nodo* T=NULL;
+    nodo* E=NULL;
+    nodo* A=NULL;
+
     char * idsAsignacionTipo[100]; // Array de ids para asignarles el tipo en la declaracion de variables
     int indexAsignacionTipo = 0; // Index para la asignacion de tipos a los ids
     int expresionesTipoDato[100]; // Array de tipos de datos para validar que las asignaciones y comparaciones son compatibles a nivel tipo de dato
@@ -133,7 +139,7 @@ lista_variables:
 	;
 
 algoritmo: 
-    programa {printRule("<ALGORITMO>", "<PROGRAMA>");}
+    programa {escribirGragh(A);printRule("<ALGORITMO>", "<PROGRAMA>");}
 	;
 
 programa:
@@ -193,6 +199,7 @@ comparador:
 
 asignacion:
     ID ASIG expresion PUNTO_Y_COMA {
+        A = crearNodo(":=",crearHoja($1),E);
         verificarIdDeclarado(tsObtenerTipo($1)); 
         validarTiposDatoAsignacion(tsObtenerTipo($1)); 
         printRule("<ASIGNACION>", "ID ASIG <EXPRESION> PUNTO_Y_COMA");}
@@ -207,36 +214,41 @@ asignacion:
 expresion: 
     asignacion {printRule("<EXPRESION>", "<ASIGNACION>");}
     | expresion OP_SUMA termino {
+        E = crearNodo("+", E, T);
         printRule("<EXPRESION>", "<EXPRESION> OP_SUMA <TERMINO>");
     }
     | expresion OP_RESTA termino {
         printRule("<EXPRESION>", "<EXPRESION> OP_RESTA <TERMINO>");
     }
-    | termino {printRule("<EXPRESION>", "<TERMINO>");}
+    | termino {E = T; printRule("<EXPRESION>", "<TERMINO>");}
     ;
 
 termino: 
     termino OP_MUL factor {
+        T = crearNodo("*", T, F);
         printRule("<TERMINO>", "<TERMINO> OP_MUL <FACTOR>");
     }
     | termino OP_DIV factor {
         printRule("<TERMINO>", "<TERMINO> OP_DIV <FACTOR>");
     }
-    | factor {printRule("<TERMINO>", "<FACTOR>");}
+    | factor {T = F; printRule("<TERMINO>", "<FACTOR>");}
     ;
 
 factor: 
       P_A expresion P_C {printRule("<FACTOR>", "(<EXPRESION>)");}
     | ID {
+        F = crearHoja($1);
         verificarIdDeclarado(tsObtenerTipo($1));
         agregarTipoDatoArray(tsObtenerTipo($1));
         printRule("<FACTOR>", "ID");
     }
     | ENTERO {
+        F = crearHoja($1);
         agregarTipoDatoArray(tsObtenerTipo($1));
         printRule("<FACTOR>", "ENTERO");
     }
     | FLOAT {
+        F = crearHoja($1);
         agregarTipoDatoArray(tsObtenerTipo($1));
         printRule("<FACTOR>", "FLOAT");
     }
@@ -386,7 +398,7 @@ void validarComparacion() {
 }
 
 int main(int argc,char *argv[]) {
-    
+
     if((yyin = fopen(argv[1], "rt")) == NULL) {
         printf("\nNo se puede abrir el archivo: %s\n", argv[1]);
     } else {
