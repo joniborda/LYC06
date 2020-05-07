@@ -218,6 +218,7 @@ expresion:
         printRule("<EXPRESION>", "<EXPRESION> OP_SUMA <TERMINO>");
     }
     | expresion OP_RESTA termino {
+        E = crearNodo("-", E, T);
         printRule("<EXPRESION>", "<EXPRESION> OP_RESTA <TERMINO>");
     }
     | termino {E = T; printRule("<EXPRESION>", "<TERMINO>");}
@@ -229,13 +230,14 @@ termino:
         printRule("<TERMINO>", "<TERMINO> OP_MUL <FACTOR>");
     }
     | termino OP_DIV factor {
+        T = crearNodo("/", T, F);
         printRule("<TERMINO>", "<TERMINO> OP_DIV <FACTOR>");
     }
     | factor {T = F; printRule("<TERMINO>", "<FACTOR>");}
     ;
 
 factor: 
-      P_A expresion P_C {printRule("<FACTOR>", "(<EXPRESION>)");}
+      P_A expresion P_C { F = E; printRule("<FACTOR>", "(<EXPRESION>)");}
     | ID {
         F = crearHoja($1);
         verificarIdDeclarado(tsObtenerTipo($1));
