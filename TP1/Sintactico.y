@@ -15,6 +15,7 @@
     nodo* T=NULL;
     nodo* E=NULL;
     nodo* A=NULL;
+    nodo* FUN=NULL;
 
     char * idsAsignacionTipo[100]; // Array de ids para asignarles el tipo en la declaracion de variables
     int indexAsignacionTipo = 0; // Index para la asignacion de tipos a los ids
@@ -255,12 +256,13 @@ factor:
         printRule("<FACTOR>", "FLOAT");
     }
 	| funcion {
+        F = FUN;
         printRule("<FACTOR>", "<FUNCION>");
     }
 	;
 	
 funcion:
-	FACT P_A expresion P_C {printRule("<FUNCION>", "FACTORIAL(<EXPRESION>)");}
+	FACT P_A expresion P_C {FUN = E;printRule("<FUNCION>", "FACTORIAL(<EXPRESION>)");}
 	| COMB P_A expresion COMA expresion P_C	{printRule("<FUNCION>", "COMBINATORIO(<EXPRESION>, <EXPRESION>)");}
 	;
 %%
