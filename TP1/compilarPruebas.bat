@@ -21,6 +21,7 @@ pause
 	)
 )
 
+@del gragh.dot
 @cd ../pruebas_con_error
 @for %%x in (*) do @(
 	@echo .
@@ -29,6 +30,7 @@ pause
 	@if	 "ts.txt" NEQ "%%x" (
 		..\Primera.exe %%x
 		..\Primera.exe %%x && (
+			@del gragh.dot
 		  	@echo .
 		  	@echo /***************** DEBERIA ARROJAR ERROR ***************/
 		  	@cd ..\
@@ -41,6 +43,7 @@ pause
 )
 @echo .
 @echo /****************** PRUEBAS OK ***************/
+@del gragh.dot
 @cd ..\
 @delete.bat
 @pause
