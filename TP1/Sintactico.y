@@ -221,20 +221,20 @@ expresion:
     | expresion OP_RESTA termino {
         E = crearNodo("-", E, T);
         printRule("<EXPRESION>", "<EXPRESION> OP_RESTA <TERMINO>");
+    } 
+    | expresion OP_MUL factor {
+        T = crearNodo("*", T, F);
+        printRule("<EXPRESION>", "<EXPRESION> OP_MUL <FACTOR>");
+    }
+    | expresion OP_DIV factor {
+        T = crearNodo("/", T, F);
+        printRule("<EXPRESION>", "<EXPRESION> OP_DIV <FACTOR>");
     }
     | termino {E = T; printRule("<EXPRESION>", "<TERMINO>");}
     ;
 
-termino: 
-    termino OP_MUL factor {
-        T = crearNodo("*", T, F);
-        printRule("<TERMINO>", "<TERMINO> OP_MUL <FACTOR>");
-    }
-    | termino OP_DIV factor {
-        T = crearNodo("/", T, F);
-        printRule("<TERMINO>", "<TERMINO> OP_DIV <FACTOR>");
-    }
-    | factor {T = F; printRule("<TERMINO>", "<FACTOR>");}
+termino:
+    factor {T = F; printRule("<TERMINO>", "<FACTOR>");}
     ;
 
 factor: 
