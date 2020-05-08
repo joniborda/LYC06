@@ -5,26 +5,26 @@ ENDVAR
 
 a:=1;
 b:=2;
-c:=((b*a+1+2.3*3.14+c/2-2.2)/2+1)*2; ***/OK/***
-c:=FACT(FACT(3.3/a-1)*2+b); 		 ***/OK_A_MEDIAS/***
+***/c:=((b*a+1+2.3*3.14+c/2-2.2)/2+1)*2; ***/OK/***/***
+***/c:=FACT(FACT(3.3/a-1)*2+b); 		 ***/OK_A_MEDIAS/***/***
 c:=(1+2)/(3+4);						 ***/ERROR/***
 
 
-<FACTOR> -> ENTERO
-<TERMINO> -> <FACTOR>
-<EXPRESION> -> <TERMINO>
-<FACTOR> -> ENTERO
-<TERMINO> -> <FACTOR>
-<EXPRESION> -> <EXPRESION> OP_SUMA <TERMINO>
-<FACTOR> -> (<EXPRESION>)
-<TERMINO> -> <FACTOR>   -----------------------------------------------------------------------------
-<FACTOR> -> ENTERO
-<TERMINO> -> <FACTOR>   -----ESTA PISANDO LO QUE TIENE TERMINO, QUE ES TODO LA EXPRESION "(1+2)"-----
-<EXPRESION> -> <TERMINO>
-<FACTOR> -> ENTERO
-<TERMINO> -> <FACTOR>
-<EXPRESION> -> <EXPRESION> OP_SUMA <TERMINO>
-<FACTOR> -> (<EXPRESION>)
-<TERMINO> -> <TERMINO> OP_DIV <FACTOR>
-<EXPRESION> -> <TERMINO>
-<ASIGNACION> -> ID ASIG <EXPRESION> PUNTO_Y_COMA
+***/<FACTOR> -> ENTERO			1/***
+***/<TERMINO> -> <FACTOR>/***
+***/<EXPRESION> -> <TERMINO>/***
+***/<FACTOR> -> ENTERO			2/***
+***/<TERMINO> -> <FACTOR>/***
+***/<EXPRESION> -> <EXPRESION> OP_SUMA <TERMINO>/***
+***/<FACTOR> -> (<EXPRESION>)/***
+***/<TERMINO> -> <FACTOR>   -----------------------------------------------------------------------------/***
+***/<FACTOR> -> ENTERO			3/***
+***/<TERMINO> -> <FACTOR>   -----ESTA PISANDO LO QUE TIENE TERMINO, QUE ES TODO LA EXPRESION "(1+2)"-----/***
+***/<EXPRESION> -> <TERMINO>/***
+***/<FACTOR> -> ENTERO			4/***
+***/<TERMINO> -> <FACTOR>/***
+***/<EXPRESION> -> <EXPRESION> OP_SUMA <TERMINO>/***
+***/<FACTOR> -> (<EXPRESION>)/***
+***/<TERMINO> -> <TERMINO> OP_DIV <FACTOR>/***
+***/<EXPRESION> -> <TERMINO>/***
+***/<ASIGNACION> -> ID ASIG <EXPRESION> PUNTO_Y_COMA/***
