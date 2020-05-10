@@ -17,7 +17,7 @@
     nodo* E=NULL;
     nodo* FUN=NULL;
     nodo* COND=NULL;
-    nodo* PROG=NULL;
+    nodo* programaPtr = NULL;
     nodo* seleccionPtr = NULL;
     nodo* sentenciaPtr = NULL;
     nodo* comparadorPtr = NULL;
@@ -153,14 +153,14 @@ lista_variables:
 	;
 
 algoritmo: 
-    programa {algortimoPtr = PROG; escribirGragh(algortimoPtr); printRule("<ALGORITMO>", "<PROGRAMA>");}
+    programa {algortimoPtr = programaPtr; escribirGragh(algortimoPtr); printRule("<ALGORITMO>", "<PROGRAMA>");}
 	;
 
 programa:
     sentencia {
-        PROG = sentenciaPtr; printf("PROG -> sentenciaPtr"); printRule("<PROGRAMA>", "<SENTENCIA>");
+        programaPtr = sentenciaPtr; printf("programaPtr -> sentenciaPtr"); printRule("<PROGRAMA>", "<SENTENCIA>");
     }
-    | programa sentencia { PROG = crearNodo("PROGRAMA", PROG, sentenciaPtr); printf("PROG -> PROGRAMA, PROG, sentenciaPtr\n"); printRule("<PROGRAMA>", "<PROGRAMA> <SENTENCIA>");}
+    | programa sentencia { programaPtr = crearNodo("PROGRAMA", programaPtr, sentenciaPtr); printf("programaPtr -> PROGRAMA, programaPtr, sentenciaPtr\n"); printRule("<PROGRAMA>", "<PROGRAMA> <SENTENCIA>");}
     ;
 
 sentencia: 
@@ -180,7 +180,7 @@ salida:
     ;
 
 seleccion: 
-    IF P_A condicion P_C L_A programa L_C {seleccionPtr = crearNodo("IF", COND, PROG); printf("seleccionPtr -> IF, COND, PROG\n"); printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C");}
+    IF P_A condicion P_C L_A programa L_C {seleccionPtr = crearNodo("IF", COND, programaPtr); printf("seleccionPtr -> IF, COND, programaPtr\n"); printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C");}
     | IF P_A condicion P_C L_A programa L_C ELSE L_A programa L_C {
         printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C ELSE L_A <PROGRAMA> L_C");
     }
