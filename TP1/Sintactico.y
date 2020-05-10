@@ -18,11 +18,11 @@
     nodo* FUN=NULL;
     nodo* COND=NULL;
     nodo* PROG=NULL;
-    nodo* SELECCION=NULL;
-    nodo* sentenciaPtr=NULL;
-    nodo* comparadorPtr=NULL;
-    nodo* comparacionPtr=NULL;
-    nodo* asignacionPtr=NULL;
+    nodo* seleccionPtr = NULL;
+    nodo* sentenciaPtr = NULL;
+    nodo* comparadorPtr = NULL;
+    nodo* comparacionPtr = NULL;
+    nodo* asignacionPtr = NULL;
 
     nodo* pilaTest[100]; //por el momento con longitud fija, cambiar a dinamica...
     int pilaTope = 0;
@@ -164,7 +164,7 @@ programa:
     ;
 
 sentencia: 
-    seleccion {sentenciaPtr = SELECCION; printf("sentenciaPtr -> SELECCION\n"); printRule("<SENTENCIA>", "<SELECCION>");}
+    seleccion {sentenciaPtr = seleccionPtr; printf("sentenciaPtr -> seleccionPtr\n"); printRule("<SENTENCIA>", "<SELECCION>");}
     | asignacion {sentenciaPtr = asignacionPtr; printf("sentenciaPtr -> asignacionPtr\n"); printRule("<SENTENCIA>", "<ASIGNACION>");}
     | iteracion {printRule("<SENTENCIA>", "<ITERACION>");}
     | entrada PUNTO_Y_COMA {printRule("<SENTENCIA>", "<ENTRADA>");}
@@ -180,7 +180,7 @@ salida:
     ;
 
 seleccion: 
-    IF P_A condicion P_C L_A programa L_C {SELECCION = crearNodo("IF", COND, PROG); printf("SELECCION -> IF, COND, PROG\n"); printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C");}
+    IF P_A condicion P_C L_A programa L_C {seleccionPtr = crearNodo("IF", COND, PROG); printf("seleccionPtr -> IF, COND, PROG\n"); printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C");}
     | IF P_A condicion P_C L_A programa L_C ELSE L_A programa L_C {
         printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C ELSE L_A <PROGRAMA> L_C");
     }
