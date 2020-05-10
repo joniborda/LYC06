@@ -20,9 +20,9 @@
     nodo* PROG=NULL;
     nodo* SELECCION=NULL;
     nodo* SENTENCIA=NULL;
-    nodo* COMPARADOR=NULL;
-    nodo* COMPARACION=NULL;
-    nodo* ASIGNACION=NULL;
+    nodo* comparadorPtr=NULL;
+    nodo* comparacionPtr=NULL;
+    nodo* asignacionPtr=NULL;
 
     nodo* pilaTest[100]; //por el momento con longitud fija, cambiar a dinamica...
     int pilaTope = 0;
@@ -165,7 +165,7 @@ programa:
 
 sentencia: 
     seleccion {SENTENCIA = SELECCION; printf("SENTENCIA -> SELECCION\n"); printRule("<SENTENCIA>", "<SELECCION>");}
-    | asignacion {SENTENCIA = ASIGNACION; printf("SENTENCIA -> ASIGNACION\n"); printRule("<SENTENCIA>", "<ASIGNACION>");}
+    | asignacion {SENTENCIA = asignacionPtr; printf("SENTENCIA -> asignacionPtr\n"); printRule("<SENTENCIA>", "<ASIGNACION>");}
     | iteracion {printRule("<SENTENCIA>", "<ITERACION>");}
     | entrada PUNTO_Y_COMA {printRule("<SENTENCIA>", "<ENTRADA>");}
     | salida PUNTO_Y_COMA {printRule("<SENTENCIA>", "<SALIDA>");}
@@ -190,7 +190,7 @@ iteracion:
     WHILE P_A condicion P_C L_A programa L_C {printRule("<ITERACION>", "WHILE P_A <CONDICION> P_C L_A <PROGRAMA> L_C");};
 
 condicion: 
-    comparacion {COND = COMPARACION; printf("COND -> COMPARACION\n"); printRule("<CONDICION>", "<COMPARACION>");}
+    comparacion {COND = comparacionPtr; printf("COND -> comparacionPtr\n"); printRule("<CONDICION>", "<COMPARACION>");}
     | OP_NOT comparacion {printRule("<CONDICION>", "OP_NOT <COMPARACION>");}
     | comparacion OP_AND comparacion {printRule("<CONDICION>", "<COMPARACION> OP_AND <COMPARACION>");}
     | comparacion OP_OR comparacion {printRule("<CONDICION>", "<COMPARACION> OP_OR <COMPARACION>");}
@@ -204,20 +204,20 @@ comparacion:
             } 
             printRule("<COMPARACION>", "BETWEEN P_A ID COMA C_A <EXPRESION> PUNTO_Y_COMA <EXPRESION> C_C P_C");
         }
-    | expresion comparador expresion { validarComparacion(); COMPARACION = crearNodo("COMPARADOR", sacar_pila(), E); printf("COMPARCION -> COMPARADOR, Pila, E\n"); meter_pila(COMPARACION); printRule("<COMPARACION>", "<EXPRESION> <COMPARADOR> <EXPRESION>");}
+    | expresion comparador expresion { validarComparacion(); comparacionPtr = crearNodo("COMPARADOR", sacar_pila(), E); printf("COMPARCION -> comparacionPtr, Pila, E\n"); meter_pila(comparacionPtr); printRule("<COMPARACION>", "<EXPRESION> <COMPARADOR> <EXPRESION>");}
     ;
 
 comparador: 
-    CMP_MAYOR {COMPARADOR = crearHoja(">");printf("COMPARADOR -> CMP_MAYOR\n"); printRule("<COMPARADOR>", "OP_CMP_MAYOR");} 
-    | CMP_MENOR {COMPARADOR = crearHoja("<");printf("COMPARADOR -> CMP_MENOR\n"); printRule("<COMPARADOR>", "OP_CMP_MENOR");} 
-    | CMP_MAYOR_IGUAL {COMPARADOR = crearHoja(">=");printf("COMPARADOR -> CMP_MAYOR_IGUAL\n"); printRule("<COMPARADOR>", "OP_CMP_MAYOR_IGUAL");} 
-    | CMP_MENOR_IGUAL {COMPARADOR = crearHoja("<=");printf("COMPARADOR -> CMP_MENOR_IGUAL\n"); printRule("<COMPARADOR>", "OP_CMP_MENOR_IGUAL");} 
-    | CMP_IGUAL  {COMPARADOR = crearHoja("==");printf("COMPARADOR -> CMP_IGUAL\n"); printRule("<COMPARADOR>", "OP_CMP_IGUAL");};
+    CMP_MAYOR {comparadorPtr = crearHoja(">");printf("comparadorPtr -> CMP_MAYOR\n"); printRule("<COMPARADOR>", "OP_CMP_MAYOR");} 
+    | CMP_MENOR {comparadorPtr = crearHoja("<");printf("comparadorPtr -> CMP_MENOR\n"); printRule("<COMPARADOR>", "OP_CMP_MENOR");} 
+    | CMP_MAYOR_IGUAL {comparadorPtr = crearHoja(">=");printf("comparadorPtr -> CMP_MAYOR_IGUAL\n"); printRule("<COMPARADOR>", "OP_CMP_MAYOR_IGUAL");} 
+    | CMP_MENOR_IGUAL {comparadorPtr = crearHoja("<=");printf("comparadorPtr -> CMP_MENOR_IGUAL\n"); printRule("<COMPARADOR>", "OP_CMP_MENOR_IGUAL");} 
+    | CMP_IGUAL  {comparadorPtr = crearHoja("==");printf("comparadorPtr -> CMP_IGUAL\n"); printRule("<COMPARADOR>", "OP_CMP_IGUAL");};
 
 asignacion:
     ID ASIG expresion PUNTO_Y_COMA {
-        printf("ASIGNACION -> :=, ID, E\n");
-        ASIGNACION = crearNodo(":=",crearHoja($1), E);
+        printf("asignacionPtr -> :=, ID, E\n");
+        asignacionPtr = crearNodo(":=",crearHoja($1), E);
         sacar_pila(); // Descarta lo que tiene expresion
         verificarIdDeclarado(tsObtenerTipo($1)); 
         validarTiposDatoAsignacion(tsObtenerTipo($1)); 
