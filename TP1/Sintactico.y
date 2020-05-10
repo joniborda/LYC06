@@ -11,9 +11,9 @@
     int yylineno;
     FILE  *yyin;
     
-    nodo* algortimoPtr=NULL;
-    nodo* factorPtr=NULL;
-    nodo* T=NULL;
+    nodo* algortimoPtr = NULL;
+    nodo* factorPtr = NULL;
+    nodo* terminoPtr = NULL;
     nodo* E=NULL;
     nodo* FUN=NULL;
     nodo* COND=NULL;
@@ -234,34 +234,34 @@ asignacion:
 expresion: 
     asignacion {printRule("<EXPRESION>", "<ASIGNACION>");}
     | expresion OP_SUMA termino {
-        printf("E->+,pila,T\n");
-        E = crearNodo("+", sacar_pila(), T); meter_pila(E); printRule("<EXPRESION>", "<EXPRESION> OP_SUMA <TERMINO>");
+        printf("E -> +, pila, terminoPtr\n");
+        E = crearNodo("+", sacar_pila(), terminoPtr); meter_pila(E); printRule("<EXPRESION>", "<EXPRESION> OP_SUMA <TERMINO>");
     }
     | expresion OP_RESTA termino {
-        printf("E->-,pila,T\n");
-        E = crearNodo("-", sacar_pila(), T); meter_pila(E);
+        printf("E -> -, pila, terminoPtr\n");
+        E = crearNodo("-", sacar_pila(), terminoPtr); meter_pila(E);
         printRule("<EXPRESION>", "<EXPRESION> OP_RESTA <TERMINO>");
     }
     | termino {
-        printf("E->T\n");
-        E = T; meter_pila(E); printRule("<EXPRESION>", "<TERMINO>");
+        printf("E -> terminoPtr\n");
+        E = terminoPtr; meter_pila(E); printRule("<EXPRESION>", "<TERMINO>");
     }
     ;
 
 termino:
-    termino OP_MUL {meter_pila(T);} factor {
-        printf("T->*, pila, factorPtr\n");
-        T = crearNodo("*", sacar_pila(), factorPtr); 
+    termino OP_MUL {meter_pila(terminoPtr);} factor {
+        printf("terminoPtr -> *, pila, factorPtr\n");
+        terminoPtr = crearNodo("*", sacar_pila(), factorPtr); 
         printRule("<TERMINO>", "<TERMINO> OP_MUL <FACTOR>");
     }
-    | termino OP_DIV {meter_pila(T);} factor {
-        printf("T->/, pila, factorPtr\n");
-        T = crearNodo("/", sacar_pila(), factorPtr);
+    | termino OP_DIV {meter_pila(terminoPtr);} factor {
+        printf("terminoPtr -> /, pila, factorPtr\n");
+        terminoPtr = crearNodo("/", sacar_pila(), factorPtr);
         printRule("<TERMINO>", "<TERMINO> OP_DIV <FACTOR>");
     }
     | factor {
-        printf("T -> factorPtr\n");
-        T = factorPtr; printRule("<TERMINO>", "<FACTOR>");
+        printf("terminoPtr -> factorPtr\n");
+        terminoPtr = factorPtr; printRule("<TERMINO>", "<FACTOR>");
     }
     ;
 
