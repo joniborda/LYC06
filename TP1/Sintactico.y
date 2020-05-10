@@ -19,7 +19,7 @@
     nodo* COND=NULL;
     nodo* PROG=NULL;
     nodo* SELECCION=NULL;
-    nodo* SENTENCIA=NULL;
+    nodo* sentenciaPtr=NULL;
     nodo* comparadorPtr=NULL;
     nodo* comparacionPtr=NULL;
     nodo* asignacionPtr=NULL;
@@ -158,14 +158,14 @@ algoritmo:
 
 programa:
     sentencia {
-        PROG = SENTENCIA; printf("PROG -> SENTENCIA"); printRule("<PROGRAMA>", "<SENTENCIA>");
+        PROG = sentenciaPtr; printf("PROG -> sentenciaPtr"); printRule("<PROGRAMA>", "<SENTENCIA>");
     }
-    | programa sentencia { PROG = crearNodo("PROGRAMA", PROG, SENTENCIA); printf("PROG -> PROGRAMA, PROG, SENTENCIA\n"); printRule("<PROGRAMA>", "<PROGRAMA> <SENTENCIA>");}
+    | programa sentencia { PROG = crearNodo("PROGRAMA", PROG, sentenciaPtr); printf("PROG -> PROGRAMA, PROG, sentenciaPtr\n"); printRule("<PROGRAMA>", "<PROGRAMA> <SENTENCIA>");}
     ;
 
 sentencia: 
-    seleccion {SENTENCIA = SELECCION; printf("SENTENCIA -> SELECCION\n"); printRule("<SENTENCIA>", "<SELECCION>");}
-    | asignacion {SENTENCIA = asignacionPtr; printf("SENTENCIA -> asignacionPtr\n"); printRule("<SENTENCIA>", "<ASIGNACION>");}
+    seleccion {sentenciaPtr = SELECCION; printf("sentenciaPtr -> SELECCION\n"); printRule("<SENTENCIA>", "<SELECCION>");}
+    | asignacion {sentenciaPtr = asignacionPtr; printf("sentenciaPtr -> asignacionPtr\n"); printRule("<SENTENCIA>", "<ASIGNACION>");}
     | iteracion {printRule("<SENTENCIA>", "<ITERACION>");}
     | entrada PUNTO_Y_COMA {printRule("<SENTENCIA>", "<ENTRADA>");}
     | salida PUNTO_Y_COMA {printRule("<SENTENCIA>", "<SALIDA>");}
