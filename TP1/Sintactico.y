@@ -15,7 +15,7 @@
     nodo* factorPtr = NULL;
     nodo* terminoPtr = NULL;
     nodo* expresionPtr = NULL;
-    nodo* FUN=NULL;
+    nodo* funcionPtr = NULL;
     nodo* condicionPtr = NULL;
     nodo* programaPtr = NULL;
     nodo* seleccionPtr = NULL;
@@ -291,14 +291,14 @@ factor:
         printRule("<FACTOR>", "FLOAT");
     }
 	| funcion {
-        printf("factorPtr -> FUN\n");
-        factorPtr = FUN;
+        printf("factorPtr -> funcionPtr\n");
+        factorPtr = funcionPtr;
         printRule("<FACTOR>", "<FUNCION>");
     }
 	;
 	
 funcion:
-	FACT P_A expresion P_C {FUN = expresionPtr; printRule("<FUNCION>", "FACTORIAL(<EXPRESION>)");}
+	FACT P_A expresion P_C {funcionPtr = expresionPtr; printRule("<FUNCION>", "FACTORIAL(<EXPRESION>)");}
 	| COMB P_A expresion COMA expresion P_C	{printRule("<FUNCION>", "COMBINATORIO(<EXPRESION>, <EXPRESION>)");}
 	;
 %%
