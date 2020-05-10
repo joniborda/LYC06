@@ -184,9 +184,12 @@ salida:
 seleccion: 
     IF P_A condicion P_C L_A programa L_C {
         seleccionPtr = crearNodo("IF", condicionPtr, programaPtr);
-        printf("seleccionPtr -> IF, Pila, programaPtr\n"); 
+        apilar(seleccionPtr);
+        printf("seleccionPtr -> IF, condcionPtr, programaPtr\n"); 
         printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C");}
-    | IF P_A condicion P_C L_A programa L_C ELSE L_A programa L_C {
+    | IF P_A condicion P_C L_A programa L_C {apilar(programaPtr);} ELSE L_A programa L_C {
+        seleccionPtr = crearNodo("IF", condicionPtr, crearNodo("CUERPO", desapilar(), programaPtr));
+        printf("seleccionPtr -> IF, Pila, programaPtr\n"); 
         printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C ELSE L_A <PROGRAMA> L_C");
     }
     ;
