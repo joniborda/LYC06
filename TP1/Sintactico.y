@@ -23,6 +23,7 @@
     nodo* comparadorPtr = NULL;
     nodo* comparacionPtr = NULL;
     nodo* asignacionPtr = NULL;
+    nodo* iteracionPtr = NULL;
 
     nodo* pilaTest[100]; //por el momento con longitud fija, cambiar a dinamica...
     int pilaTope = 0;
@@ -171,10 +172,19 @@ programa:
 sentencia: 
     seleccion {
         sentenciaPtr = desapilar(); 
-        printf("sentenciaPtr -> seleccionPtr\n"); 
-        printRule("<SENTENCIA>", "<SELECCION>");}
-    | asignacion {sentenciaPtr = asignacionPtr; printf("sentenciaPtr -> asignacionPtr\n"); printRule("<SENTENCIA>", "<ASIGNACION>");}
-    | iteracion {printRule("<SENTENCIA>", "<ITERACION>");}
+        printf("sentenciaPtr -> Pila\n"); 
+        printRule("<SENTENCIA>", "<SELECCION>");
+    }
+    | asignacion {
+        sentenciaPtr = asignacionPtr; 
+        printf("sentenciaPtr -> asignacionPtr\n");
+        printRule("<SENTENCIA>", "<ASIGNACION>");
+    }
+    | iteracion {
+        sentenciaPtr = desapilar();
+        printf("sentenciaPtr -> Pila\n");
+        printRule("<SENTENCIA>", "<ITERACION>");
+    }
     | entrada PUNTO_Y_COMA {printRule("<SENTENCIA>", "<ENTRADA>");}
     | salida PUNTO_Y_COMA {printRule("<SENTENCIA>", "<SALIDA>");}
     ;
@@ -202,7 +212,12 @@ seleccion:
     ;
 
 iteracion: 
-    WHILE P_A condicion P_C L_A programa L_C {printRule("<ITERACION>", "WHILE P_A <CONDICION> P_C L_A <PROGRAMA> L_C");};
+    WHILE P_A condicion P_C L_A programa L_C {
+        iteracionPtr = crearNodo("WHILE", desapilar(), programaPtr);
+        apilar(iteracionPtr);
+        printRule("<ITERACION>", "WHILE P_A <CONDICION> P_C L_A <PROGRAMA> L_C");
+    }
+    ;
 
 condicion: 
     comparacion {
