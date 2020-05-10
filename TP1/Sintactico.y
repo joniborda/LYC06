@@ -16,7 +16,7 @@
     nodo* terminoPtr = NULL;
     nodo* E=NULL;
     nodo* FUN=NULL;
-    nodo* COND=NULL;
+    nodo* condicionPtr = NULL;
     nodo* programaPtr = NULL;
     nodo* seleccionPtr = NULL;
     nodo* sentenciaPtr = NULL;
@@ -180,7 +180,7 @@ salida:
     ;
 
 seleccion: 
-    IF P_A condicion P_C L_A programa L_C {seleccionPtr = crearNodo("IF", COND, programaPtr); printf("seleccionPtr -> IF, COND, programaPtr\n"); printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C");}
+    IF P_A condicion P_C L_A programa L_C {seleccionPtr = crearNodo("IF", condicionPtr, programaPtr); printf("seleccionPtr -> IF, condicionPtr, programaPtr\n"); printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C");}
     | IF P_A condicion P_C L_A programa L_C ELSE L_A programa L_C {
         printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C ELSE L_A <PROGRAMA> L_C");
     }
@@ -190,7 +190,7 @@ iteracion:
     WHILE P_A condicion P_C L_A programa L_C {printRule("<ITERACION>", "WHILE P_A <CONDICION> P_C L_A <PROGRAMA> L_C");};
 
 condicion: 
-    comparacion {COND = comparacionPtr; printf("COND -> comparacionPtr\n"); printRule("<CONDICION>", "<COMPARACION>");}
+    comparacion {condicionPtr = comparacionPtr; printf("condicionPtr -> comparacionPtr\n"); printRule("<CONDICION>", "<COMPARACION>");}
     | OP_NOT comparacion {printRule("<CONDICION>", "OP_NOT <COMPARACION>");}
     | comparacion OP_AND comparacion {printRule("<CONDICION>", "<COMPARACION> OP_AND <COMPARACION>");}
     | comparacion OP_OR comparacion {printRule("<CONDICION>", "<COMPARACION> OP_OR <COMPARACION>");}
