@@ -162,11 +162,17 @@ programa:
     sentencia {
         programaPtr = sentenciaPtr; printf("programaPtr -> sentenciaPtr\n"); printRule("<PROGRAMA>", "<SENTENCIA>");
     }
-    | programa sentencia { programaPtr = crearNodo("PROGRAMA", programaPtr, sentenciaPtr); printf("programaPtr -> PROGRAMA, programaPtr, sentenciaPtr\n"); printRule("<PROGRAMA>", "<PROGRAMA> <SENTENCIA>");}
+    | programa sentencia { 
+        programaPtr = crearNodo("PROGRAMA", programaPtr, sentenciaPtr); 
+        printf("programaPtr -> PROGRAMA, programaPtr, sentenciaPtr\n"); 
+        printRule("<PROGRAMA>", "<PROGRAMA> <SENTENCIA>");}
     ;
 
 sentencia: 
-    seleccion {sentenciaPtr = seleccionPtr; printf("sentenciaPtr -> seleccionPtr\n"); printRule("<SENTENCIA>", "<SELECCION>");}
+    seleccion {
+        sentenciaPtr = desapilar(); 
+        printf("sentenciaPtr -> seleccionPtr\n"); 
+        printRule("<SENTENCIA>", "<SELECCION>");}
     | asignacion {sentenciaPtr = asignacionPtr; printf("sentenciaPtr -> asignacionPtr\n"); printRule("<SENTENCIA>", "<ASIGNACION>");}
     | iteracion {printRule("<SENTENCIA>", "<ITERACION>");}
     | entrada PUNTO_Y_COMA {printRule("<SENTENCIA>", "<ENTRADA>");}
@@ -183,12 +189,13 @@ salida:
 
 seleccion: 
     IF P_A condicion P_C L_A programa L_C {
-        seleccionPtr = crearNodo("IF", condicionPtr, programaPtr);
+        seleccionPtr = crearNodo("IF", desapilar(), programaPtr);
         apilar(seleccionPtr);
-        printf("seleccionPtr -> IF, condcionPtr, programaPtr\n"); 
+        printf("seleccionPtr -> IF, condicionPtr, programaPtr\n"); 
         printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C");}
     | IF P_A condicion P_C L_A programa L_C {apilar(programaPtr);} ELSE L_A programa L_C {
-        seleccionPtr = crearNodo("IF", condicionPtr, crearNodo("CUERPO", desapilar(), programaPtr));
+        seleccionPtr = crearNodo("IF", desapilar(), crearNodo("CUERPO", desapilar(), programaPtr));
+        apilar(seleccionPtr);
         printf("seleccionPtr -> IF, Pila, programaPtr\n"); 
         printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C ELSE L_A <PROGRAMA> L_C");
     }
@@ -199,7 +206,7 @@ iteracion:
 
 condicion: 
     comparacion {
-        condicionPtr = comparacionPtr; printf("condicionPtr -> comparacionPtr\n"); 
+        condicionPtr = comparacionPtr; printf("condicionPtr -> comparacionPtr\n");
         printRule("<CONDICION>", "<COMPARACION>");}
     | OP_NOT comparacion { 
         strcpy(comparacionPtr -> dato, obtenerComparadorOpuesto(comparacionPtr));
@@ -208,10 +215,12 @@ condicion:
         printRule("<CONDICION>", "OP_NOT <COMPARACION>");}
     | comparacion OP_AND comparacion {
         condicionPtr = crearNodo("AND", desapilar(), desapilar());
+        apilar(condicionPtr);
         printf("condicionPtr -> OP_AND, Pila, Pila");
         printRule("<CONDICION>", "<COMPARACION> OP_AND <COMPARACION>");}
     | comparacion OP_OR comparacion {
         condicionPtr = crearNodo("OR", desapilar(), desapilar());
+        apilar(condicionPtr);
         printf("condicionPtr -> OP_OR, Pila, Pila");
         printRule("<CONDICION>", "<COMPARACION> OP_OR <COMPARACION>");}
     ;
