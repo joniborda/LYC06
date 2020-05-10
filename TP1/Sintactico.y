@@ -14,7 +14,7 @@
     nodo* algortimoPtr = NULL;
     nodo* factorPtr = NULL;
     nodo* terminoPtr = NULL;
-    nodo* E=NULL;
+    nodo* expresionPtr = NULL;
     nodo* FUN=NULL;
     nodo* condicionPtr = NULL;
     nodo* programaPtr = NULL;
@@ -204,7 +204,7 @@ comparacion:
             } 
             printRule("<COMPARACION>", "BETWEEN P_A ID COMA C_A <EXPRESION> PUNTO_Y_COMA <EXPRESION> C_C P_C");
         }
-    | expresion comparador expresion { validarComparacion(); comparacionPtr = crearNodo("COMPARADOR", sacar_pila(), E); printf("COMPARCION -> comparacionPtr, Pila, E\n"); meter_pila(comparacionPtr); printRule("<COMPARACION>", "<EXPRESION> <COMPARADOR> <EXPRESION>");}
+    | expresion comparador expresion { validarComparacion(); comparacionPtr = crearNodo("COMPARADOR", sacar_pila(), expresionPtr); printf("COMPARCION -> comparacionPtr, Pila, E\n"); meter_pila(comparacionPtr); printRule("<COMPARACION>", "<EXPRESION> <COMPARADOR> <EXPRESION>");}
     ;
 
 comparador: 
@@ -216,8 +216,8 @@ comparador:
 
 asignacion:
     ID ASIG expresion PUNTO_Y_COMA {
-        printf("asignacionPtr -> :=, ID, E\n");
-        asignacionPtr = crearNodo(":=",crearHoja($1), E);
+        printf("asignacionPtr -> :=, ID, expresionPtr\n");
+        asignacionPtr = crearNodo(":=", crearHoja($1), expresionPtr);
         sacar_pila(); // Descarta lo que tiene expresion
         verificarIdDeclarado(tsObtenerTipo($1)); 
         validarTiposDatoAsignacion(tsObtenerTipo($1)); 
@@ -234,17 +234,17 @@ asignacion:
 expresion: 
     asignacion {printRule("<EXPRESION>", "<ASIGNACION>");}
     | expresion OP_SUMA termino {
-        printf("E -> +, pila, terminoPtr\n");
-        E = crearNodo("+", sacar_pila(), terminoPtr); meter_pila(E); printRule("<EXPRESION>", "<EXPRESION> OP_SUMA <TERMINO>");
+        printf("expresionPtr -> +, pila, terminoPtr\n");
+        expresionPtr = crearNodo("+", sacar_pila(), terminoPtr); meter_pila(expresionPtr); printRule("<EXPRESION>", "<EXPRESION> OP_SUMA <TERMINO>");
     }
     | expresion OP_RESTA termino {
-        printf("E -> -, pila, terminoPtr\n");
-        E = crearNodo("-", sacar_pila(), terminoPtr); meter_pila(E);
+        printf("expresionPtr -> -, pila, terminoPtr\n");
+        expresionPtr = crearNodo("-", sacar_pila(), terminoPtr); meter_pila(expresionPtr);
         printRule("<EXPRESION>", "<EXPRESION> OP_RESTA <TERMINO>");
     }
     | termino {
-        printf("E -> terminoPtr\n");
-        E = terminoPtr; meter_pila(E); printRule("<EXPRESION>", "<TERMINO>");
+        printf("expresionPtr -> terminoPtr\n");
+        expresionPtr = terminoPtr; meter_pila(expresionPtr); printRule("<EXPRESION>", "<TERMINO>");
     }
     ;
 
@@ -298,7 +298,7 @@ factor:
 	;
 	
 funcion:
-	FACT P_A expresion P_C {FUN = E;printRule("<FUNCION>", "FACTORIAL(<EXPRESION>)");}
+	FACT P_A expresion P_C {FUN = expresionPtr; printRule("<FUNCION>", "FACTORIAL(<EXPRESION>)");}
 	| COMB P_A expresion COMA expresion P_C	{printRule("<FUNCION>", "COMBINATORIO(<EXPRESION>, <EXPRESION>)");}
 	;
 %%
