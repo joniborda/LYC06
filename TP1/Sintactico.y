@@ -207,7 +207,9 @@ comparador:
 
 asignacion:
     ID ASIG expresion PUNTO_Y_COMA {
+        printf("A->:=,ID,E");
         A = crearNodo(":=",crearHoja($1),E);
+        sacar_pila(); // Descarta lo que tiene expresion
         verificarIdDeclarado(tsObtenerTipo($1)); 
         validarTiposDatoAsignacion(tsObtenerTipo($1)); 
         printRule("<ASIGNACION>", "ID ASIG <EXPRESION> PUNTO_Y_COMA");}
@@ -223,47 +225,64 @@ asignacion:
 expresion: 
     asignacion {printRule("<EXPRESION>", "<ASIGNACION>");}
     | expresion OP_SUMA termino {
+        printf("E->+,pila,T\n");
         E = crearNodo("+", sacar_pila(), T); meter_pila(E); printRule("<EXPRESION>", "<EXPRESION> OP_SUMA <TERMINO>");
     }
     | expresion OP_RESTA termino {
+        printf("E->-,pila,T\n");
         E = crearNodo("-", sacar_pila(), T); meter_pila(E);
         printRule("<EXPRESION>", "<EXPRESION> OP_RESTA <TERMINO>");
     }
-    | termino {E = T; meter_pila(E); printRule("<EXPRESION>", "<TERMINO>");}
+    | termino {
+        printf("E->T\n");
+        E = T; meter_pila(E); printRule("<EXPRESION>", "<TERMINO>");
+    }
     ;
 
 termino:
     termino OP_MUL {meter_pila(T);} factor {
+        printf("T->*, pila, F\n");
         T = crearNodo("*", sacar_pila(), F); 
         printRule("<TERMINO>", "<TERMINO> OP_MUL <FACTOR>");
     }
     | termino OP_DIV {meter_pila(T);} factor {
+        printf("T->/, pila, F\n");
         T = crearNodo("/", sacar_pila(), F);
         printRule("<TERMINO>", "<TERMINO> OP_DIV <FACTOR>");
     }
-    | factor {T = F; printRule("<TERMINO>", "<FACTOR>");}
+    | factor {
+        printf("T->F\n");
+        T = F; printRule("<TERMINO>", "<FACTOR>");
+    }
     ;
 
 factor: 
-    P_A expresion P_C { F = sacar_pila(); printRule("<FACTOR>", "(<EXPRESION>)");}
+    P_A expresion P_C {
+        printf("F->pila\n");
+        F = sacar_pila(); printRule("<FACTOR>", "(<EXPRESION>)");
+    }
     
     | ID {
+        printf("F->id\n");
         F = crearHoja($1);
         verificarIdDeclarado(tsObtenerTipo($1));
         agregarTipoDatoArray(tsObtenerTipo($1));
         printRule("<FACTOR>", "ID");
     }
     | ENTERO {
+        printf("F->ENT\n");
         F = crearHoja($1);
         agregarTipoDatoArray(tsObtenerTipo($1));
         printRule("<FACTOR>", "ENTERO");
     }
     | FLOAT {
+        printf("F->FLOAT\n");
         F = crearHoja($1);
         agregarTipoDatoArray(tsObtenerTipo($1));
         printRule("<FACTOR>", "FLOAT");
     }
 	| funcion {
+        printf("F->FUN\n");
         F = FUN;
         printRule("<FACTOR>", "<FUNCION>");
     }
@@ -426,13 +445,13 @@ int main(int argc,char *argv[]) {
 }
 
 nodo * meter_pila(nodo *arg) {
-    printf("...Guarde...");
+    printf("...Guarde...\n");
     pilaTest[pilaTope] = arg;
     pilaTope++;
 }
 
 nodo * sacar_pila() {
-     printf("...Saque...");
+     printf("...Saque...\n");
     pilaTope--;
     return pilaTest[pilaTope];
 }
