@@ -9,6 +9,7 @@ nodo* crearNodo(const char *d, nodo* hI, nodo* hD) {
     strcpy(nodoPadre->dato, d);
     nodoPadre->hijoDer = hD;
     nodoPadre->hijoIzq = hI;
+    printf("NODO [%s]\nIZQ[%s], DER[%s]\n", nodoPadre->dato, nodoPadre->hijoIzq->dato, nodoPadre->hijoDer->dato);
     return nodoPadre;
 }
 

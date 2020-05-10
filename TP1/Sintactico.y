@@ -45,6 +45,7 @@
     int validarExpresionString();
     void validarComparacion();
     void mostrarEstadoPila();
+    char * obtenerComparadorOpuesto(nodo* );
 
     nodo* apilar(nodo*);
     nodo* desapilar();
@@ -182,7 +183,7 @@ salida:
 
 seleccion: 
     IF P_A condicion P_C L_A programa L_C {
-        seleccionPtr = crearNodo("IF", desapilar(), programaPtr);
+        seleccionPtr = crearNodo("IF", condicionPtr, programaPtr);
         printf("seleccionPtr -> IF, Pila, programaPtr\n"); 
         printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C");}
     | IF P_A condicion P_C L_A programa L_C ELSE L_A programa L_C {
@@ -194,10 +195,22 @@ iteracion:
     WHILE P_A condicion P_C L_A programa L_C {printRule("<ITERACION>", "WHILE P_A <CONDICION> P_C L_A <PROGRAMA> L_C");};
 
 condicion: 
-    comparacion {condicionPtr = comparacionPtr; printf("condicionPtr -> comparacionPtr\n"); printRule("<CONDICION>", "<COMPARACION>");}
-    | OP_NOT comparacion {printRule("<CONDICION>", "OP_NOT <COMPARACION>");}
-    | comparacion OP_AND comparacion {printRule("<CONDICION>", "<COMPARACION> OP_AND <COMPARACION>");}
-    | comparacion OP_OR comparacion {printRule("<CONDICION>", "<COMPARACION> OP_OR <COMPARACION>");}
+    comparacion {
+        condicionPtr = comparacionPtr; printf("condicionPtr -> comparacionPtr\n"); 
+        printRule("<CONDICION>", "<COMPARACION>");}
+    | OP_NOT comparacion { 
+        strcpy(comparacionPtr -> dato, obtenerComparadorOpuesto(comparacionPtr));
+        condicionPtr = comparacionPtr;
+        printf("condicionPtr -> OP_NOT");
+        printRule("<CONDICION>", "OP_NOT <COMPARACION>");}
+    | comparacion OP_AND comparacion {
+        condicionPtr = crearNodo("AND", desapilar(), desapilar());
+        printf("condicionPtr -> OP_AND, Pila, Pila");
+        printRule("<CONDICION>", "<COMPARACION> OP_AND <COMPARACION>");}
+    | comparacion OP_OR comparacion {
+        condicionPtr = crearNodo("OR", desapilar(), desapilar());
+        printf("condicionPtr -> OP_OR, Pila, Pila");
+        printRule("<CONDICION>", "<COMPARACION> OP_OR <COMPARACION>");}
     ;
 
 comparacion: 
@@ -489,3 +502,20 @@ void mostrarEstadoPila() {
     }
     printf("\n");
 }
+
+char * obtenerComparadorOpuesto(nodo* raiz) {
+    if(strcmp(raiz->dato, "==") == 0) {
+        return "!=";
+    } else if (strcmp(raiz->dato, "!=") == 0) {
+        return "==";
+    } else if (strcmp(raiz->dato, "<") == 0) {
+        return ">=";
+    } else if (strcmp(raiz->dato, "<=") == 0) {
+        return ">";
+    } else if (strcmp(raiz->dato, ">") == 0) {
+        return "<=";
+    } else if (strcmp(raiz->dato, ">=") == 0) {
+        return "<";
+    }
+}
+    
