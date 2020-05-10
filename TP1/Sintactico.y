@@ -205,7 +205,12 @@ comparacion:
             } 
             printRule("<COMPARACION>", "BETWEEN P_A ID COMA C_A <EXPRESION> PUNTO_Y_COMA <EXPRESION> C_C P_C");
         }
-    | expresion comparador expresion { validarComparacion(); comparacionPtr = crearNodo("COMPARADOR", desapilar(), expresionPtr); printf("COMPARCION -> comparacionPtr, Pila, E\n"); apilar(comparacionPtr); printRule("<COMPARACION>", "<EXPRESION> <COMPARADOR> <EXPRESION>");}
+    | expresion comparador expresion { 
+        validarComparacion(); 
+        comparacionPtr = crearNodo(comparadorPtr -> dato, desapilar(), desapilar()); 
+        printf("COMPARACION -> comparacionPtr, Pila, expresionPtr\n"); 
+        apilar(comparacionPtr); 
+        printRule("<COMPARACION>", "<EXPRESION> <COMPARADOR> <EXPRESION>");}
     ;
 
 comparador: 
