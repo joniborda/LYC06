@@ -181,7 +181,10 @@ salida:
     ;
 
 seleccion: 
-    IF P_A condicion P_C L_A programa L_C {seleccionPtr = crearNodo("IF", condicionPtr, programaPtr); printf("seleccionPtr -> IF, condicionPtr, programaPtr\n"); printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C");}
+    IF P_A condicion P_C L_A programa L_C {
+        seleccionPtr = crearNodo("IF", desapilar(), programaPtr);
+        printf("seleccionPtr -> IF, Pila, programaPtr\n"); 
+        printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C");}
     | IF P_A condicion P_C L_A programa L_C ELSE L_A programa L_C {
         printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C ELSE L_A <PROGRAMA> L_C");
     }
@@ -208,7 +211,7 @@ comparacion:
     | expresion comparador expresion { 
         validarComparacion(); 
         comparacionPtr = crearNodo(comparadorPtr -> dato, desapilar(), desapilar()); 
-        printf("COMPARACION -> comparacionPtr, Pila, expresionPtr\n"); 
+        printf("COMPARACION -> comparacionPtr, Pila, Pila\n"); 
         apilar(comparacionPtr); 
         printRule("<COMPARACION>", "<EXPRESION> <COMPARADOR> <EXPRESION>");}
     ;
@@ -222,9 +225,8 @@ comparador:
 
 asignacion:
     ID ASIG expresion PUNTO_Y_COMA {
-        printf("asignacionPtr -> :=, ID, expresionPtr\n");
-        asignacionPtr = crearNodo(":=", crearHoja($1), expresionPtr);
-        desapilar(); // Descarta lo que tiene expresion
+        printf("asignacionPtr -> :=, ID, Pila\n");
+        asignacionPtr = crearNodo(":=", crearHoja($1), desapilar());
         verificarIdDeclarado(tsObtenerTipo($1)); 
         validarTiposDatoAsignacion(tsObtenerTipo($1)); 
         printRule("<ASIGNACION>", "ID ASIG <EXPRESION> PUNTO_Y_COMA");}
@@ -241,33 +243,38 @@ expresion:
     asignacion {printRule("<EXPRESION>", "<ASIGNACION>");}
     | expresion OP_SUMA termino {
         printf("expresionPtr -> +, pila, terminoPtr\n");
-        expresionPtr = crearNodo("+", desapilar(), terminoPtr); apilar(expresionPtr); printRule("<EXPRESION>", "<EXPRESION> OP_SUMA <TERMINO>");
+        apilar(crearNodo("+", desapilar(), terminoPtr)); 
+        printRule("<EXPRESION>", "<EXPRESION> OP_SUMA <TERMINO>");
     }
     | expresion OP_RESTA termino {
         printf("expresionPtr -> -, pila, terminoPtr\n");
-        expresionPtr = crearNodo("-", desapilar(), terminoPtr); apilar(expresionPtr);
+        apilar(crearNodo("-", desapilar(), terminoPtr));
         printRule("<EXPRESION>", "<EXPRESION> OP_RESTA <TERMINO>");
     }
     | termino {
         printf("expresionPtr -> terminoPtr\n");
-        expresionPtr = terminoPtr; apilar(expresionPtr); printRule("<EXPRESION>", "<TERMINO>");
+        apilar(terminoPtr); 
+        printRule("<EXPRESION>", "<TERMINO>");
     }
     ;
 
 termino:
-    termino OP_MUL {apilar(terminoPtr);} factor {
+    termino OP_MUL {apilar(terminoPtr); printRule("<TERMINO>", "<TERMINO> OP_MUL ...");} factor 
+    {
         printf("terminoPtr -> *, pila, factorPtr\n");
         terminoPtr = crearNodo("*", desapilar(), factorPtr); 
         printRule("<TERMINO>", "<TERMINO> OP_MUL <FACTOR>");
     }
-    | termino OP_DIV {apilar(terminoPtr);} factor {
+    | termino OP_DIV {apilar(terminoPtr); printRule("<TERMINO>", "<TERMINO> OP_DIV ...");} factor 
+    {
         printf("terminoPtr -> /, pila, factorPtr\n");
         terminoPtr = crearNodo("/", desapilar(), factorPtr);
         printRule("<TERMINO>", "<TERMINO> OP_DIV <FACTOR>");
     }
     | factor {
         printf("terminoPtr -> factorPtr\n");
-        terminoPtr = factorPtr; printRule("<TERMINO>", "<FACTOR>");
+        terminoPtr = factorPtr; 
+        printRule("<TERMINO>", "<FACTOR>");
     }
     ;
 
@@ -304,14 +311,14 @@ factor:
 	;
 	
 funcion:
-	FACT P_A expresion P_C {funcionPtr = expresionPtr; printRule("<FUNCION>", "FACTORIAL(<EXPRESION>)");}
+	FACT P_A expresion P_C {funcionPtr = desapilar(); printRule("<FUNCION>", "FACTORIAL(<EXPRESION>)");}
 	| COMB P_A expresion COMA expresion P_C	{printRule("<FUNCION>", "COMBINATORIO(<EXPRESION>, <EXPRESION>)");}
 	;
 %%
 
 void printRule(const char *lhs, const char *rhs) {
     if (YYDEBUG) {
-        printf("%s -> %s\n", lhs, rhs);
+        printf("%s -> %s\n\n", lhs, rhs);
     }
     return;
 }
