@@ -44,9 +44,10 @@
     int validarExpresionReal();
     int validarExpresionString();
     void validarComparacion();
+    void mostrarEstadoPila();
 
-    nodo* meter_pila(nodo*);
-    nodo* sacar_pila();
+    nodo* apilar(nodo*);
+    nodo* desapilar();
 %}
 
 %union {
@@ -158,7 +159,7 @@ algoritmo:
 
 programa:
     sentencia {
-        programaPtr = sentenciaPtr; printf("programaPtr -> sentenciaPtr"); printRule("<PROGRAMA>", "<SENTENCIA>");
+        programaPtr = sentenciaPtr; printf("programaPtr -> sentenciaPtr\n"); printRule("<PROGRAMA>", "<SENTENCIA>");
     }
     | programa sentencia { programaPtr = crearNodo("PROGRAMA", programaPtr, sentenciaPtr); printf("programaPtr -> PROGRAMA, programaPtr, sentenciaPtr\n"); printRule("<PROGRAMA>", "<PROGRAMA> <SENTENCIA>");}
     ;
@@ -204,7 +205,7 @@ comparacion:
             } 
             printRule("<COMPARACION>", "BETWEEN P_A ID COMA C_A <EXPRESION> PUNTO_Y_COMA <EXPRESION> C_C P_C");
         }
-    | expresion comparador expresion { validarComparacion(); comparacionPtr = crearNodo("COMPARADOR", sacar_pila(), expresionPtr); printf("COMPARCION -> comparacionPtr, Pila, E\n"); meter_pila(comparacionPtr); printRule("<COMPARACION>", "<EXPRESION> <COMPARADOR> <EXPRESION>");}
+    | expresion comparador expresion { validarComparacion(); comparacionPtr = crearNodo("COMPARADOR", desapilar(), expresionPtr); printf("COMPARCION -> comparacionPtr, Pila, E\n"); apilar(comparacionPtr); printRule("<COMPARACION>", "<EXPRESION> <COMPARADOR> <EXPRESION>");}
     ;
 
 comparador: 
@@ -218,7 +219,7 @@ asignacion:
     ID ASIG expresion PUNTO_Y_COMA {
         printf("asignacionPtr -> :=, ID, expresionPtr\n");
         asignacionPtr = crearNodo(":=", crearHoja($1), expresionPtr);
-        sacar_pila(); // Descarta lo que tiene expresion
+        desapilar(); // Descarta lo que tiene expresion
         verificarIdDeclarado(tsObtenerTipo($1)); 
         validarTiposDatoAsignacion(tsObtenerTipo($1)); 
         printRule("<ASIGNACION>", "ID ASIG <EXPRESION> PUNTO_Y_COMA");}
@@ -235,28 +236,28 @@ expresion:
     asignacion {printRule("<EXPRESION>", "<ASIGNACION>");}
     | expresion OP_SUMA termino {
         printf("expresionPtr -> +, pila, terminoPtr\n");
-        expresionPtr = crearNodo("+", sacar_pila(), terminoPtr); meter_pila(expresionPtr); printRule("<EXPRESION>", "<EXPRESION> OP_SUMA <TERMINO>");
+        expresionPtr = crearNodo("+", desapilar(), terminoPtr); apilar(expresionPtr); printRule("<EXPRESION>", "<EXPRESION> OP_SUMA <TERMINO>");
     }
     | expresion OP_RESTA termino {
         printf("expresionPtr -> -, pila, terminoPtr\n");
-        expresionPtr = crearNodo("-", sacar_pila(), terminoPtr); meter_pila(expresionPtr);
+        expresionPtr = crearNodo("-", desapilar(), terminoPtr); apilar(expresionPtr);
         printRule("<EXPRESION>", "<EXPRESION> OP_RESTA <TERMINO>");
     }
     | termino {
         printf("expresionPtr -> terminoPtr\n");
-        expresionPtr = terminoPtr; meter_pila(expresionPtr); printRule("<EXPRESION>", "<TERMINO>");
+        expresionPtr = terminoPtr; apilar(expresionPtr); printRule("<EXPRESION>", "<TERMINO>");
     }
     ;
 
 termino:
-    termino OP_MUL {meter_pila(terminoPtr);} factor {
+    termino OP_MUL {apilar(terminoPtr);} factor {
         printf("terminoPtr -> *, pila, factorPtr\n");
-        terminoPtr = crearNodo("*", sacar_pila(), factorPtr); 
+        terminoPtr = crearNodo("*", desapilar(), factorPtr); 
         printRule("<TERMINO>", "<TERMINO> OP_MUL <FACTOR>");
     }
-    | termino OP_DIV {meter_pila(terminoPtr);} factor {
+    | termino OP_DIV {apilar(terminoPtr);} factor {
         printf("terminoPtr -> /, pila, factorPtr\n");
-        terminoPtr = crearNodo("/", sacar_pila(), factorPtr);
+        terminoPtr = crearNodo("/", desapilar(), factorPtr);
         printRule("<TERMINO>", "<TERMINO> OP_DIV <FACTOR>");
     }
     | factor {
@@ -268,24 +269,24 @@ termino:
 factor: 
     P_A expresion P_C {
         printf("factorPtr -> pila\n");
-        factorPtr = sacar_pila(); printRule("<FACTOR>", "(<EXPRESION>)");
+        factorPtr = desapilar(); printRule("<FACTOR>", "(<EXPRESION>)");
     }
     
     | ID {
-        printf("factorPtr -> id\n");
+        printf("factorPtr -> %s\n", $1);
         factorPtr = crearHoja($1);
         verificarIdDeclarado(tsObtenerTipo($1));
         agregarTipoDatoArray(tsObtenerTipo($1));
         printRule("<FACTOR>", "ID");
     }
     | ENTERO {
-        printf("factorPtr -> ENT\n");
+        printf("factorPtr -> %s\n", $1);
         factorPtr = crearHoja($1);
         agregarTipoDatoArray(tsObtenerTipo($1));
         printRule("<FACTOR>", "ENTERO");
     }
     | FLOAT {
-        printf("factorPtr -> FLOAT\n");
+        printf("factorPtr -> %s\n", $1);
         factorPtr = crearHoja($1);
         agregarTipoDatoArray(tsObtenerTipo($1));
         printRule("<FACTOR>", "FLOAT");
@@ -453,15 +454,26 @@ int main(int argc,char *argv[]) {
     return 0;
 }
 
-nodo * meter_pila(nodo *arg) {
-    printf("...Guarde...%s\n",arg->dato);
+nodo * apilar(nodo *arg) {
+    printf("...Apila el valor %s...\n", arg->dato);
     pilaTest[pilaTope] = arg;
     pilaTope++;
+    mostrarEstadoPila();
 }
 
-nodo * sacar_pila() {
+nodo * desapilar() {
     pilaTope--;
     nodo * ret = pilaTest[pilaTope];
-    printf("...Saque...%s\n", ret->dato);
+    printf("...Desapile el valor %s...\n", ret->dato);
+    mostrarEstadoPila();
     return ret;
+}
+
+void mostrarEstadoPila() {
+    int i = 0;
+    printf("Estado de Pila = ");
+    for (i = 0; i < pilaTope; i++) {
+        printf("%s ", pilaTest[i]->dato);
+    }
+    printf("\n");
 }
