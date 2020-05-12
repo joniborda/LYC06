@@ -1,4 +1,6 @@
 #include "../archivos_punto_H/arbol_sintactico.h"
+void inOrden(FILE *, nodo *);
+void escribirArbol(nodo *padre);
 
 nodo* crearNodo(const char *d, nodo* hI, nodo* hD) {
 	nodo* nodoPadre = (nodo*)malloc(sizeof(nodo));
@@ -9,7 +11,7 @@ nodo* crearNodo(const char *d, nodo* hI, nodo* hD) {
     strcpy(nodoPadre->dato, d);
     nodoPadre->hijoDer = hD;
     nodoPadre->hijoIzq = hI;
-    printf("NODO [%s]\nIZQ[%s], DER[%s]\n", nodoPadre->dato, nodoPadre->hijoIzq->dato, nodoPadre->hijoDer->dato);
+    printf("\tNODO [%s]\n\tIZQ[%s], DER[%s]\n", nodoPadre->dato, nodoPadre->hijoIzq->dato, nodoPadre->hijoDer->dato);
     return nodoPadre;
 }
 
@@ -68,4 +70,21 @@ void escribirGragh(nodo* padre) {
     fclose(archivo);
     liberarMemoria(padre);
     return;
+}
+
+void escribirArbol(nodo *padre) {
+    FILE *archivo = fopen("instruccion.txt", "w");
+    if (archivo == NULL) {
+        return;
+    }
+    inOrden(archivo, padre);
+    fclose(archivo);
+}
+
+void inOrden(FILE * archivo, struct nodo* raiz) {
+    if (raiz != NULL) {
+        inOrden (archivo, raiz->hijoIzq);
+        fprintf(archivo, "%s  ", raiz->dato);
+        inOrden(archivo, raiz->hijoDer);
+    }
 }

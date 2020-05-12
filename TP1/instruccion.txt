@@ -1,0 +1,1 @@
+a  >  1  IF  b  :=  2  PROGRAMA  c  >  3  IF  d  :=  4  CUERPO  e  :=  5  

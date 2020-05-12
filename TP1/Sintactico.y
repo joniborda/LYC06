@@ -162,6 +162,7 @@ lista_variables:
 algoritmo: 
     programa {
         algortimoPtr = programaPtr;
+        escribirArbol(algortimoPtr);
         escribirGragh(algortimoPtr);
         printRule("<ALGORITMO>", "<PROGRAMA>");
     }
