@@ -171,8 +171,8 @@ algoritmo:
 programa:
     sentencia {
         programaPtr = sentenciaPtr;
-        apilar(programaPtr);
         printf("\tprogramaPtr -> sentenciaPtr\n");
+        apilar(programaPtr);
         printRule("<PROGRAMA>", "<SENTENCIA>");
     }
     | programa sentencia { 
@@ -226,18 +226,18 @@ seleccion:
     IF P_A condicion P_C L_A programa L_C {
         programaPtr = desapilar();
         seleccionPtr = crearNodo("IF", desapilar(), programaPtr);
-        apilar(seleccionPtr);
         printf("\tseleccionPtr -> IF, condicionPtr, programaPtr\n"); 
+        apilar(seleccionPtr);
         printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C");}
     | IF P_A condicion P_C L_A programa L_C {
-            printf("\t<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> ...");
+            printf("\t<SELECCION> -> IF P_A <CONDICION> P_C L_A <PROGRAMA> ...");
             apilar(programaPtr);
             // esta en la mitad de la regla (creo que se ejecuta en las dos sentencia de IF)
         } ELSE L_A programa L_C {
             programaPtr = desapilar();
             seleccionPtr = crearNodo("IF", desapilar(), crearNodo("CUERPO", desapilar(), programaPtr));
+            printf("\tseleccionPtr -> IF, Pila, nodo\n"); 
             apilar(seleccionPtr);
-            printf("\tseleccionPtr -> IF, Pila, programaPtr\n"); 
             printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C ELSE L_A <PROGRAMA> L_C");
     }
     ;
@@ -246,6 +246,7 @@ iteracion:
     WHILE P_A condicion P_C L_A programa L_C {
         programaPtr = desapilar();
         iteracionPtr = crearNodo("WHILE", desapilar(), programaPtr);
+        printf("\titeracionPtr -> WHILE, Pila, programaPtr\n"); 
         apilar(iteracionPtr);
         printRule("<ITERACION>", "WHILE P_A <CONDICION> P_C L_A <PROGRAMA> L_C");
     }
@@ -257,19 +258,19 @@ condicion:
         printf("\tcondicionPtr -> comparacionPtr\n");
         printRule("<CONDICION>", "<COMPARACION>");}
     | OP_NOT comparacion { 
-        strcpy(comparacionPtr -> dato, obtenerComparadorOpuesto(comparacionPtr));
+        strcpy(comparacionPtr->dato, obtenerComparadorOpuesto(comparacionPtr));
         condicionPtr = comparacionPtr;
-        printf("\tcondicionPtr -> OP_NOT");
+        printf("\tcondicionPtr -> comparacionPtr");
         printRule("<CONDICION>", "OP_NOT <COMPARACION>");}
     | comparacion OP_AND comparacion {
         condicionPtr = crearNodo("AND", desapilar(), desapilar());
+        printf("\tcondicionPtr -> AND, Pila, Pila");
         apilar(condicionPtr);
-        printf("\tcondicionPtr -> OP_AND, Pila, Pila");
         printRule("<CONDICION>", "<COMPARACION> OP_AND <COMPARACION>");}
     | comparacion OP_OR comparacion {
         condicionPtr = crearNodo("OR", desapilar(), desapilar());
-        apilar(condicionPtr);
         printf("\tcondicionPtr -> OP_OR, Pila, Pila");
+        apilar(condicionPtr);
         printRule("<CONDICION>", "<COMPARACION> OP_OR <COMPARACION>");}
     ;
 
@@ -283,8 +284,8 @@ comparacion:
         }
     | expresion comparador expresion { 
         validarComparacion(); 
-        comparacionPtr = crearNodo(comparadorPtr -> dato, desapilar(), desapilar()); 
-        printf("\tCOMPARACION -> comparacionPtr, Pila, Pila\n"); 
+        comparacionPtr = crearNodo(comparadorPtr->dato, desapilar(), desapilar()); 
+        printf("\tcomparacionPtr -> comparadorPtr, Pila, Pila\n"); 
         apilar(comparacionPtr); 
         printRule("<COMPARACION>", "<EXPRESION> <COMPARADOR> <EXPRESION>");}
     ;
@@ -292,40 +293,40 @@ comparacion:
 comparador: 
     CMP_MAYOR {
         comparadorPtr = crearHoja(">");
-        printf("\tcomparadorPtr -> CMP_MAYOR\n");
+        printf("\tcomparadorPtr -> >\n");
         printRule("<COMPARADOR>", "OP_CMP_MAYOR");
     } 
     | CMP_MENOR {
         comparadorPtr = crearHoja("<");
-        printf("\tcomparadorPtr -> CMP_MENOR\n");
+        printf("\tcomparadorPtr -> <\n");
         printRule("<COMPARADOR>", "OP_CMP_MENOR");
     } 
     | CMP_MAYOR_IGUAL {
         comparadorPtr = crearHoja(">=");
-        printf("\tcomparadorPtr -> CMP_MAYOR_IGUAL\n");
+        printf("\tcomparadorPtr -> >=\n");
         printRule("<COMPARADOR>", "OP_CMP_MAYOR_IGUAL");
     } 
     | CMP_MENOR_IGUAL {
         comparadorPtr = crearHoja("<=");
-        printf("\tcomparadorPtr -> CMP_MENOR_IGUAL\n");
+        printf("\tcomparadorPtr -> <=\n");
         printRule("<COMPARADOR>", "OP_CMP_MENOR_IGUAL");
     } 
     | CMP_IGUAL  {
         comparadorPtr = crearHoja("==");
-        printf("\tcomparadorPtr -> CMP_IGUAL\n");
+        printf("\tcomparadorPtr -> ==\n");
         printRule("<COMPARADOR>", "OP_CMP_IGUAL");
     };
 
 asignacion:
     ID ASIG expresion PUNTO_Y_COMA {
-        printf("\tasignacionPtr -> :=, ID, Pila\n");
         asignacionPtr = crearNodo(":=", crearHoja($1), desapilar());
+        printf("\tasignacionPtr -> :=, ID, Pila\n");
         verificarIdDeclarado(tsObtenerTipo($1)); 
         validarTiposDatoAsignacion(tsObtenerTipo($1)); 
         printRule("<ASIGNACION>", "ID ASIG <EXPRESION> PUNTO_Y_COMA");}
 	| ID ASIG STRING PUNTO_Y_COMA {
-        printRule("<ASIGNACION>", "ID ASIG STRING PUNTO_Y_COMA");
         verificarIdDeclarado(tsObtenerTipo($1));
+        printRule("<ASIGNACION>", "ID ASIG STRING PUNTO_Y_COMA");
         if (tsObtenerTipo($1) != T_STRING) {
             yyerror("Asignacion no permitidad: La variable no es de tipo String");
         }
@@ -337,18 +338,18 @@ expresion:
         printRule("<EXPRESION>", "<ASIGNACION>");
     }
     | expresion OP_SUMA termino {
-        printf("\texpresionPtr -> +, pila, terminoPtr\n");
         apilar(crearNodo("+", desapilar(), terminoPtr)); 
+        printf("\tPila -> +, pila, terminoPtr\n");
         printRule("<EXPRESION>", "<EXPRESION> OP_SUMA <TERMINO>");
     }
     | expresion OP_RESTA termino {
-        printf("\texpresionPtr -> -, pila, terminoPtr\n");
         apilar(crearNodo("-", desapilar(), terminoPtr));
+        printf("\tPila -> -, pila, terminoPtr\n");
         printRule("<EXPRESION>", "<EXPRESION> OP_RESTA <TERMINO>");
     }
     | termino {
-        printf("\texpresionPtr -> terminoPtr\n");
         apilar(terminoPtr); 
+        printf("\tPila -> terminoPtr\n");
         printRule("<EXPRESION>", "<TERMINO>");
     }
     ;
@@ -358,25 +359,23 @@ termino:
             apilar(terminoPtr);
             printRule("<TERMINO>", "<TERMINO> OP_MUL ...");
             // esta a mitad de la regla
-        } factor 
-        {
-            printf("\tterminoPtr -> *, pila, factorPtr\n");
+        } factor {
             terminoPtr = crearNodo("*", desapilar(), factorPtr); 
+            printf("\tterminoPtr -> *, pila, factorPtr\n");
             printRule("<TERMINO>", "<TERMINO> OP_MUL <FACTOR>");
         }
     | termino OP_DIV {
             apilar(terminoPtr);
             printRule("<TERMINO>", "<TERMINO> OP_DIV ...");
             // esta a mitad de la regla
-        } factor 
-        {
-            printf("\tterminoPtr -> /, pila, factorPtr\n");
+        } factor {
             terminoPtr = crearNodo("/", desapilar(), factorPtr);
+            printf("\tterminoPtr -> /, pila, factorPtr\n");
             printRule("<TERMINO>", "<TERMINO> OP_DIV <FACTOR>");
         }
     | factor {
-        printf("\tterminoPtr -> factorPtr\n");
         terminoPtr = factorPtr; 
+        printf("\tterminoPtr -> factorPtr\n");
         printRule("<TERMINO>", "<FACTOR>");
     }
     ;
@@ -612,4 +611,3 @@ char * obtenerComparadorOpuesto(nodo* raiz) {
         return "<";
     }
 }
-    

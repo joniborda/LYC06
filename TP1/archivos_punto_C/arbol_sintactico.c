@@ -1,6 +1,4 @@
 #include "../archivos_punto_H/arbol_sintactico.h"
-void inOrden(FILE *, nodo *);
-void escribirArbol(nodo *padre);
 
 nodo* crearNodo(const char *d, nodo* hI, nodo* hD) {
 	nodo* nodoPadre = (nodo*)malloc(sizeof(nodo));

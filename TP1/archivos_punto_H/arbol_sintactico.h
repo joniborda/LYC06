@@ -17,5 +17,7 @@ nodo* crearHoja(const char*);
 void liberarMemoria(nodo* );
 void llegarGragh(nodo* , FILE*, int );
 void escribirGragh(nodo*);
+void inOrden(FILE *, nodo *);
+void escribirArbol(nodo *padre);
 
 #endif
