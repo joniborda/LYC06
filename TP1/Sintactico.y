@@ -7,6 +7,7 @@
     #include "archivos_punto_H/tabla_simbolo.h"
     #include "archivos_punto_H/constantes.h"
     #include "archivos_punto_H/arbol_sintactico.h"
+    #include "archivos_punto_H/comparador.h"
     int yystopparser=0;
     int yylineno;
     FILE  *yyin;
@@ -570,6 +571,8 @@ int main(int argc,char *argv[]) {
     }
 
     fclose(yyin);
+
+    compararArchivo(argv[1]);
     return 0;
 }
 
