@@ -178,7 +178,8 @@ programa:
     | programa sentencia { 
         programaPtr = desapilar();
         programaPtr = crearNodo("PROGRAMA", programaPtr, sentenciaPtr); 
-        printf("\tprogramaPtr -> PROGRAMA, programaPtr, sentenciaPtr\n"); 
+        printf("\tprogramaPtr -> PROGRAMA, pila, sentenciaPtr\n"); 
+        apilar(programaPtr);
         printRule("<PROGRAMA>", "<PROGRAMA> <SENTENCIA>");}
     ;
 
@@ -230,8 +231,8 @@ seleccion:
         apilar(seleccionPtr);
         printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C");}
     | IF P_A condicion P_C L_A programa L_C {
-            printf("\t<SELECCION> -> IF P_A <CONDICION> P_C L_A <PROGRAMA> ...");
-            apilar(programaPtr);
+            //apilar(programaPtr);
+            //printf("<SELECCION> -> IF P_A <CONDICION> P_C L_A <PROGRAMA> ...");
             // esta en la mitad de la regla (creo que se ejecuta en las dos sentencia de IF)
         } ELSE L_A programa L_C {
             programaPtr = desapilar();
@@ -573,7 +574,7 @@ int main(int argc,char *argv[]) {
 }
 
 nodo * apilar(nodo *arg) {
-    printf("\t...Apila el valor %s...\n", arg->dato);
+    printf("\tApila el valor %s\n", arg->dato);
     pilaTest[pilaTope] = arg;
     pilaTope++;
     mostrarEstadoPila();
@@ -582,14 +583,14 @@ nodo * apilar(nodo *arg) {
 nodo * desapilar() {
     pilaTope--;
     nodo * ret = pilaTest[pilaTope];
-    printf("\t...Desapile el valor %s...\n", ret->dato);
+    printf("\tDesapile el valor %s\n", ret->dato);
     mostrarEstadoPila();
     return ret;
 }
 
 void mostrarEstadoPila() {
     int i = 0;
-    printf("\tEstado de Pila = ");
+    printf("\t\tEstado de Pila = ");
     for (i = 0; i < pilaTope; i++) {
         printf("%s ", pilaTest[i]->dato);
     }
