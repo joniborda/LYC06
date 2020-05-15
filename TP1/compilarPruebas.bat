@@ -2,7 +2,8 @@ flex Lexico.l
 pause
 bison -dyv Sintactico.y
 
-gcc.exe lex.yy.c y.tab.c archivos_punto_C/tabla_simbolo.c -o Segunda.exe
+gcc.exe lex.yy.c y.tab.c archivos_punto_C/tabla_simbolo.c archivos_punto_C/arbol_sintactico.c -o Segunda.exe 
+
 pause
 
 @cd pruebas_sin_error
@@ -20,6 +21,7 @@ pause
 	)
 )
 
+@del gragh.dot
 @cd ../pruebas_con_error
 @for %%x in (*) do @(
 	@echo .
@@ -28,6 +30,7 @@ pause
 	@if	 "ts.txt" NEQ "%%x" (
 		..\Segunda.exe %%x
 		..\Segunda.exe %%x && (
+			@del gragh.dot
 		  	@echo .
 		  	@echo /***************** DEBERIA ARROJAR ERROR ***************/
 		  	@cd ..\
@@ -40,6 +43,7 @@ pause
 )
 @echo .
 @echo /****************** PRUEBAS OK ***************/
+@del gragh.dot
 @cd ..\
 @delete.bat
 @pause

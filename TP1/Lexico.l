@@ -7,6 +7,7 @@
 #include "y.tab.h"
 #include "archivos_punto_H/tabla_simbolo.h"
 #include "archivos_punto_H/constantes.h"
+#include "archivos_punto_H/arbol_sintactico.h"
 FILE  *yyin;
 int imprimir = 0;
 
@@ -27,10 +28,10 @@ void setImprimir() {
 DIGITO		[0-9]
 LETRA		[a-zA-Z]
 ID			{LETRA}({LETRA}|{DIGITO}|_)*
-CARACTER 	[a-z,A-Z,0-9,=,>,<,!,:,+,".",\-,*,/,�,?,_,","]
+CARACTER 	[a-z,A-Z,0-9,=,>,),(,<,!,:,+,".",-,\-,*,/,�,?,_,",",";"]
 TEXTO 		\"({CARACTER}|" ")+\"
 SUBCOMENTARIO   "/***"({CARACTER}|" "|\")*"***/"
-COMENTARIO  "***/"({CARACTER}|" "|\"|{SUBCOMENTARIO})*"/***"
+COMENTARIO  "***/"({CARACTER}|"\t"|" "|\"|{SUBCOMENTARIO})*"/***"
 
 %%
 ":="		{ return ASIG;}

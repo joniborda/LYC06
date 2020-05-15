@@ -6,10 +6,20 @@
     #include "y.tab.h"
     #include "archivos_punto_H/tabla_simbolo.h"
     #include "archivos_punto_H/constantes.h"
+    #include "archivos_punto_H/arbol_sintactico.h"
     int yystopparser=0;
     int yylineno;
     FILE  *yyin;
     
+    nodo* F=NULL;
+    nodo* T=NULL;
+    nodo* E=NULL;
+    nodo* A=NULL;
+    nodo* FUN=NULL;
+
+    nodo* pilaTest[100]; //por el momento con longitud fija, cambiar a dinamica...
+    int pilaTope = 0;
+
     char * idsAsignacionTipo[100]; // Array de ids para asignarles el tipo en la declaracion de variables
     int indexAsignacionTipo = 0; // Index para la asignacion de tipos a los ids
     int expresionesTipoDato[100]; // Array de tipos de datos para validar que las asignaciones y comparaciones son compatibles a nivel tipo de dato
@@ -27,6 +37,9 @@
     int validarExpresionReal();
     int validarExpresionString();
     void validarComparacion();
+
+    nodo* meter_pila(nodo*);
+    nodo* sacar_pila();
 %}
 
 %union {
@@ -133,7 +146,7 @@ lista_variables:
 	;
 
 algoritmo: 
-    programa {printRule("<ALGORITMO>", "<PROGRAMA>");}
+    programa {escribirGragh(A);printRule("<ALGORITMO>", "<PROGRAMA>");}
 	;
 
 programa:
@@ -175,12 +188,13 @@ condicion:
     ;
 
 comparacion: 
-    BETWEEN P_A ID {validarIdNumerico(tsObtenerTipo($3));} COMA C_A expresion PUNTO_Y_COMA expresion C_C P_C {
-        if (validarExpresionReal() == ERROR) {
-            yyerror("Tipo de datos no compatible (Expresion real)");
-        } 
-        printRule("<COMPARACION>", "BETWEEN P_A ID COMA C_A <EXPRESION> PUNTO_Y_COMA <EXPRESION> C_C P_C");
-    }
+    BETWEEN P_A ID {validarIdNumerico(tsObtenerTipo($3));} COMA C_A expresion PUNTO_Y_COMA expresion C_C P_C 
+        {
+            if (validarExpresionReal() == ERROR) {
+                yyerror("Tipo de datos no compatible (Expresion real)");
+            } 
+            printRule("<COMPARACION>", "BETWEEN P_A ID COMA C_A <EXPRESION> PUNTO_Y_COMA <EXPRESION> C_C P_C");
+        }
     | expresion comparador expresion { validarComparacion(); printRule("<COMPARACION>", "<EXPRESION> <COMPARADOR> <EXPRESION>");}
     ;
 
@@ -193,6 +207,9 @@ comparador:
 
 asignacion:
     ID ASIG expresion PUNTO_Y_COMA {
+        printf("A->:=,ID,E");
+        A = crearNodo(":=",crearHoja($1),E);
+        sacar_pila(); // Descarta lo que tiene expresion
         verificarIdDeclarado(tsObtenerTipo($1)); 
         validarTiposDatoAsignacion(tsObtenerTipo($1)); 
         printRule("<ASIGNACION>", "ID ASIG <EXPRESION> PUNTO_Y_COMA");}
@@ -204,49 +221,75 @@ asignacion:
         }
     }
     ;
+
 expresion: 
     asignacion {printRule("<EXPRESION>", "<ASIGNACION>");}
     | expresion OP_SUMA termino {
-        printRule("<EXPRESION>", "<EXPRESION> OP_SUMA <TERMINO>");
+        printf("E->+,pila,T\n");
+        E = crearNodo("+", sacar_pila(), T); meter_pila(E); printRule("<EXPRESION>", "<EXPRESION> OP_SUMA <TERMINO>");
     }
     | expresion OP_RESTA termino {
+        printf("E->-,pila,T\n");
+        E = crearNodo("-", sacar_pila(), T); meter_pila(E);
         printRule("<EXPRESION>", "<EXPRESION> OP_RESTA <TERMINO>");
     }
-    | termino {printRule("<EXPRESION>", "<TERMINO>");}
+    | termino {
+        printf("E->T\n");
+        E = T; meter_pila(E); printRule("<EXPRESION>", "<TERMINO>");
+    }
     ;
 
-termino: 
-    termino OP_MUL factor {
+termino:
+    termino OP_MUL {meter_pila(T);} factor {
+        printf("T->*, pila, F\n");
+        T = crearNodo("*", sacar_pila(), F); 
         printRule("<TERMINO>", "<TERMINO> OP_MUL <FACTOR>");
     }
-    | termino OP_DIV factor {
+    | termino OP_DIV {meter_pila(T);} factor {
+        printf("T->/, pila, F\n");
+        T = crearNodo("/", sacar_pila(), F);
         printRule("<TERMINO>", "<TERMINO> OP_DIV <FACTOR>");
     }
-    | factor {printRule("<TERMINO>", "<FACTOR>");}
+    | factor {
+        printf("T->F\n");
+        T = F; printRule("<TERMINO>", "<FACTOR>");
+    }
     ;
 
 factor: 
-      P_A expresion P_C {printRule("<FACTOR>", "(<EXPRESION>)");}
+    P_A expresion P_C {
+        printf("F->pila\n");
+        F = sacar_pila(); printRule("<FACTOR>", "(<EXPRESION>)");
+    }
+    
     | ID {
+        printf("F->id\n");
+        F = crearHoja($1);
         verificarIdDeclarado(tsObtenerTipo($1));
         agregarTipoDatoArray(tsObtenerTipo($1));
         printRule("<FACTOR>", "ID");
     }
     | ENTERO {
+        printf("F->ENT\n");
+        F = crearHoja($1);
         agregarTipoDatoArray(tsObtenerTipo($1));
         printRule("<FACTOR>", "ENTERO");
     }
     | FLOAT {
+        printf("F->FLOAT\n");
+        F = crearHoja($1);
         agregarTipoDatoArray(tsObtenerTipo($1));
         printRule("<FACTOR>", "FLOAT");
     }
 	| funcion {
+        printf("F->FUN\n");
+        F = FUN;
         printRule("<FACTOR>", "<FUNCION>");
     }
 	;
 	
 funcion:
-	FACT P_A expresion P_C {printRule("<FUNCION>", "FACTORIAL(<EXPRESION>)");}
+	FACT P_A expresion P_C {FUN = E;printRule("<FUNCION>", "FACTORIAL(<EXPRESION>)");}
 	| COMB P_A expresion COMA expresion P_C	{printRule("<FUNCION>", "COMBINATORIO(<EXPRESION>, <EXPRESION>)");}
 	;
 %%
@@ -386,7 +429,7 @@ void validarComparacion() {
 }
 
 int main(int argc,char *argv[]) {
-    
+
     if((yyin = fopen(argv[1], "rt")) == NULL) {
         printf("\nNo se puede abrir el archivo: %s\n", argv[1]);
     } else {
@@ -399,4 +442,16 @@ int main(int argc,char *argv[]) {
 
     fclose(yyin);
     return 0;
+}
+
+nodo * meter_pila(nodo *arg) {
+    printf("...Guarde...\n");
+    pilaTest[pilaTope] = arg;
+    pilaTope++;
+}
+
+nodo * sacar_pila() {
+     printf("...Saque...\n");
+    pilaTope--;
+    return pilaTest[pilaTope];
 }
