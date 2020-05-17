@@ -323,10 +323,14 @@ asignacion:
     ID ASIG expresion PUNTO_Y_COMA {
         asignacionPtr = crearNodo(":=", crearHoja($1), desapilar());
         printf("\tasignacionPtr -> :=, ID, Pila\n");
+        
         verificarIdDeclarado(tsObtenerTipo($1)); 
         validarTiposDatoAsignacion(tsObtenerTipo($1)); 
         printRule("<ASIGNACION>", "ID ASIG <EXPRESION> PUNTO_Y_COMA");}
 	| ID ASIG STRING PUNTO_Y_COMA {
+        asignacionPtr = crearNodo(":=", crearHoja($1), crearHoja($3));
+        printf("\tasignacionPtr -> :=, ID, %s\n", $3);
+        
         verificarIdDeclarado(tsObtenerTipo($1));
         printRule("<ASIGNACION>", "ID ASIG STRING PUNTO_Y_COMA");
         if (tsObtenerTipo($1) != T_STRING) {
