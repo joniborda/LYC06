@@ -18,6 +18,6 @@
 #define CTE_STRING 6
 #define T_ID 7
 
-#define ARCHIVO_INSTRUCCIONES "instruccion.txt"
+#define ARCHIVO_INSTRUCCIONES "intermedia.txt"
 
 #endif

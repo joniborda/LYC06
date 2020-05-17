@@ -27,9 +27,12 @@
     nodo* iteracionPtr = NULL;
     nodo* entradaPtr = NULL;
     nodo* salidaPtr = NULL;
+    nodo* factPtr = NULL;
 
     nodo* pilaTest[100]; //por el momento con longitud fija, cambiar a dinamica...
     int pilaTope = 0;
+    int _fact;
+    char _factStr[5];
 
     char * idsAsignacionTipo[100]; // Array de ids para asignarles el tipo en la declaracion de variables
     int indexAsignacionTipo = 0; // Index para la asignacion de tipos a los ids
