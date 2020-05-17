@@ -26,21 +26,23 @@ void compararArchivo(char *archivo) {
    } else if (fp2 == NULL) {
       printf("\n Cannot open [%s] ", archivo2);
       exit(1);
-   } else {
-      ch1 = getc(fp1); /* Get the first charter from First  file */
-      ch2 = getc(fp2); /* Get the first charter from Second file */
- 
-      while ((ch1 != EOF) && (ch2 != EOF) && (ch1 == ch2)) {
-         ch1 = getc(fp1);
-         ch2 = getc(fp2);
-      }
- 
-      fclose(fp1); /* Close File Pointer */
-      fclose(fp2); /* Close File Pointer */
+   }
 
-      if (ch1 != ch2 || ch1 != EOF || ch2 != EOF) {
-         printf("\n Has some different \n");
-         exit(1);
-      }
-    }
+   ch1 = getc(fp1); /* Get the first charter from First  file */
+   ch2 = getc(fp2); /* Get the first charter from Second file */
+
+   while ((ch1 != EOF) && (ch2 != EOF) && (ch1 == ch2)) {
+      ch1 = getc(fp1);
+      ch2 = getc(fp2);
+   }
+
+   fclose(fp1); /* Close File Pointer */
+   fclose(fp2); /* Close File Pointer */
+
+   if (ch1 != ch2 || ch1 != EOF || ch2 != EOF) {
+      printf("\n Has some different \n");
+      exit(1);
+   }
+
+   printf("\nPRUEBA %s OK \n", archivo2);
 }
