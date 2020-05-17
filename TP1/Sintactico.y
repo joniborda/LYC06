@@ -186,7 +186,7 @@ programa:
 
 sentencia: 
     seleccion {
-        sentenciaPtr = desapilar(); 
+        sentenciaPtr = seleccionPtr; 
         printf("\tsentenciaPtr -> Pila\n"); 
         printRule("<SENTENCIA>", "<SELECCION>");
     }
@@ -196,7 +196,7 @@ sentencia:
         printRule("<SENTENCIA>", "<ASIGNACION>");
     }
     | iteracion {
-        sentenciaPtr = desapilar();
+        sentenciaPtr = iteracionPtr;
         printf("\tsentenciaPtr -> Pila\n");
         printRule("<SENTENCIA>", "<ITERACION>");
     }
@@ -229,18 +229,12 @@ seleccion:
         programaPtr = desapilar();
         seleccionPtr = crearNodo("IF", desapilar(), programaPtr);
         printf("\tseleccionPtr -> IF, condicionPtr, programaPtr\n"); 
-        apilar(seleccionPtr);
         printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C");}
-    | IF P_A condicion P_C L_A programa L_C {
-            //apilar(programaPtr);
-            //printf("<SELECCION> -> IF P_A <CONDICION> P_C L_A <PROGRAMA> ...");
-            // esta en la mitad de la regla (creo que se ejecuta en las dos sentencia de IF)
-        } ELSE L_A programa L_C {
-            programaPtr = desapilar();
-            seleccionPtr = crearNodo("IF", desapilar(), crearNodo("CUERPO", desapilar(), programaPtr));
-            printf("\tseleccionPtr -> IF, Pila, nodo\n"); 
-            apilar(seleccionPtr);
-            printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C ELSE L_A <PROGRAMA> L_C");
+    | IF P_A condicion P_C L_A programa L_C ELSE L_A programa L_C {
+        programaPtr = desapilar();
+        seleccionPtr = crearNodo("IF", desapilar(), crearNodo("CUERPO", desapilar(), programaPtr));
+        printf("\tseleccionPtr -> IF, Pila, nodo\n"); 
+        printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C ELSE L_A <PROGRAMA> L_C");
     }
     ;
 
@@ -249,7 +243,6 @@ iteracion:
         programaPtr = desapilar();
         iteracionPtr = crearNodo("WHILE", desapilar(), programaPtr);
         printf("\titeracionPtr -> WHILE, Pila, programaPtr\n"); 
-        apilar(iteracionPtr);
         printRule("<ITERACION>", "WHILE P_A <CONDICION> P_C L_A <PROGRAMA> L_C");
     }
     ;
