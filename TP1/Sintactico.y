@@ -341,7 +341,7 @@ asignacion:
     }
     ;
 
-expresion: 
+expresion:
     asignacion {
         printRule("<EXPRESION>", "<ASIGNACION>");
     }
@@ -422,7 +422,14 @@ factor:
 	
 funcion:
 	FACT P_A expresion P_C {
-        funcionPtr = desapilar();
+        nodo * ptr1 = crearNodo(":=", crearHoja("@AUX"), desapilar());
+        nodo * dec = crearNodo(":=", crearHoja("@AUX"), crearNodo("OP_MENOS", crearHoja("@AUX"), crearHoja("1")));
+        nodo * mult = crearNodo(":=", crearHoja("@SUM"), crearNodo("*", crearHoja("@SUM"), crearHoja("@AUX")));
+        nodo * crp = crearNodo("CUERPO", mult, dec);
+        nodo * ptr2 = crearNodo("WHILE", crearNodo(">", crearHoja("@AUX"), crearHoja("0")), crp);
+        nodo * inicSuma = crearNodo(":=", crearHoja("@SUMA"), crearHoja("1"));
+        nodo * ptr3 = crearNodo("PROGRAMA", inicSuma , ptr2);
+        funcionPtr = crearNodo("FACT", ptr1, ptr3);
         printRule("<FUNCION>", "FACTORIAL(<EXPRESION>)");
     }
 	| COMB P_A expresion COMA expresion P_C	{
