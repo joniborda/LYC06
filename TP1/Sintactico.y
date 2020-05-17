@@ -282,6 +282,8 @@ comparacion:
             if (validarExpresionReal() == ERROR) {
                 yyerror("Tipo de datos no compatible (Expresion real)");
             } 
+            comparacionPtr = crearNodo("AND", crearNodo("=>", crearHoja($3), desapilar()), crearNodo("=<", crearHoja($3), desapilar()));
+            apilar(comparacionPtr);
             printRule("<COMPARACION>", "BETWEEN P_A ID COMA C_A <EXPRESION> PUNTO_Y_COMA <EXPRESION> C_C P_C");
         }
     | expresion comparador expresion { 
