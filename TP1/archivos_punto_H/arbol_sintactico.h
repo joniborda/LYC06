@@ -1,6 +1,7 @@
 #ifndef ARBOL_SINTACTICO_H
 #define ARBOL_SINTACTICO_H
 
+#include "constantes.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

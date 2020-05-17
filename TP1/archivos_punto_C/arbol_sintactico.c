@@ -71,7 +71,7 @@ void escribirGragh(nodo* padre) {
 }
 
 void escribirArbol(nodo *padre) {
-    FILE *archivo = fopen("instruccion.txt", "w");
+    FILE *archivo = fopen(ARCHIVO_INSTRUCCIONES, "w");
     if (archivo == NULL) {
         return;
     }

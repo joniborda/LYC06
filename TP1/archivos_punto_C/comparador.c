@@ -1,21 +1,27 @@
 #include "../archivos_punto_H/comparador.h"
 
-void compararArchivo(char *argumento) {
+/**
+ * Recibe el nombre de un archivo (por ejemplo "prueba.txt") y
+ * Compara el resultado del arbol sintactico que genera en instrucciones.txt 
+ * con el archivo pasado agregnado ".test"
+ * ("prueba.txt.test") 
+ */
+void compararArchivo(char *archivo) {
 
    FILE *fp1, *fp2;     /* File Pointer's Definitions */
    int   ch1,  ch2;     /* Vars to Read from files    */   
 
-   char *archivo1 = "instruccion.txt";
    char *archivo2;
-   archivo2 = malloc(sizeof(argumento) + 7);
-   strcpy(archivo2, argumento);
+   archivo2 = malloc(sizeof(archivo) + 6);
+
+   strcpy(archivo2, archivo);
    strcat(archivo2, ".test");
 
-   fp1 = fopen(archivo1, "r");
+   fp1 = fopen(ARCHIVO_INSTRUCCIONES, "r");
    fp2 = fopen(archivo2, "r");
  
    if (fp1 == NULL) {
-      printf("\n Cannot open [%s] ", archivo1);
+      printf("\n Cannot open [%s] ", ARCHIVO_INSTRUCCIONES);
       exit(1);
    } else if (fp2 == NULL) {
       printf("\n Cannot open [%s] ", archivo2);
