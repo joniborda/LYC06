@@ -25,6 +25,8 @@
     nodo* comparacionPtr = NULL;
     nodo* asignacionPtr = NULL;
     nodo* iteracionPtr = NULL;
+    nodo* entradaPtr = NULL;
+    nodo* salidaPtr = NULL;
 
     nodo* pilaTest[100]; //por el momento con longitud fija, cambiar a dinamica...
     int pilaTope = 0;
@@ -201,9 +203,11 @@ sentencia:
         printRule("<SENTENCIA>", "<ITERACION>");
     }
     | entrada PUNTO_Y_COMA {
+        sentenciaPtr = entradaPtr;
         printRule("<SENTENCIA>", "<ENTRADA>");
     }
     | salida PUNTO_Y_COMA {
+        sentenciaPtr = salidaPtr;
         printRule("<SENTENCIA>", "<SALIDA>");
     }
     ;
@@ -211,15 +215,18 @@ sentencia:
 entrada: 
     ENTRADA ID {
         verificarIdDeclarado(tsObtenerTipo($2));
+        entradaPtr = crearNodo("ASIG", crearHoja($2), crearHoja("@STDIN"));
         printRule("<ENTRADA>", "ID");
     };
 
 salida: 
     SALIDA STRING {
         printRule("<SALIDA>", "STRING");
+        salidaPtr = crearNodo("ASIG", crearHoja("@STDOUT"), crearHoja($2));
     } 
     | SALIDA ID {
         verificarIdDeclarado(tsObtenerTipo($2));
+        salidaPtr = crearNodo("ASIG", crearHoja("@STDOUT"), crearHoja($2));
         printRule("<SALIDA>", "ID");
     }
     ;
