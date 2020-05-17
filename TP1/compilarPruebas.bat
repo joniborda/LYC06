@@ -2,7 +2,7 @@ flex Lexico.l
 pause
 bison -dyv Sintactico.y
 
-gcc.exe lex.yy.c y.tab.c archivos_punto_C/tabla_simbolo.c archivos_punto_C/arbol_sintactico.c -o Primera.exe 
+gcc.exe lex.yy.c y.tab.c archivos_punto_C/* -o Primera.exe 
 
 pause
 
