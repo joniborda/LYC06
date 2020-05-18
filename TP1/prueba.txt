@@ -1,5 +1,18 @@
 DEFVAR
 	INT : a; b; c; d; e; f
+	STRING : algo
+	FLOAT : fl
 ENDVAR
 
-a := COMB(3, 4);
+a := FACT(2);
+a := 1 + 2;
+algo := "algito";
+fl := 3.0;
+
+IF (a < 4) {
+	b := (c + d) * 8;
+} ELSE {
+	c := 2;
+}
+f := 4;
+
