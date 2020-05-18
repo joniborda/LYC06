@@ -2,4 +2,4 @@ DEFVAR
 	INT : a; b; c; d; e; f
 ENDVAR
 
-a := FACT(3);
+a := COMB(3, 4);

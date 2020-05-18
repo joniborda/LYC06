@@ -1,1 +1,1 @@
-a  :=  3  *  2  *  1  
+a  :=  @AUX  :=  3  FACT  @SUMA  :=  1  PROGRAMA  @AUX  >  0  WHILE  @SUM  :=  @SUM  *  @AUX  CUERPO  @AUX  :=  @AUX  OP_MENOS  1  /  @AUX  :=  4  FACT  @SUMA  :=  1  PROGRAMA  @AUX  >  0  WHILE  @SUM  :=  @SUM  *  @AUX  CUERPO  @AUX  :=  @AUX  OP_MENOS  1  *  @AUX  :=  3  -  4  FACT  @SUMA  :=  1  PROGRAMA  @AUX  >  0  WHILE  @SUM  :=  @SUM  *  @AUX  CUERPO  @AUX  :=  @AUX  OP_MENOS  1  

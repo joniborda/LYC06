@@ -53,6 +53,7 @@
     void validarComparacion();
     void mostrarEstadoPila();
     char * obtenerComparadorOpuesto(nodo* );
+    nodo* semanticaFactorial(nodo*);
 
     nodo* apilar(nodo*);
     nodo* desapilar();
@@ -425,17 +426,17 @@ factor:
 	
 funcion:
 	FACT P_A expresion P_C {
-        nodo * ptr1 = crearNodo(":=", crearHoja("@AUX"), desapilar());
-        nodo * dec = crearNodo(":=", crearHoja("@AUX"), crearNodo("OP_MENOS", crearHoja("@AUX"), crearHoja("1")));
-        nodo * mult = crearNodo(":=", crearHoja("@SUM"), crearNodo("*", crearHoja("@SUM"), crearHoja("@AUX")));
-        nodo * crp = crearNodo("CUERPO", mult, dec);
-        nodo * ptr2 = crearNodo("WHILE", crearNodo(">", crearHoja("@AUX"), crearHoja("0")), crp);
-        nodo * inicSuma = crearNodo(":=", crearHoja("@SUMA"), crearHoja("1"));
-        nodo * ptr3 = crearNodo("PROGRAMA", inicSuma , ptr2);
-        funcionPtr = crearNodo("FACT", ptr1, ptr3);
+        funcionPtr = semanticaFactorial(desapilar());
         printRule("<FUNCION>", "FACTORIAL(<EXPRESION>)");
     }
 	| COMB P_A expresion COMA expresion P_C	{
+        // FACT(expresion1) / FACT(expresion2) * FACT(expresion1 - expresion2)
+        nodo* exp2 = desapilar();
+        nodo* exp1 = desapilar();
+        nodo* res = crearNodo("-", exp1, exp2);
+        nodo* mul = crearNodo("*", semanticaFactorial(exp2), semanticaFactorial(res));
+        nodo* div = crearNodo("/", semanticaFactorial(exp1), mul);
+        funcionPtr = div;
         printRule("<FUNCION>", "COMBINATORIO(<EXPRESION>, <EXPRESION>)");
     }
 	;
@@ -630,4 +631,16 @@ char * obtenerComparadorOpuesto(nodo* raiz) {
     } else if (strcmp(raiz->dato, ">=") == 0) {
         return "<";
     }
+}
+
+nodo * semanticaFactorial(nodo* exp) {
+    nodo * ptr1 = crearNodo(":=", crearHoja("@AUX"), exp);
+    nodo * dec = crearNodo(":=", crearHoja("@AUX"), crearNodo("OP_MENOS", crearHoja("@AUX"), crearHoja("1")));
+    nodo * mult = crearNodo(":=", crearHoja("@SUM"), crearNodo("*", crearHoja("@SUM"), crearHoja("@AUX")));
+    nodo * crp = crearNodo("CUERPO", mult, dec);
+    nodo * ptr2 = crearNodo("WHILE", crearNodo(">", crearHoja("@AUX"), crearHoja("0")), crp);
+    nodo * inicSuma = crearNodo(":=", crearHoja("@SUMA"), crearHoja("1"));
+    nodo * ptr3 = crearNodo("PROGRAMA", inicSuma , ptr2);
+    //funcionPtr = crearNodo("FACT", ptr1, ptr3);
+    return crearNodo("FACT", ptr1, ptr3);
 }
