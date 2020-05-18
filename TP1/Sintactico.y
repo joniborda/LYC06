@@ -634,11 +634,11 @@ char * obtenerComparadorOpuesto(nodo* raiz) {
 }
 
 nodo * semanticaFactorial(nodo* exp) {
-    nodo * ptr1 = crearNodo(":=", crearHoja("@AUX"), exp);
-    nodo * dec = crearNodo(":=", crearHoja("@AUX"), crearNodo("OP_MENOS", crearHoja("@AUX"), crearHoja("1")));
-    nodo * mult = crearNodo(":=", crearHoja("@SUM"), crearNodo("*", crearHoja("@SUM"), crearHoja("@AUX")));
+    nodo * ptr1 = crearNodo(":=", crearHoja("@NUMFACT"), exp);
+    nodo * dec = crearNodo(":=", crearHoja("@NUMFACT"), crearNodo("OP_MENOS", crearHoja("@NUMFACT"), crearHoja("1")));
+    nodo * mult = crearNodo(":=", crearHoja("@SUM"), crearNodo("*", crearHoja("@SUM"), crearHoja("@NUMFACT")));
     nodo * crp = crearNodo("CUERPO", mult, dec);
-    nodo * ptr2 = crearNodo("WHILE", crearNodo(">", crearHoja("@AUX"), crearHoja("0")), crp);
+    nodo * ptr2 = crearNodo("WHILE", crearNodo(">", crearHoja("@NUMFACT"), crearHoja("1")), crp);
     nodo * inicSuma = crearNodo(":=", crearHoja("@SUMA"), crearHoja("1"));
     nodo * ptr3 = crearNodo("PROGRAMA", inicSuma , ptr2);
     //funcionPtr = crearNodo("FACT", ptr1, ptr3);
