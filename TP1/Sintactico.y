@@ -408,13 +408,13 @@ factor:
     | ENTERO {
         printf("\tfactorPtr -> %s\n", $1);
         factorPtr = crearHoja($1);
-        agregarTipoDatoArray(tsObtenerTipo($1));
+        agregarTipoDatoArray(CTE_INTEGER);
         printRule("<FACTOR>", "ENTERO");
     }
     | FLOAT {
         printf("\tfactorPtr -> %s\n", $1);
         factorPtr = crearHoja($1);
-        agregarTipoDatoArray(tsObtenerTipo($1));
+        agregarTipoDatoArray(CTE_FLOAT);
         printRule("<FACTOR>", "FLOAT");
     }
 	| funcion {

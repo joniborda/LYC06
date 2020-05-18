@@ -43,10 +43,9 @@ int tsCrearArchivo() {
 			tablaSimbolos[i].tipo == T_STRING
 		) {
 			fprintf(archivo, "%-32s%-13s\n", tablaSimbolos[i].nombre, obtenerNombreTipo(tablaSimbolos[i].tipo));
-		}
-		else {
+		} else {
 			fprintf(archivo, "%-32s%-13s%-31s%-12s\n",
-			tablaSimbolos[i].nombre, obtenerNombreTipo(tablaSimbolos[i].tipo), tablaSimbolos[i].valor, tablaSimbolos[i].longitud);
+			aConstante(tablaSimbolos[i].nombre), obtenerNombreTipo(tablaSimbolos[i].tipo), tablaSimbolos[i].valor, tablaSimbolos[i].longitud);
 		}
 	}
 	fclose(archivo);
