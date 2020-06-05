@@ -2,6 +2,7 @@
 #define ARBOL_SINTACTICO_H
 
 #include "constantes.h"
+#include "tabla_simbolo.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

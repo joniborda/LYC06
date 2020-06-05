@@ -640,7 +640,6 @@ nodo * semanticaFactorial(nodo* exp) {
         nroMaximo--;
     }
     */
-    
     nodo* numeroFactorial = crearNodo(":=", crearHoja("@NUMFACT"), exp);
     nodo* decrementado = crearNodo(":=", crearHoja("@NUMFACT"), crearNodo("OP_MENOS", crearHoja("@NUMFACT"), crearHoja("1")));
     nodo* mulFact = crearNodo(":=", crearHoja("@SUM"), crearNodo("*", crearHoja("@SUM"), crearHoja("@NUMFACT")));

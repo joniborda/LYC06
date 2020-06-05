@@ -22,6 +22,9 @@ nodo* crearHoja(const char *d) {
     strcpy(nuevoNodo->dato, d);
     nuevoNodo->hijoDer = NULL;
     nuevoNodo->hijoIzq = NULL;
+    if(strncmp(nuevoNodo->dato, "@", 1) == 0) {
+        tsInsertarToken(T_INTEGER, nuevoNodo->dato, strlen(nuevoNodo->dato), "");
+    }
     return nuevoNodo;
 }
 
