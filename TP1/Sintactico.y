@@ -332,7 +332,7 @@ asignacion:
         validarTiposDatoAsignacion(tsObtenerTipo($1)); 
         printRule("<ASIGNACION>", "ID ASIG <EXPRESION> PUNTO_Y_COMA");}
 	| ID ASIG STRING PUNTO_Y_COMA {
-        asignacionPtr = crearNodo(":=", crearHoja($1), crearHoja($3));
+        asignacionPtr = crearNodo(":=", crearHoja($1), crearHoja(aConstante($3)));
         printf("\tasignacionPtr -> :=, ID, %s\n", $3);
         
         verificarIdDeclarado(tsObtenerTipo($1));
@@ -405,13 +405,13 @@ factor:
     }
     | ENTERO {
         printf("\tfactorPtr -> %s\n", $1);
-        factorPtr = crearHoja($1);
+        factorPtr = crearHoja(aConstante($1));
         agregarTipoDatoArray(CTE_INTEGER);
         printRule("<FACTOR>", "ENTERO");
     }
     | FLOAT {
         printf("\tfactorPtr -> %s\n", $1);
-        factorPtr = crearHoja($1);
+        factorPtr = crearHoja(aConstante($1));
         agregarTipoDatoArray(CTE_FLOAT);
         printRule("<FACTOR>", "FLOAT");
     }
