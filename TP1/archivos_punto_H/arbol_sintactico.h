@@ -22,5 +22,6 @@ void escribirGragh(nodo*);
 int inOrden(FILE *, nodo *);
 void escribirArbol(nodo *padre);
 int esHoja(nodo *hoja);
+void escribeLog(const char *, const char *, const char *);
 
 #endif

@@ -19,5 +19,6 @@
 #define T_ID 7
 
 #define ARCHIVO_INSTRUCCIONES "intermedia.txt"
+#define ARCHIVO_LOG "compilador.log"
 
 #endif

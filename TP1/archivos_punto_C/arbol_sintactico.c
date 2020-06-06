@@ -9,7 +9,7 @@ nodo* crearNodo(const char *d, nodo* hI, nodo* hD) {
     strcpy(nodoPadre->dato, d);
     nodoPadre->hijoDer = hD;
     nodoPadre->hijoIzq = hI;
-    printf("\tNODO [%s]\n\tIZQ[%s], DER[%s]\n", nodoPadre->dato, nodoPadre->hijoIzq->dato, nodoPadre->hijoDer->dato);
+    escribeLog(nodoPadre->dato, nodoPadre->hijoIzq->dato, nodoPadre->hijoDer->dato);
     return nodoPadre;
 }
 
@@ -129,4 +129,13 @@ int esHoja(nodo *hoja) {
         return 0;
     }
     return hoja->hijoIzq == NULL && hoja->hijoDer == NULL;
+}
+
+void escribeLog(const char *padre, const char *hIzq, const char *hDer) {
+    FILE *log = fopen(ARCHIVO_LOG, "a");
+    if (log == NULL) {
+        return;
+    }
+    fprintf(log, "\tNODO [%s]\n\tIZQ[%s], DER[%s]\n", padre, hIzq, hDer);
+    fclose(log);
 }
