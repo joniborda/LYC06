@@ -4,21 +4,4 @@ DEFVAR
 	FLOAT : fl
 ENDVAR
 
-a := FACT(2);
 a := 1 + 2;
-var_string := "Hola mundo";
-fl := 3.0;
-
-IF (a < 4) {
-	b := (c + d) * 8;
-	c := 3;
-	IF (b >= 3) {
-		d := 5;
-		GET b;
-	}
-} ELSE {
-	c := 2;
-	DISPLAY "SALIDA POR PANTALLA";
-}
-f := 4;
-c := COMB(a*3+1, b+e+d);

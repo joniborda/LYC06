@@ -9,7 +9,7 @@
     #include "archivos_punto_H/arbol_sintactico.h"
     #include "archivos_punto_H/comparador.h"
     #include "archivos_punto_H/assembler.h"
-    
+
     int yystopparser=0;
     int yylineno;
     FILE  *yyin;
@@ -118,10 +118,10 @@ program:
     bloque_declaraciones algoritmo { 
         printf("\nCOMPILACION OK\n");
         printLog("\nCOMPILACION OK", "");
-        escribirArbol(algortimoPtr);
-        escribirGragh(algortimoPtr);
-        tsCrearArchivo();
         generarAssembler(algortimoPtr);
+        //escribirArbol(algortimoPtr);
+        //escribirGragh(algortimoPtr);
+        tsCrearArchivo();
     }
     ;
 
