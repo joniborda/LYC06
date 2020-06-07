@@ -113,16 +113,14 @@
 %%
 
 program: 
-    bloque_declaraciones algoritmo {
+    bloque_declaraciones algoritmo { 
         printf("\nCOMPILACION OK\n");
         printLog("\nCOMPILACION OK", "");
         tsCrearArchivo();
+        escribirArbol(algortimoPtr);
+        escribirGragh(algortimoPtr);
     }
-	| algoritmo {
-        printf("\t\nCOMPILACION OK\n");
-        printLog("\nCOMPILACION OK", "");
-        tsCrearArchivo();
-    };
+    ;
 
 bloque_declaraciones: 
     INICIA_DEC declaraciones FIN_DEC {
@@ -168,8 +166,6 @@ lista_variables:
 algoritmo: 
     programa {
         algortimoPtr = programaPtr;
-        escribirArbol(algortimoPtr);
-        escribirGragh(algortimoPtr);
         printRule("<ALGORITMO>", "<PROGRAMA>");
     }
 	;
