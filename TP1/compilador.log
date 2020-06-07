@@ -71,7 +71,7 @@
 	terminoPtr -> factorPtr
 <TERMINO> -> <FACTOR>
 	Apila el valor _1
-		Estado de Pila = := _1
+		Estado de Pila = _1 :=
 	Pila -> terminoPtr
 <EXPRESION> -> <TERMINO>
 	factorPtr -> 2
@@ -83,7 +83,7 @@
 	NODO [+]
 	IZQ[_1], DER[_2]
 	Apila el valor +
-		Estado de Pila = := +
+		Estado de Pila = + :=
 	Pila -> +, pila, terminoPtr
 <EXPRESION> -> <EXPRESION> OP_SUMA <TERMINO>
 	Desapile el valor +
@@ -121,7 +121,7 @@
 	terminoPtr -> factorPtr
 <TERMINO> -> <FACTOR>
 	Apila el valor _3.0
-		Estado de Pila = PROGRAMA _3.0
+		Estado de Pila = _3.0 PROGRAMA
 	Pila -> terminoPtr
 <EXPRESION> -> <TERMINO>
 	Desapile el valor _3.0
@@ -145,7 +145,7 @@
 	terminoPtr -> factorPtr
 <TERMINO> -> <FACTOR>
 	Apila el valor a
-		Estado de Pila = PROGRAMA a
+		Estado de Pila = a PROGRAMA
 	Pila -> terminoPtr
 <EXPRESION> -> <TERMINO>
 	comparadorPtr -> <
@@ -155,18 +155,18 @@
 	terminoPtr -> factorPtr
 <TERMINO> -> <FACTOR>
 	Apila el valor _4
-		Estado de Pila = PROGRAMA a _4
+		Estado de Pila = _4 a PROGRAMA
 	Pila -> terminoPtr
 <EXPRESION> -> <TERMINO>
 	Desapile el valor _4
-		Estado de Pila = PROGRAMA a
+		Estado de Pila = a PROGRAMA
 	Desapile el valor a
 		Estado de Pila = PROGRAMA
 	NODO [<]
 	IZQ[a], DER[_4]
 	comparacionPtr -> comparadorPtr, Pila, Pila
 	Apila el valor <
-		Estado de Pila = PROGRAMA <
+		Estado de Pila = < PROGRAMA
 <COMPARACION> -> <EXPRESION> <COMPARADOR> <EXPRESION>
 	condicionPtr -> comparacionPtr
 <CONDICION> -> <COMPARACION>
@@ -175,7 +175,7 @@
 	terminoPtr -> factorPtr
 <TERMINO> -> <FACTOR>
 	Apila el valor c
-		Estado de Pila = PROGRAMA < c
+		Estado de Pila = c < PROGRAMA
 	Pila -> terminoPtr
 <EXPRESION> -> <TERMINO>
 	factorPtr -> d
@@ -183,36 +183,36 @@
 	terminoPtr -> factorPtr
 <TERMINO> -> <FACTOR>
 	Desapile el valor c
-		Estado de Pila = PROGRAMA <
+		Estado de Pila = < PROGRAMA
 	NODO [+]
 	IZQ[c], DER[d]
 	Apila el valor +
-		Estado de Pila = PROGRAMA < +
+		Estado de Pila = + < PROGRAMA
 	Pila -> +, pila, terminoPtr
 <EXPRESION> -> <EXPRESION> OP_SUMA <TERMINO>
 	factorPtr -> pila
 	Desapile el valor +
-		Estado de Pila = PROGRAMA <
+		Estado de Pila = < PROGRAMA
 <FACTOR> -> (<EXPRESION>)
 	terminoPtr -> factorPtr
 <TERMINO> -> <FACTOR>
 	Apila el valor +
-		Estado de Pila = PROGRAMA < +
+		Estado de Pila = + < PROGRAMA
 <TERMINO> -> <TERMINO> OP_MUL ...
 	factorPtr -> 8
 <FACTOR> -> ENTERO
 	Desapile el valor +
-		Estado de Pila = PROGRAMA <
+		Estado de Pila = < PROGRAMA
 	NODO [*]
 	IZQ[+], DER[_8]
 	terminoPtr -> *, pila, factorPtr
 <TERMINO> -> <TERMINO> OP_MUL <FACTOR>
 	Apila el valor *
-		Estado de Pila = PROGRAMA < *
+		Estado de Pila = * < PROGRAMA
 	Pila -> terminoPtr
 <EXPRESION> -> <TERMINO>
 	Desapile el valor *
-		Estado de Pila = PROGRAMA <
+		Estado de Pila = < PROGRAMA
 	NODO [:=]
 	IZQ[b], DER[*]
 	asignacionPtr -> :=, ID, Pila
@@ -221,18 +221,18 @@
 <SENTENCIA> -> <ASIGNACION>
 	programaPtr -> sentenciaPtr
 	Apila el valor :=
-		Estado de Pila = PROGRAMA < :=
+		Estado de Pila = := < PROGRAMA
 <PROGRAMA> -> <SENTENCIA>
 	factorPtr -> 2
 <FACTOR> -> ENTERO
 	terminoPtr -> factorPtr
 <TERMINO> -> <FACTOR>
 	Apila el valor _2
-		Estado de Pila = PROGRAMA < := _2
+		Estado de Pila = _2 := < PROGRAMA
 	Pila -> terminoPtr
 <EXPRESION> -> <TERMINO>
 	Desapile el valor _2
-		Estado de Pila = PROGRAMA < :=
+		Estado de Pila = := < PROGRAMA
 	NODO [:=]
 	IZQ[c], DER[_2]
 	asignacionPtr -> :=, ID, Pila
@@ -241,12 +241,12 @@
 <SENTENCIA> -> <ASIGNACION>
 	programaPtr -> sentenciaPtr
 	Apila el valor :=
-		Estado de Pila = PROGRAMA < := :=
+		Estado de Pila = := := < PROGRAMA
 <PROGRAMA> -> <SENTENCIA>
 	Desapile el valor :=
-		Estado de Pila = PROGRAMA < :=
+		Estado de Pila = := < PROGRAMA
 	Desapile el valor :=
-		Estado de Pila = PROGRAMA <
+		Estado de Pila = < PROGRAMA
 	NODO [CUERPO]
 	IZQ[:=], DER[:=]
 	Desapile el valor <
@@ -270,7 +270,7 @@
 	terminoPtr -> factorPtr
 <TERMINO> -> <FACTOR>
 	Apila el valor _4
-		Estado de Pila = PROGRAMA _4
+		Estado de Pila = _4 PROGRAMA
 	Pila -> terminoPtr
 <EXPRESION> -> <TERMINO>
 	Desapile el valor _4

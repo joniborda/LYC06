@@ -28,9 +28,7 @@
     nodo* entradaPtr = NULL;
     nodo* salidaPtr = NULL;
     nodo* factPtr = NULL;
-
-    nodo* pilaTest[100]; //por el momento con longitud fija, cambiar a dinamica...
-    int pilaTope = 0;
+    t_pila pila = NULL;
 
     char * idsAsignacionTipo[100]; // Array de ids para asignarles el tipo en la declaracion de variables
     int indexAsignacionTipo = 0; // Index para la asignacion de tipos a los ids
@@ -56,6 +54,7 @@
 
     nodo* apilar(nodo*);
     nodo* desapilar();
+    nodo* fun(const char*);
 %}
 
 %union {
@@ -615,26 +614,29 @@ int main(int argc,char *argv[]) {
 
 nodo * apilar(nodo *arg) {
     printLog("\tApila el valor ", arg->dato);
-    pilaTest[pilaTope] = arg;
-    pilaTope++;
+    apilarDinamica(&pila, &arg);
     mostrarEstadoPila();
 }
 
 nodo * desapilar() {
-    pilaTope--;
-    nodo * ret = pilaTest[pilaTope];
+    nodo * ret = NULL;
+    desapilarDinamica(&pila, &ret);
     printLog("\tDesapile el valor ", ret->dato);
     mostrarEstadoPila();
     return ret;
 }
 
 void mostrarEstadoPila() {
-    int i = 0;
+    
     char* pilaStr = (char*) malloc(100);
     strcpy(pilaStr, "\t\tEstado de Pila =");
-    for (i = 0; i < pilaTope; i++) {
-        sprintf(pilaStr, "%s %s", pilaStr, pilaTest[i]->dato);
+    t_pila copiaPila = pila;
+
+    while(copiaPila != NULL) {
+        sprintf(pilaStr, "%s %s", pilaStr, (copiaPila->dato)->dato);
+        copiaPila = copiaPila->psig;
     }
+
     printLog(pilaStr, "");
 }
 
