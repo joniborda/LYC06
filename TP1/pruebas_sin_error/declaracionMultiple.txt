@@ -1,0 +1,9 @@
+DEFVAR
+	FLOAT: a
+	INT: i2; i3
+	INT: pepe
+	STRING: mi;s1;s2;s3
+ENDVAR
+IF (5 > a) {
+	mi:="sentencia simple";
+}

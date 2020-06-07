@@ -1,0 +1,6 @@
+DEFVAR
+	FLOAT: a;b
+ENDVAR
+
+DISPLAY a;
+DISPLAY b;

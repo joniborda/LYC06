@@ -1,0 +1,7 @@
+DEFVAR
+	INT: a
+	STRING: b
+ENDVAR
+WHILE (a > b) {
+	
+}

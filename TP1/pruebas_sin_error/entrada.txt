@@ -1,0 +1,9 @@
+DEFVAR
+	FLOAT: a
+	STRING: abc; bbbb
+ENDVAR
+
+GET abc;
+WHILE (a>4){
+	GET bbbb;
+}

@@ -1,0 +1,8 @@
+DEFVAR
+	FLOAT: a
+	STRING: miWHILE
+ENDVAR
+
+WHILE (5 > a) {
+	miWHILE:="el id contiene WHILE dentro";
+}

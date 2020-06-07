@@ -1,0 +1,6 @@
+DEFVAR
+	FLOAT: a
+ENDVAR
+a:=999.9;
+a:=.999;
+a:=999.;

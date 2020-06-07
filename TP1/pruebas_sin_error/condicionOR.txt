@@ -1,0 +1,11 @@
+DEFVAR
+	FLOAT: a;b;j
+ENDVAR
+
+IF(a > 5 OR a == 1){
+	DISPLAY "ABC";
+}
+
+WHILE(b > 6 OR j == 1){
+	DISPLAY "AAA";
+}
