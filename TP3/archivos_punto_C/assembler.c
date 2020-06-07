@@ -1,5 +1,5 @@
 #include "../archivos_punto_h/assembler.h"
-int cantAux = 1;
+int cantAux = 0;
 
 void generarAssembler(nodo * raiz) {
 	if (/*generarHeader()*/ 0 == 1) {
@@ -71,9 +71,10 @@ int recorreArbolAsm(FILE * fp, nodo* raiz) {
             if (esHoja(raiz->hijoDer)) {
                 // la izquierda ya esta, y la derecha es hoja
                 printf("DATO1 : %s", raiz -> dato);
-                determinarOperacion(fp, raiz);
+                int cantidad = determinarOperacion(fp, raiz);
                 // reduzco arbol
-                strcpy(raiz->dato, "@aux1");
+                sprintf(raiz->dato, "@aux%d", cantidad);
+
                 raiz->hijoIzq = NULL;
                 raiz->hijoDer = NULL;
 
@@ -88,9 +89,9 @@ int recorreArbolAsm(FILE * fp, nodo* raiz) {
         if (esHoja(raiz->hijoIzq) && esHoja(raiz->hijoDer)) {
             // soy nodo mas a la izquierda con dos hijos hojas
             printf("DATO2 : %s\n", raiz -> dato);
-            determinarOperacion(fp, raiz);
+            int cantidad = determinarOperacion(fp, raiz);
             // reduzco arbol
-            strcpy(raiz->dato, "@aux1");
+            sprintf(raiz->dato, "@aux%d", cantidad);
             raiz->hijoIzq = NULL;
             raiz->hijoDer = NULL;
 
@@ -101,20 +102,48 @@ int recorreArbolAsm(FILE * fp, nodo* raiz) {
     return 0;
 }
 
-void determinarOperacion(FILE * fp, nodo * raiz) {
+int determinarOperacion(FILE * fp, nodo * raiz) {
    	printf("DATO : %s\n", raiz -> dato);
+
     if(strcmp(raiz->dato, "+") == 0) {
         fprintf(fp, "fld %s\n", raiz->hijoIzq);
         fprintf(fp, "fld %s\n", raiz->hijoDer);
         fprintf(fp, "fadd\n");
         fprintf(fp, "fstp @aux%d\n", nuevoAux());
+        return cantAux;
     }
 
-     if(strcmp(raiz->dato, ":=") == 0) {
-        fprintf(fp, "MOV %s, %s\n", raiz->hijoIzq, raiz->hijoDer);
+    if(strcmp(raiz->dato, "-") == 0) {
+        fprintf(fp, "fld %s\n", raiz->hijoIzq);
+        fprintf(fp, "fld %s\n", raiz->hijoDer);
+        fprintf(fp, "fsub\n");
+        fprintf(fp, "fstp @aux%d\n", nuevoAux());
+        return cantAux;
     }
+
+    if(strcmp(raiz->dato, "*") == 0) {
+        fprintf(fp, "fld %s\n", raiz->hijoIzq);
+        fprintf(fp, "fld %s\n", raiz->hijoDer);
+        fprintf(fp, "fmul\n");
+        fprintf(fp, "fstp @aux%d\n", nuevoAux());
+        return cantAux;
+    }
+
+    if(strcmp(raiz->dato, "/") == 0) {
+        fprintf(fp, "fld %s\n", raiz->hijoIzq);
+        fprintf(fp, "fld %s\n", raiz->hijoDer);
+        fprintf(fp, "fdiv\n");
+        fprintf(fp, "fstp @aux%d\n", nuevoAux());
+        return cantAux;
+    }
+
+    if(strcmp(raiz->dato, ":=") == 0) {
+        fprintf(fp, "MOV %s, %s\n", raiz->hijoIzq, raiz->hijoDer);
+        return 0;
+    }
+    return 0;
 }
 
 int nuevoAux() {
-    return cantAux++;
+    return ++cantAux;
 }

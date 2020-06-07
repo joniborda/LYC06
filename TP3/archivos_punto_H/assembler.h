@@ -7,6 +7,6 @@ int generarHeader();
 int generarData();
 int generarInstrucciones(nodo *);
 int recorreArbolAsm(FILE *, nodo *);
-void determinarOperacion(FILE * , nodo *);
+int determinarOperacion(FILE * , nodo *);
 
 #endif
