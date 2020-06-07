@@ -1,0 +1,7 @@
+DEFVAR
+	FLOAT: a
+ENDVAR
+
+WHILE(BETWEEN (a, [b ; 12])){
+	b:=3;
+}
