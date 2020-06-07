@@ -665,11 +665,11 @@ nodo * semanticaFactorial(nodo* exp) {
     }
     */
     nodo* numeroFactorial = crearNodo(":=", crearHoja("@NUMFACT"), exp);
-    nodo* decrementado = crearNodo(":=", crearHoja("@NUMFACT"), crearNodo("OP_MENOS", crearHoja("@NUMFACT"), crearHoja("1")));
+    nodo* decrementado = crearNodo(":=", crearHoja("@NUMFACT"), crearNodo("OP_MENOS", crearHoja("@NUMFACT"), crearHoja(aConstante("1"))));
     nodo* mulFact = crearNodo(":=", crearHoja("@SUM"), crearNodo("*", crearHoja("@SUM"), crearHoja("@NUMFACT")));
     nodo* cuerpoWhileFact = crearNodo("CUERPO", mulFact, decrementado);
-    nodo* whileFact = crearNodo("WHILE", crearNodo(">", crearHoja("@NUMFACT"), crearHoja("1")), cuerpoWhileFact);
-    nodo* sumaFact = crearNodo(":=", crearHoja("@SUM"), crearHoja("1"));
+    nodo* whileFact = crearNodo("WHILE", crearNodo(">", crearHoja("@NUMFACT"), crearHoja(aConstante("1"))), cuerpoWhileFact);
+    nodo* sumaFact = crearNodo(":=", crearHoja("@SUM"), crearHoja(aConstante("1")));
     nodo* progFactorial = crearNodo("PROGRAMA", sumaFact , whileFact);
     return crearNodo("FACT", numeroFactorial, progFactorial);
 }
