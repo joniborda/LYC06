@@ -1,0 +1,1 @@
+@NUMFACT  :=  _2  FACT  @SUM  :=  1  PROGRAMA  @NUMFACT  >  1  WHILE  @SUM  *  @NUMFACT  @SUM  :=  *  CUERPO  @NUMFACT  OP_MENOS  1  @NUMFACT  :=  OP_MENOS  a  :=  FACT  PROGRAMA  _1  +  _2  a  :=  +  PROGRAMA  algo  :=  _algito  PROGRAMA  fl  :=  _3.0  PROGRAMA  a  <  _4  IF  c  +  d  +  *  _8  b  :=  *  CUERPO  c  :=  _2  PROGRAMA  f  :=  _4  

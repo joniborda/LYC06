@@ -7,18 +7,28 @@
     #include "archivos_punto_H/tabla_simbolo.h"
     #include "archivos_punto_H/constantes.h"
     #include "archivos_punto_H/arbol_sintactico.h"
+    #include "archivos_punto_H/comparador.h"
     int yystopparser=0;
     int yylineno;
     FILE  *yyin;
     
-    nodo* F=NULL;
-    nodo* T=NULL;
-    nodo* E=NULL;
-    nodo* A=NULL;
-    nodo* FUN=NULL;
-
-    nodo* pilaTest[100]; //por el momento con longitud fija, cambiar a dinamica...
-    int pilaTope = 0;
+    nodo* algortimoPtr = NULL;
+    nodo* factorPtr = NULL;
+    nodo* terminoPtr = NULL;
+    nodo* expresionPtr = NULL;
+    nodo* funcionPtr = NULL;
+    nodo* condicionPtr = NULL;
+    nodo* programaPtr = NULL;
+    nodo* seleccionPtr = NULL;
+    nodo* sentenciaPtr = NULL;
+    nodo* comparadorPtr = NULL;
+    nodo* comparacionPtr = NULL;
+    nodo* asignacionPtr = NULL;
+    nodo* iteracionPtr = NULL;
+    nodo* entradaPtr = NULL;
+    nodo* salidaPtr = NULL;
+    nodo* factPtr = NULL;
+    t_pila pila = NULL;
 
     char * idsAsignacionTipo[100]; // Array de ids para asignarles el tipo en la declaracion de variables
     int indexAsignacionTipo = 0; // Index para la asignacion de tipos a los ids
@@ -27,6 +37,7 @@
 
     int yyerror(const char *);
     void printRule(const char *, const char *);
+    void printLog(const char *, const char *);
     void agregarVariable();
     void actualizarTipoDeclaracionID(int);
     void validarIdNumerico(const int);
@@ -37,9 +48,12 @@
     int validarExpresionReal();
     int validarExpresionString();
     void validarComparacion();
+    void mostrarEstadoPila();
+    char * obtenerComparadorOpuesto(nodo* );
+    nodo* semanticaFactorial(nodo*);
 
-    nodo* meter_pila(nodo*);
-    nodo* sacar_pila();
+    nodo* apilar(nodo*);
+    nodo* desapilar();
 %}
 
 %union {
@@ -101,10 +115,12 @@
 program: 
     bloque_declaraciones algoritmo {
         printf("\nCOMPILACION OK\n");
+        printLog("\nCOMPILACION OK", "");
         tsCrearArchivo();
     }
 	| algoritmo {
-        printf("\nCOMPILACION OK\n");
+        printf("\t\nCOMPILACION OK\n");
+        printLog("\nCOMPILACION OK", "");
         tsCrearArchivo();
     };
 
@@ -115,8 +131,12 @@ bloque_declaraciones:
 	;
 
 declaraciones:
-    declaracion {printRule("<DECLARACIONES>", "<DECLARACION>");}
-    | declaraciones declaracion {printRule("<DECLARACIONES>", "<DECLARACIONES> <DECLARACION>");}
+    declaracion {
+        printRule("<DECLARACIONES>", "<DECLARACION>");
+    }
+    | declaraciones declaracion {
+        printRule("<DECLARACIONES>", "<DECLARACIONES> <DECLARACION>");
+    }
 	;
 
 declaracion:
@@ -146,45 +166,117 @@ lista_variables:
 	;
 
 algoritmo: 
-    programa {escribirGragh(A);printRule("<ALGORITMO>", "<PROGRAMA>");}
+    programa {
+        algortimoPtr = programaPtr;
+        escribirArbol(algortimoPtr);
+        escribirGragh(algortimoPtr);
+        printRule("<ALGORITMO>", "<PROGRAMA>");
+    }
 	;
 
 programa:
-    sentencia {printRule("<PROGRAMA>", "<SENTENCIA>");}
-    | programa sentencia {printRule("<PROGRAMA>", "<PROGRAMA> <SENTENCIA>");}
+    sentencia {
+        programaPtr = sentenciaPtr;
+        printLog("\tprogramaPtr -> sentenciaPtr", "");
+        apilar(programaPtr);
+        printRule("<PROGRAMA>", "<SENTENCIA>");
+    }
+    | programa sentencia { 
+        programaPtr = desapilar();
+        programaPtr = crearNodo("PROGRAMA", programaPtr, sentenciaPtr); 
+        printLog("\tprogramaPtr -> PROGRAMA, pila, sentenciaPtr", ""); 
+        apilar(programaPtr);
+        printRule("<PROGRAMA>", "<PROGRAMA> <SENTENCIA>");}
     ;
 
 sentencia: 
-    seleccion {printRule("<SENTENCIA>", "<SELECCION>");}
-    | asignacion {printRule("<SENTENCIA>", "<ASIGNACION>");}
-    | iteracion {printRule("<SENTENCIA>", "<ITERACION>");}
-    | entrada PUNTO_Y_COMA {printRule("<SENTENCIA>", "<ENTRADA>");}
-    | salida PUNTO_Y_COMA {printRule("<SENTENCIA>", "<SALIDA>");}
+    seleccion {
+        sentenciaPtr = seleccionPtr; 
+        printLog("\tsentenciaPtr -> Pila", ""); 
+        printRule("<SENTENCIA>", "<SELECCION>");
+    }
+    | asignacion {
+        sentenciaPtr = asignacionPtr; 
+        printLog("\tsentenciaPtr -> asignacionPtr", "");
+        printRule("<SENTENCIA>", "<ASIGNACION>");
+    }
+    | iteracion {
+        sentenciaPtr = iteracionPtr;
+        printLog("\tsentenciaPtr -> Pila", "");
+        printRule("<SENTENCIA>", "<ITERACION>");
+    }
+    | entrada PUNTO_Y_COMA {
+        sentenciaPtr = entradaPtr;
+        printRule("<SENTENCIA>", "<ENTRADA>");
+    }
+    | salida PUNTO_Y_COMA {
+        sentenciaPtr = salidaPtr;
+        printRule("<SENTENCIA>", "<SALIDA>");
+    }
     ;
 
 entrada: 
-    ENTRADA ID {verificarIdDeclarado(tsObtenerTipo($2));} {printRule("<ENTRADA>", "ID");};
+    ENTRADA ID {
+        verificarIdDeclarado(tsObtenerTipo($2));
+        entradaPtr = crearNodo("ASIG", crearHoja($2), crearHoja("@STDIN"));
+        printRule("<ENTRADA>", "ID");
+    };
 
 salida: 
-    SALIDA STRING {printRule("<SALIDA>", "STRING");} 
-    | SALIDA ID {verificarIdDeclarado(tsObtenerTipo($2));} {printRule("<SALIDA>", "ID");}
+    SALIDA STRING {
+        printRule("<SALIDA>", "STRING");
+        salidaPtr = crearNodo("ASIG", crearHoja("@STDOUT"), crearHoja($2));
+    } 
+    | SALIDA ID {
+        verificarIdDeclarado(tsObtenerTipo($2));
+        salidaPtr = crearNodo("ASIG", crearHoja("@STDOUT"), crearHoja($2));
+        printRule("<SALIDA>", "ID");
+    }
     ;
 
 seleccion: 
-    IF P_A condicion P_C L_A programa L_C {printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C");}
+    IF P_A condicion P_C L_A programa L_C {
+        programaPtr = desapilar();
+        seleccionPtr = crearNodo("IF", desapilar(), programaPtr);
+        printLog("\tseleccionPtr -> IF, condicionPtr, programaPtr", ""); 
+        printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C");}
     | IF P_A condicion P_C L_A programa L_C ELSE L_A programa L_C {
+        programaPtr = desapilar();
+        seleccionPtr = crearNodo("IF", desapilar(), crearNodo("CUERPO", desapilar(), programaPtr));
+        printLog("\tseleccionPtr -> IF, Pila, nodo", ""); 
         printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C ELSE L_A <PROGRAMA> L_C");
     }
     ;
 
 iteracion: 
-    WHILE P_A condicion P_C L_A programa L_C {printRule("<ITERACION>", "WHILE P_A <CONDICION> P_C L_A <PROGRAMA> L_C");};
+    WHILE P_A condicion P_C L_A programa L_C {
+        programaPtr = desapilar();
+        iteracionPtr = crearNodo("WHILE", desapilar(), programaPtr);
+        printLog("\titeracionPtr -> WHILE, Pila, programaPtr", ""); 
+        printRule("<ITERACION>", "WHILE P_A <CONDICION> P_C L_A <PROGRAMA> L_C");
+    }
+    ;
 
 condicion: 
-    comparacion {printRule("<CONDICION>", "<COMPARACION>");}
-    | OP_NOT comparacion {printRule("<CONDICION>", "OP_NOT <COMPARACION>");}
-    | comparacion OP_AND comparacion {printRule("<CONDICION>", "<COMPARACION> OP_AND <COMPARACION>");}
-    | comparacion OP_OR comparacion {printRule("<CONDICION>", "<COMPARACION> OP_OR <COMPARACION>");}
+    comparacion {
+        condicionPtr = comparacionPtr;
+        printLog("\tcondicionPtr -> comparacionPtr", "");
+        printRule("<CONDICION>", "<COMPARACION>");}
+    | OP_NOT comparacion { 
+        strcpy(comparacionPtr->dato, obtenerComparadorOpuesto(comparacionPtr));
+        condicionPtr = comparacionPtr;
+        printLog("\tcondicionPtr -> comparacionPtr", "");
+        printRule("<CONDICION>", "OP_NOT <COMPARACION>");}
+    | comparacion OP_AND comparacion {
+        condicionPtr = crearNodo("AND", desapilar(), desapilar());
+        printLog("\tcondicionPtr -> AND, Pila, Pila", "");
+        apilar(condicionPtr);
+        printRule("<CONDICION>", "<COMPARACION> OP_AND <COMPARACION>");}
+    | comparacion OP_OR comparacion {
+        condicionPtr = crearNodo("OR", desapilar(), desapilar());
+        printLog("\tcondicionPtr -> OP_OR, Pila, Pila", "");
+        apilar(condicionPtr);
+        printRule("<CONDICION>", "<COMPARACION> OP_OR <COMPARACION>");}
     ;
 
 comparacion: 
@@ -193,110 +285,177 @@ comparacion:
             if (validarExpresionReal() == ERROR) {
                 yyerror("Tipo de datos no compatible (Expresion real)");
             } 
+            comparacionPtr = crearNodo("AND", crearNodo("=>", crearHoja($3), desapilar()), crearNodo("=<", crearHoja($3), desapilar()));
+            apilar(comparacionPtr);
             printRule("<COMPARACION>", "BETWEEN P_A ID COMA C_A <EXPRESION> PUNTO_Y_COMA <EXPRESION> C_C P_C");
         }
-    | expresion comparador expresion { validarComparacion(); printRule("<COMPARACION>", "<EXPRESION> <COMPARADOR> <EXPRESION>");}
+    | expresion comparador expresion { 
+        validarComparacion(); 
+        comparacionPtr = crearNodo(comparadorPtr->dato, desapilar(), desapilar()); 
+        printLog("\tcomparacionPtr -> comparadorPtr, Pila, Pila", ""); 
+        apilar(comparacionPtr); 
+        printRule("<COMPARACION>", "<EXPRESION> <COMPARADOR> <EXPRESION>");}
     ;
 
 comparador: 
-    CMP_MAYOR {printRule("<COMPARADOR>", "OP_CMP_MAYOR");} 
-    | CMP_MENOR {printRule("<COMPARADOR>", "OP_CMP_MENOR");} 
-    | CMP_MAYOR_IGUAL {printRule("<COMPARADOR>", "OP_CMP_MAYOR_IGUAL");} 
-    | CMP_MENOR_IGUAL {printRule("<COMPARADOR>", "OP_CMP_MENOR_IGUAL");} 
-    | CMP_IGUAL  {printRule("<COMPARADOR>", "OP_CMP_IGUAL");};
+    CMP_MAYOR {
+        comparadorPtr = crearHoja(">");
+        printLog("\tcomparadorPtr -> >", "");
+        printRule("<COMPARADOR>", "OP_CMP_MAYOR");
+    } 
+    | CMP_MENOR {
+        comparadorPtr = crearHoja("<");
+        printLog("\tcomparadorPtr -> <", "");
+        printRule("<COMPARADOR>", "OP_CMP_MENOR");
+    } 
+    | CMP_MAYOR_IGUAL {
+        comparadorPtr = crearHoja(">=");
+        printLog("\tcomparadorPtr -> >=", "");
+        printRule("<COMPARADOR>", "OP_CMP_MAYOR_IGUAL");
+    } 
+    | CMP_MENOR_IGUAL {
+        comparadorPtr = crearHoja("<=");
+        printLog("\tcomparadorPtr -> <=", "");
+        printRule("<COMPARADOR>", "OP_CMP_MENOR_IGUAL");
+    } 
+    | CMP_IGUAL  {
+        comparadorPtr = crearHoja("==");
+        printLog("\tcomparadorPtr -> ==", "");
+        printRule("<COMPARADOR>", "OP_CMP_IGUAL");
+    };
 
 asignacion:
     ID ASIG expresion PUNTO_Y_COMA {
-        printf("A->:=,ID,E");
-        A = crearNodo(":=",crearHoja($1),E);
-        sacar_pila(); // Descarta lo que tiene expresion
+        asignacionPtr = crearNodo(":=", crearHoja($1), desapilar());
+        printLog("\tasignacionPtr -> :=, ID, Pila", "");
+        
         verificarIdDeclarado(tsObtenerTipo($1)); 
         validarTiposDatoAsignacion(tsObtenerTipo($1)); 
         printRule("<ASIGNACION>", "ID ASIG <EXPRESION> PUNTO_Y_COMA");}
 	| ID ASIG STRING PUNTO_Y_COMA {
-        printRule("<ASIGNACION>", "ID ASIG STRING PUNTO_Y_COMA");
+        asignacionPtr = crearNodo(":=", crearHoja($1), crearHoja(aConstante($3)));
+        printLog("\tasignacionPtr -> :=, ID, ", $3);
+        
         verificarIdDeclarado(tsObtenerTipo($1));
+        printRule("<ASIGNACION>", "ID ASIG STRING PUNTO_Y_COMA");
         if (tsObtenerTipo($1) != T_STRING) {
             yyerror("Asignacion no permitidad: La variable no es de tipo String");
         }
     }
     ;
 
-expresion: 
-    asignacion {printRule("<EXPRESION>", "<ASIGNACION>");}
+expresion:
+    asignacion {
+        printRule("<EXPRESION>", "<ASIGNACION>");
+    }
     | expresion OP_SUMA termino {
-        printf("E->+,pila,T\n");
-        E = crearNodo("+", sacar_pila(), T); meter_pila(E); printRule("<EXPRESION>", "<EXPRESION> OP_SUMA <TERMINO>");
+        apilar(crearNodo("+", desapilar(), terminoPtr)); 
+        printLog("\tPila -> +, pila, terminoPtr", "");
+        printRule("<EXPRESION>", "<EXPRESION> OP_SUMA <TERMINO>");
     }
     | expresion OP_RESTA termino {
-        printf("E->-,pila,T\n");
-        E = crearNodo("-", sacar_pila(), T); meter_pila(E);
+        apilar(crearNodo("-", desapilar(), terminoPtr));
+        printLog("\tPila -> -, pila, terminoPtr", "");
         printRule("<EXPRESION>", "<EXPRESION> OP_RESTA <TERMINO>");
     }
     | termino {
-        printf("E->T\n");
-        E = T; meter_pila(E); printRule("<EXPRESION>", "<TERMINO>");
+        apilar(terminoPtr); 
+        printLog("\tPila -> terminoPtr", "");
+        printRule("<EXPRESION>", "<TERMINO>");
     }
     ;
 
 termino:
-    termino OP_MUL {meter_pila(T);} factor {
-        printf("T->*, pila, F\n");
-        T = crearNodo("*", sacar_pila(), F); 
-        printRule("<TERMINO>", "<TERMINO> OP_MUL <FACTOR>");
-    }
-    | termino OP_DIV {meter_pila(T);} factor {
-        printf("T->/, pila, F\n");
-        T = crearNodo("/", sacar_pila(), F);
-        printRule("<TERMINO>", "<TERMINO> OP_DIV <FACTOR>");
-    }
+    termino OP_MUL {
+            apilar(terminoPtr);
+            printRule("<TERMINO>", "<TERMINO> OP_MUL ...");
+            // esta a mitad de la regla
+        } factor {
+            terminoPtr = crearNodo("*", desapilar(), factorPtr); 
+            printLog("\tterminoPtr -> *, pila, factorPtr", "");
+            printRule("<TERMINO>", "<TERMINO> OP_MUL <FACTOR>");
+        }
+    | termino OP_DIV {
+            apilar(terminoPtr);
+            printRule("<TERMINO>", "<TERMINO> OP_DIV ...");
+            // esta a mitad de la regla
+        } factor {
+            terminoPtr = crearNodo("/", desapilar(), factorPtr);
+            printLog("\tterminoPtr -> /, pila, factorPtr", "");
+            printRule("<TERMINO>", "<TERMINO> OP_DIV <FACTOR>");
+        }
     | factor {
-        printf("T->F\n");
-        T = F; printRule("<TERMINO>", "<FACTOR>");
+        terminoPtr = factorPtr; 
+        printLog("\tterminoPtr -> factorPtr", "");
+        printRule("<TERMINO>", "<FACTOR>");
     }
     ;
 
 factor: 
     P_A expresion P_C {
-        printf("F->pila\n");
-        F = sacar_pila(); printRule("<FACTOR>", "(<EXPRESION>)");
+        printLog("\tfactorPtr -> pila", "");
+        factorPtr = desapilar();
+        printRule("<FACTOR>", "(<EXPRESION>)");
     }
-    
     | ID {
-        printf("F->id\n");
-        F = crearHoja($1);
+        printLog("\tfactorPtr -> ", $1);
+        factorPtr = crearHoja($1);
         verificarIdDeclarado(tsObtenerTipo($1));
         agregarTipoDatoArray(tsObtenerTipo($1));
         printRule("<FACTOR>", "ID");
     }
     | ENTERO {
-        printf("F->ENT\n");
-        F = crearHoja($1);
-        agregarTipoDatoArray(tsObtenerTipo($1));
+        printLog("\tfactorPtr -> ", $1);
+        factorPtr = crearHoja(aConstante($1));
+        agregarTipoDatoArray(CTE_INTEGER);
         printRule("<FACTOR>", "ENTERO");
     }
     | FLOAT {
-        printf("F->FLOAT\n");
-        F = crearHoja($1);
-        agregarTipoDatoArray(tsObtenerTipo($1));
+        printLog("\tfactorPtr -> ", $1);
+        factorPtr = crearHoja(aConstante($1));
+        agregarTipoDatoArray(CTE_FLOAT);
         printRule("<FACTOR>", "FLOAT");
     }
 	| funcion {
-        printf("F->FUN\n");
-        F = FUN;
+        printLog("\tfactorPtr -> funcionPtr", "");
+        factorPtr = funcionPtr;
         printRule("<FACTOR>", "<FUNCION>");
     }
 	;
 	
 funcion:
-	FACT P_A expresion P_C {FUN = E;printRule("<FUNCION>", "FACTORIAL(<EXPRESION>)");}
-	| COMB P_A expresion COMA expresion P_C	{printRule("<FUNCION>", "COMBINATORIO(<EXPRESION>, <EXPRESION>)");}
+	FACT P_A expresion P_C {
+        funcionPtr = semanticaFactorial(desapilar());
+        printRule("<FUNCION>", "FACTORIAL(<EXPRESION>)");
+    }
+	| COMB P_A expresion COMA expresion P_C	{
+        // Definicion de numero combinatorio:
+        // Combinatorio = FACT(expresion1) / ( FACT(expresion2) * FACT(expresion1 - expresion2) )
+        nodo* exp2Comb = desapilar();
+        nodo* exp1Comb = desapilar();
+        nodo* resComb = crearNodo("-", exp1Comb, exp2Comb);
+        nodo* mulComb = crearNodo("*", semanticaFactorial(exp2Comb), semanticaFactorial(resComb));
+        funcionPtr = crearNodo("/", semanticaFactorial(exp1Comb), mulComb);
+        printRule("<FUNCION>", "COMBINATORIO(<EXPRESION>, <EXPRESION>)");
+    }
 	;
 %%
 
+void printLog(const char *s1, const char *s2) {
+    FILE *log = fopen(ARCHIVO_LOG, "a");
+    if (log == NULL) {
+        return;
+    }
+    fprintf(log, "%s%s\n", s1, s2);
+    fclose(log);
+}
+
 void printRule(const char *lhs, const char *rhs) {
     if (YYDEBUG) {
-        printf("%s -> %s\n", lhs, rhs);
+        char *regla = (char *) malloc(100);
+        sprintf(regla, "%s -> %s", lhs, rhs);
+        printf("%s\n\n", regla);
+        printLog(regla, "");
     }
     return;
 }
@@ -412,7 +571,6 @@ int validarExpresionString() {
     return TODO_OK;
 }
 
-
 void validarComparacion() {
 
     int longArray = indexExpresionesTipoDato;
@@ -437,21 +595,81 @@ int main(int argc,char *argv[]) {
         if (argc > 2) {
             setImprimir();
         }
+        // Se limpia el log
+        FILE *log = fopen(ARCHIVO_LOG, "w");
+        if (log == NULL) {
+            return ERROR;
+        }
+        fclose(log);
+
         yyparse();
     }
 
     fclose(yyin);
+
+    compararArchivo(argv[1]);
     return 0;
 }
 
-nodo * meter_pila(nodo *arg) {
-    printf("...Guarde...\n");
-    pilaTest[pilaTope] = arg;
-    pilaTope++;
+nodo * apilar(nodo *arg) {
+    printLog("\tApila el valor ", arg->dato);
+    apilarDinamica(&pila, &arg);
+    mostrarEstadoPila();
 }
 
-nodo * sacar_pila() {
-     printf("...Saque...\n");
-    pilaTope--;
-    return pilaTest[pilaTope];
+nodo * desapilar() {
+    nodo * ret = NULL;
+    desapilarDinamica(&pila, &ret);
+    printLog("\tDesapile el valor ", ret->dato);
+    mostrarEstadoPila();
+    return ret;
+}
+
+void mostrarEstadoPila() {
+    
+    char* pilaStr = (char*) malloc(100);
+    strcpy(pilaStr, "\t\tEstado de Pila =");
+    t_pila copiaPila = pila;
+
+    while(copiaPila != NULL) {
+        sprintf(pilaStr, "%s %s", pilaStr, (copiaPila->dato)->dato);
+        copiaPila = copiaPila->psig;
+    }
+
+    printLog(pilaStr, "");
+}
+
+char * obtenerComparadorOpuesto(nodo* raiz) {
+    if(strcmp(raiz->dato, "==") == 0) {
+        return "!=";
+    } else if (strcmp(raiz->dato, "!=") == 0) {
+        return "==";
+    } else if (strcmp(raiz->dato, "<") == 0) {
+        return ">=";
+    } else if (strcmp(raiz->dato, "<=") == 0) {
+        return ">";
+    } else if (strcmp(raiz->dato, ">") == 0) {
+        return "<=";
+    } else if (strcmp(raiz->dato, ">=") == 0) {
+        return "<";
+    }
+}
+
+nodo * semanticaFactorial(nodo* exp) {
+    /* Lógica de Factorial
+    nroMaximo = expresion;
+    factorial = 1;
+    while (nroMaximo > 1) {
+        factorial = factorial * nroMaximo
+        nroMaximo--;
+    }
+    */
+    nodo* numeroFactorial = crearNodo(":=", crearHoja("@NUMFACT"), exp);
+    nodo* decrementado = crearNodo(":=", crearHoja("@NUMFACT"), crearNodo("OP_MENOS", crearHoja("@NUMFACT"), crearHoja(aConstante("1"))));
+    nodo* mulFact = crearNodo(":=", crearHoja("@SUM"), crearNodo("*", crearHoja("@SUM"), crearHoja("@NUMFACT")));
+    nodo* cuerpoWhileFact = crearNodo("CUERPO", mulFact, decrementado);
+    nodo* whileFact = crearNodo("WHILE", crearNodo(">", crearHoja("@NUMFACT"), crearHoja(aConstante("1"))), cuerpoWhileFact);
+    nodo* sumaFact = crearNodo(":=", crearHoja("@SUM"), crearHoja(aConstante("1")));
+    nodo* progFactorial = crearNodo("PROGRAMA", sumaFact , whileFact);
+    return crearNodo("FACT", numeroFactorial, progFactorial);
 }

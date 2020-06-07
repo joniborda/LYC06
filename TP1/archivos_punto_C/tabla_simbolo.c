@@ -38,17 +38,14 @@ int tsCrearArchivo() {
 
 	// Se escribe linea por linea
 	for (i = 0; i < posicion_en_ts; i++) {
-		if (tablaSimbolos[i].nombre[0] != '_') {
-			if ((tablaSimbolos[i].tipo == T_INTEGER)
-			|| (tablaSimbolos[i].tipo == T_FLOAT) 
-			|| (tablaSimbolos[i].tipo == T_STRING)) {
-				fprintf(archivo, "%-32s%-13s\n", tablaSimbolos[i].nombre, obtenerNombreTipo(tablaSimbolos[i].tipo));
-			}
-			else {
-				char dst[32] = "_";
-				fprintf(archivo, "%-32s%-13s%-31s%-12s\n",
-				strcat(dst, tablaSimbolos[i].nombre), "", tablaSimbolos[i].valor, tablaSimbolos[i].longitud);
-			}
+		if (tablaSimbolos[i].tipo == T_INTEGER || 
+			tablaSimbolos[i].tipo == T_FLOAT ||
+			tablaSimbolos[i].tipo == T_STRING
+		) {
+			fprintf(archivo, "%-32s%-13s\n", tablaSimbolos[i].nombre, obtenerNombreTipo(tablaSimbolos[i].tipo));
+		} else {
+			fprintf(archivo, "%-32s%-13s%-31s%-12s\n",
+			aConstante(tablaSimbolos[i].nombre), obtenerNombreTipo(tablaSimbolos[i].tipo), tablaSimbolos[i].valor, tablaSimbolos[i].longitud);
 		}
 	}
 	fclose(archivo);
@@ -99,5 +96,8 @@ char * obtenerNombreTipo(const int tipo) {
 	}
 }
 
-
-
+char * aConstante(const char * valor) {
+	char nombre[32] = "_";
+	strcat(nombre, valor);
+	return strdup(nombre);
+}
