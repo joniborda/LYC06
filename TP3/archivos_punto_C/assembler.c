@@ -83,8 +83,30 @@ int recorreArbolAsm(FILE * fp, nodo* raiz) {
             // estoy pasando de izquierda a derecha (ya dibuje la izquierda)
             // fprintf(archivo, "%s  ", raiz->dato);
         }
+        printf("dato padre %s", raiz->dato);
+        int iff = 0;
+        int elseiff = 0;
+        if(strcmp(raiz->dato, "IF") == 0) {
+            iff = 1;
+            if (strcmp(raiz->hijoDer->dato, "CUERPO") == 0) {
+                fprintf(fp, "jna else\n");
+            } else {
+                fprintf(fp, "jna endif\n");
+            }
+        }
+
+        if(strcmp(raiz->dato, "CUERPO") == 0) {
+            elseiff = 1;
+            fprintf(fp, "jump endif\n");
+            fprintf(fp, "else\n");
+
+        }
+
 
         recorreArbolAsm(fp, raiz->hijoDer);
+        if (iff == 1) {
+            fprintf(fp, "endif\n");
+        }
 
         if (esHoja(raiz->hijoIzq) && esHoja(raiz->hijoDer)) {
             // soy nodo mas a la izquierda con dos hijos hojas
@@ -135,6 +157,22 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
         fprintf(fp, "fdiv\n");
         fprintf(fp, "fstp @aux%d\n", nuevoAux());
         return cantAux;
+    }
+
+    if(strcmp(raiz->dato, ">") == 0) {
+        // esto funciona para comparaciones simples
+        fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq
+        fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq
+        fprintf(fp, "fxch\n");
+        fprintf(fp, "fcom\n"); // compara ST0 con ST1"
+        fprintf(fp, "fstsw ax\n");
+        fprintf(fp, "sahf\n");
+        return 0;
+    }
+
+    if(strcmp(raiz->dato, "IF") == 0) {
+        // no sabemos todavia
+        return 0;
     }
 
     if(strcmp(raiz->dato, ":=") == 0) {

@@ -4,4 +4,9 @@ DEFVAR
 	FLOAT : fl
 ENDVAR
 
-a := (1 + 2) * 3  / (4 + 5);
+IF (1 > 2) {
+	a := 3;
+} ELSE {
+	b := 4;
+}
+c := 5;
