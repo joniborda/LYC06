@@ -1,49 +1,22 @@
 Nombre                          Tipo         Valor                          Longitud    
-entero1                         INTEGER      
-entero2                         INTEGER      
-entero3                         INTEGER      
-suma                            INTEGER      
-sumaIDs                         INTEGER      
-resta                           INTEGER      
-producto                        INTEGER      
-op1                             INTEGER      
-factorial                       INTEGER      
-nroCombinatorio                 INTEGER      
-realCompleto                    FLOAT        
-realSinEntero                   FLOAT        
-realSinDecimal                  FLOAT        
-cociente                        FLOAT        
-op2                             FLOAT        
-cadena1                         STRING       
-cadena2                         STRING       
-_5                                           5                                          
-_3.14                                        3.14                                       
-_.999                                        .999                                       
-_999.                                        999.                                       
-_String de prueba                            String de prueba               16          
-_10                                          10                                         
-_1                                           1                                          
-_5.5                                         5.5                                        
-_2                                           2                                          
-_Por favor, ingresar un valor                Por favor, ingresar un valor   28          
-_6                                           6                                          
-_entero1 no es mayor a 6                     entero1 no es mayor a 6        23          
-_4                                           4                                          
-_es mayor a 4                                es mayor a 4                   12          
-_no es mayor a 4                             no es mayor a 4                15          
-_8                                           8                                          
-_esta entre 4 y 8                            esta entre 4 y 8               16          
-_es mayor a 8                                es mayor a 8                   12          
-_0                                           0                                          
-_es un numero positivo                       es un numero positivo          21          
-_Positivo                                    Positivo                       8           
-_20                                          20                                         
-_11.2                                        11.2                                       
-_Condicion AND cumplida                      Condicion AND cumplida         22          
-_4.5                                         4.5                                        
-_1.5                                         1.5                                        
-_Condicion OR cumplida                       Condicion OR cumplida          21          
-_15                                          15                                         
-_No es 15                                    No es 15                       8           
-_12                                          12                                         
-_OK                                          OK                             2           
+a                               INTEGER      
+b                               INTEGER      
+c                               INTEGER      
+d                               INTEGER      
+e                               INTEGER      
+f                               INTEGER      
+var_string                      STRING       
+fl                              FLOAT        
+_2                              CTE_INTEGER  2                                          
+@NUMFACT                        INTEGER      
+@SUM                            INTEGER      
+_1                              CTE_INTEGER  1                                          
+_Hola mundo                     CTE_STRING   Hola mundo                     10          
+_3.0                            CTE_FLOAT    3.0                                        
+_4                              CTE_INTEGER  4                                          
+_8                              CTE_INTEGER  8                                          
+_3                              CTE_INTEGER  3                                          
+_5                              CTE_INTEGER  5                                          
+@STDIN                          INTEGER      
+_STDOUT                         CTE_STRING   STDOUT                         6           
+@STDOUT                         INTEGER      

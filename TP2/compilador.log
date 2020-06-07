@@ -26,7 +26,7 @@
 	NODO [:=]
 	IZQ[@NUMFACT], DER[_2]
 	NODO [OP_MENOS]
-	IZQ[@NUMFACT], DER[1]
+	IZQ[@NUMFACT], DER[_1]
 	NODO [:=]
 	IZQ[@NUMFACT], DER[OP_MENOS]
 	NODO [*]
@@ -36,11 +36,11 @@
 	NODO [CUERPO]
 	IZQ[:=], DER[:=]
 	NODO [>]
-	IZQ[@NUMFACT], DER[1]
+	IZQ[@NUMFACT], DER[_1]
 	NODO [WHILE]
 	IZQ[>], DER[CUERPO]
 	NODO [:=]
-	IZQ[@SUM], DER[1]
+	IZQ[@SUM], DER[_1]
 	NODO [PROGRAMA]
 	IZQ[:=], DER[WHILE]
 	NODO [FACT]
@@ -103,8 +103,8 @@
 		Estado de Pila = PROGRAMA
 <PROGRAMA> -> <PROGRAMA> <SENTENCIA>
 	NODO [:=]
-	IZQ[algo], DER[_algito]
-	asignacionPtr -> :=, ID, algito
+	IZQ[var_string], DER[_Hola mundo]
+	asignacionPtr -> :=, ID, Hola mundo
 <ASIGNACION> -> ID ASIG STRING PUNTO_Y_COMA
 	sentenciaPtr -> asignacionPtr
 <SENTENCIA> -> <ASIGNACION>
@@ -223,16 +223,120 @@
 	Apila el valor :=
 		Estado de Pila = := < PROGRAMA
 <PROGRAMA> -> <SENTENCIA>
+	factorPtr -> 3
+<FACTOR> -> ENTERO
+	terminoPtr -> factorPtr
+<TERMINO> -> <FACTOR>
+	Apila el valor _3
+		Estado de Pila = _3 := < PROGRAMA
+	Pila -> terminoPtr
+<EXPRESION> -> <TERMINO>
+	Desapile el valor _3
+		Estado de Pila = := < PROGRAMA
+	NODO [:=]
+	IZQ[c], DER[_3]
+	asignacionPtr -> :=, ID, Pila
+<ASIGNACION> -> ID ASIG <EXPRESION> PUNTO_Y_COMA
+	sentenciaPtr -> asignacionPtr
+<SENTENCIA> -> <ASIGNACION>
+	Desapile el valor :=
+		Estado de Pila = < PROGRAMA
+	NODO [PROGRAMA]
+	IZQ[:=], DER[:=]
+	programaPtr -> PROGRAMA, pila, sentenciaPtr
+	Apila el valor PROGRAMA
+		Estado de Pila = PROGRAMA < PROGRAMA
+<PROGRAMA> -> <PROGRAMA> <SENTENCIA>
+	factorPtr -> b
+<FACTOR> -> ID
+	terminoPtr -> factorPtr
+<TERMINO> -> <FACTOR>
+	Apila el valor b
+		Estado de Pila = b PROGRAMA < PROGRAMA
+	Pila -> terminoPtr
+<EXPRESION> -> <TERMINO>
+	comparadorPtr -> >=
+<COMPARADOR> -> OP_CMP_MAYOR_IGUAL
+	factorPtr -> 3
+<FACTOR> -> ENTERO
+	terminoPtr -> factorPtr
+<TERMINO> -> <FACTOR>
+	Apila el valor _3
+		Estado de Pila = _3 b PROGRAMA < PROGRAMA
+	Pila -> terminoPtr
+<EXPRESION> -> <TERMINO>
+	Desapile el valor _3
+		Estado de Pila = b PROGRAMA < PROGRAMA
+	Desapile el valor b
+		Estado de Pila = PROGRAMA < PROGRAMA
+	NODO [>=]
+	IZQ[b], DER[_3]
+	comparacionPtr -> comparadorPtr, Pila, Pila
+	Apila el valor >=
+		Estado de Pila = >= PROGRAMA < PROGRAMA
+<COMPARACION> -> <EXPRESION> <COMPARADOR> <EXPRESION>
+	condicionPtr -> comparacionPtr
+<CONDICION> -> <COMPARACION>
+	factorPtr -> 5
+<FACTOR> -> ENTERO
+	terminoPtr -> factorPtr
+<TERMINO> -> <FACTOR>
+	Apila el valor _5
+		Estado de Pila = _5 >= PROGRAMA < PROGRAMA
+	Pila -> terminoPtr
+<EXPRESION> -> <TERMINO>
+	Desapile el valor _5
+		Estado de Pila = >= PROGRAMA < PROGRAMA
+	NODO [:=]
+	IZQ[d], DER[_5]
+	asignacionPtr -> :=, ID, Pila
+<ASIGNACION> -> ID ASIG <EXPRESION> PUNTO_Y_COMA
+	sentenciaPtr -> asignacionPtr
+<SENTENCIA> -> <ASIGNACION>
+	programaPtr -> sentenciaPtr
+	Apila el valor :=
+		Estado de Pila = := >= PROGRAMA < PROGRAMA
+<PROGRAMA> -> <SENTENCIA>
+	NODO [ASIG]
+	IZQ[b], DER[@STDIN]
+<ENTRADA> -> ID
+<SENTENCIA> -> <ENTRADA>
+	Desapile el valor :=
+		Estado de Pila = >= PROGRAMA < PROGRAMA
+	NODO [PROGRAMA]
+	IZQ[:=], DER[ASIG]
+	programaPtr -> PROGRAMA, pila, sentenciaPtr
+	Apila el valor PROGRAMA
+		Estado de Pila = PROGRAMA >= PROGRAMA < PROGRAMA
+<PROGRAMA> -> <PROGRAMA> <SENTENCIA>
+	Desapile el valor PROGRAMA
+		Estado de Pila = >= PROGRAMA < PROGRAMA
+	Desapile el valor >=
+		Estado de Pila = PROGRAMA < PROGRAMA
+	NODO [IF]
+	IZQ[>=], DER[PROGRAMA]
+	seleccionPtr -> IF, condicionPtr, programaPtr
+<SELECCION> -> IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C
+	sentenciaPtr -> Pila
+<SENTENCIA> -> <SELECCION>
+	Desapile el valor PROGRAMA
+		Estado de Pila = < PROGRAMA
+	NODO [PROGRAMA]
+	IZQ[PROGRAMA], DER[IF]
+	programaPtr -> PROGRAMA, pila, sentenciaPtr
+	Apila el valor PROGRAMA
+		Estado de Pila = PROGRAMA < PROGRAMA
+<PROGRAMA> -> <PROGRAMA> <SENTENCIA>
 	factorPtr -> 2
 <FACTOR> -> ENTERO
 	terminoPtr -> factorPtr
 <TERMINO> -> <FACTOR>
 	Apila el valor _2
-		Estado de Pila = _2 := < PROGRAMA
+		Estado de Pila = _2 PROGRAMA < PROGRAMA
 	Pila -> terminoPtr
 <EXPRESION> -> <TERMINO>
 	Desapile el valor _2
-		Estado de Pila = := < PROGRAMA
+		Estado de Pila = PROGRAMA < PROGRAMA
 	NODO [:=]
 	IZQ[c], DER[_2]
 	asignacionPtr -> :=, ID, Pila
@@ -241,14 +345,26 @@
 <SENTENCIA> -> <ASIGNACION>
 	programaPtr -> sentenciaPtr
 	Apila el valor :=
-		Estado de Pila = := := < PROGRAMA
+		Estado de Pila = := PROGRAMA < PROGRAMA
 <PROGRAMA> -> <SENTENCIA>
+<SALIDA> -> STRING
+	NODO [ASIG]
+	IZQ[@STDOUT], DER[STDOUT]
+<SENTENCIA> -> <SALIDA>
 	Desapile el valor :=
-		Estado de Pila = := < PROGRAMA
-	Desapile el valor :=
+		Estado de Pila = PROGRAMA < PROGRAMA
+	NODO [PROGRAMA]
+	IZQ[:=], DER[ASIG]
+	programaPtr -> PROGRAMA, pila, sentenciaPtr
+	Apila el valor PROGRAMA
+		Estado de Pila = PROGRAMA PROGRAMA < PROGRAMA
+<PROGRAMA> -> <PROGRAMA> <SENTENCIA>
+	Desapile el valor PROGRAMA
+		Estado de Pila = PROGRAMA < PROGRAMA
+	Desapile el valor PROGRAMA
 		Estado de Pila = < PROGRAMA
 	NODO [CUERPO]
-	IZQ[:=], DER[:=]
+	IZQ[PROGRAMA], DER[PROGRAMA]
 	Desapile el valor <
 		Estado de Pila = PROGRAMA
 	NODO [IF]
@@ -277,6 +393,170 @@
 		Estado de Pila = PROGRAMA
 	NODO [:=]
 	IZQ[f], DER[_4]
+	asignacionPtr -> :=, ID, Pila
+<ASIGNACION> -> ID ASIG <EXPRESION> PUNTO_Y_COMA
+	sentenciaPtr -> asignacionPtr
+<SENTENCIA> -> <ASIGNACION>
+	Desapile el valor PROGRAMA
+		Estado de Pila =
+	NODO [PROGRAMA]
+	IZQ[PROGRAMA], DER[:=]
+	programaPtr -> PROGRAMA, pila, sentenciaPtr
+	Apila el valor PROGRAMA
+		Estado de Pila = PROGRAMA
+<PROGRAMA> -> <PROGRAMA> <SENTENCIA>
+	factorPtr -> a
+<FACTOR> -> ID
+	terminoPtr -> factorPtr
+<TERMINO> -> <FACTOR>
+	Apila el valor a
+		Estado de Pila = a PROGRAMA
+<TERMINO> -> <TERMINO> OP_MUL ...
+	factorPtr -> 3
+<FACTOR> -> ENTERO
+	Desapile el valor a
+		Estado de Pila = PROGRAMA
+	NODO [*]
+	IZQ[a], DER[_3]
+	terminoPtr -> *, pila, factorPtr
+<TERMINO> -> <TERMINO> OP_MUL <FACTOR>
+	Apila el valor *
+		Estado de Pila = * PROGRAMA
+	Pila -> terminoPtr
+<EXPRESION> -> <TERMINO>
+	factorPtr -> 1
+<FACTOR> -> ENTERO
+	terminoPtr -> factorPtr
+<TERMINO> -> <FACTOR>
+	Desapile el valor *
+		Estado de Pila = PROGRAMA
+	NODO [+]
+	IZQ[*], DER[_1]
+	Apila el valor +
+		Estado de Pila = + PROGRAMA
+	Pila -> +, pila, terminoPtr
+<EXPRESION> -> <EXPRESION> OP_SUMA <TERMINO>
+	factorPtr -> b
+<FACTOR> -> ID
+	terminoPtr -> factorPtr
+<TERMINO> -> <FACTOR>
+	Apila el valor b
+		Estado de Pila = b + PROGRAMA
+	Pila -> terminoPtr
+<EXPRESION> -> <TERMINO>
+	factorPtr -> e
+<FACTOR> -> ID
+	terminoPtr -> factorPtr
+<TERMINO> -> <FACTOR>
+	Desapile el valor b
+		Estado de Pila = + PROGRAMA
+	NODO [+]
+	IZQ[b], DER[e]
+	Apila el valor +
+		Estado de Pila = + + PROGRAMA
+	Pila -> +, pila, terminoPtr
+<EXPRESION> -> <EXPRESION> OP_SUMA <TERMINO>
+	factorPtr -> d
+<FACTOR> -> ID
+	terminoPtr -> factorPtr
+<TERMINO> -> <FACTOR>
+	Desapile el valor +
+		Estado de Pila = + PROGRAMA
+	NODO [+]
+	IZQ[+], DER[d]
+	Apila el valor +
+		Estado de Pila = + + PROGRAMA
+	Pila -> +, pila, terminoPtr
+<EXPRESION> -> <EXPRESION> OP_SUMA <TERMINO>
+	Desapile el valor +
+		Estado de Pila = + PROGRAMA
+	Desapile el valor +
+		Estado de Pila = PROGRAMA
+	NODO [-]
+	IZQ[+], DER[+]
+	NODO [:=]
+	IZQ[@NUMFACT], DER[-]
+	NODO [OP_MENOS]
+	IZQ[@NUMFACT], DER[_1]
+	NODO [:=]
+	IZQ[@NUMFACT], DER[OP_MENOS]
+	NODO [*]
+	IZQ[@SUM], DER[@NUMFACT]
+	NODO [:=]
+	IZQ[@SUM], DER[*]
+	NODO [CUERPO]
+	IZQ[:=], DER[:=]
+	NODO [>]
+	IZQ[@NUMFACT], DER[_1]
+	NODO [WHILE]
+	IZQ[>], DER[CUERPO]
+	NODO [:=]
+	IZQ[@SUM], DER[_1]
+	NODO [PROGRAMA]
+	IZQ[:=], DER[WHILE]
+	NODO [FACT]
+	IZQ[:=], DER[PROGRAMA]
+	NODO [:=]
+	IZQ[@NUMFACT], DER[+]
+	NODO [OP_MENOS]
+	IZQ[@NUMFACT], DER[_1]
+	NODO [:=]
+	IZQ[@NUMFACT], DER[OP_MENOS]
+	NODO [*]
+	IZQ[@SUM], DER[@NUMFACT]
+	NODO [:=]
+	IZQ[@SUM], DER[*]
+	NODO [CUERPO]
+	IZQ[:=], DER[:=]
+	NODO [>]
+	IZQ[@NUMFACT], DER[_1]
+	NODO [WHILE]
+	IZQ[>], DER[CUERPO]
+	NODO [:=]
+	IZQ[@SUM], DER[_1]
+	NODO [PROGRAMA]
+	IZQ[:=], DER[WHILE]
+	NODO [FACT]
+	IZQ[:=], DER[PROGRAMA]
+	NODO [*]
+	IZQ[FACT], DER[FACT]
+	NODO [:=]
+	IZQ[@NUMFACT], DER[+]
+	NODO [OP_MENOS]
+	IZQ[@NUMFACT], DER[_1]
+	NODO [:=]
+	IZQ[@NUMFACT], DER[OP_MENOS]
+	NODO [*]
+	IZQ[@SUM], DER[@NUMFACT]
+	NODO [:=]
+	IZQ[@SUM], DER[*]
+	NODO [CUERPO]
+	IZQ[:=], DER[:=]
+	NODO [>]
+	IZQ[@NUMFACT], DER[_1]
+	NODO [WHILE]
+	IZQ[>], DER[CUERPO]
+	NODO [:=]
+	IZQ[@SUM], DER[_1]
+	NODO [PROGRAMA]
+	IZQ[:=], DER[WHILE]
+	NODO [FACT]
+	IZQ[:=], DER[PROGRAMA]
+	NODO [/]
+	IZQ[FACT], DER[*]
+<FUNCION> -> COMBINATORIO(<EXPRESION>, <EXPRESION>)
+	factorPtr -> funcionPtr
+<FACTOR> -> <FUNCION>
+	terminoPtr -> factorPtr
+<TERMINO> -> <FACTOR>
+	Apila el valor /
+		Estado de Pila = / PROGRAMA
+	Pila -> terminoPtr
+<EXPRESION> -> <TERMINO>
+	Desapile el valor /
+		Estado de Pila = PROGRAMA
+	NODO [:=]
+	IZQ[c], DER[/]
 	asignacionPtr -> :=, ID, Pila
 <ASIGNACION> -> ID ASIG <EXPRESION> PUNTO_Y_COMA
 	sentenciaPtr -> asignacionPtr
