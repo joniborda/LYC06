@@ -118,10 +118,10 @@ program:
     bloque_declaraciones algoritmo { 
         printf("\nCOMPILACION OK\n");
         printLog("\nCOMPILACION OK", "");
-        generarAssembler(algortimoPtr);
-        //escribirArbol(algortimoPtr);
-        //escribirGragh(algortimoPtr);
+        escribirArbol(algortimoPtr);
+        escribirGragh(algortimoPtr);
         tsCrearArchivo();
+        generarAssembler(algortimoPtr);
     }
     ;
 
