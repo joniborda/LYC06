@@ -13,23 +13,18 @@ typedef struct nodo{
     struct nodo* hijoDer;
     struct nodo* hijoIzq;
 }nodo;
-/*
-// Estructura para la pila dinamica
-typedef struct nodoPila{
-    //dato
-    struct nodo* dato;
-    //tope de la pila
-    struct nodoPila* siguiente;
-}nodoPila;
-*/
 
+// Estructura para el dato de la pila dinamica
 typedef nodo* t_dato;
+
+// Estructura para el nodo de la pila dinamica
 typedef struct s_nodo
 {
     t_dato dato;
     struct s_nodo* psig;
 } t_nodo;
 
+// Estructura para la pila dinamica
 typedef t_nodo* t_pila;
 
 nodo* crearNodo(const char* , nodo* , nodo* );

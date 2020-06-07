@@ -54,7 +54,6 @@
 
     nodo* apilar(nodo*);
     nodo* desapilar();
-    nodo* fun(const char*);
 %}
 
 %union {
