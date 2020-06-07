@@ -297,14 +297,14 @@
 	Apila el valor :=
 		Estado de Pila = := >= PROGRAMA < PROGRAMA
 <PROGRAMA> -> <SENTENCIA>
-	NODO [ASIG]
+	NODO [:=]
 	IZQ[b], DER[@STDIN]
 <ENTRADA> -> ID
 <SENTENCIA> -> <ENTRADA>
 	Desapile el valor :=
 		Estado de Pila = >= PROGRAMA < PROGRAMA
 	NODO [PROGRAMA]
-	IZQ[:=], DER[ASIG]
+	IZQ[:=], DER[:=]
 	programaPtr -> PROGRAMA, pila, sentenciaPtr
 	Apila el valor PROGRAMA
 		Estado de Pila = PROGRAMA >= PROGRAMA < PROGRAMA
@@ -348,13 +348,13 @@
 		Estado de Pila = := PROGRAMA < PROGRAMA
 <PROGRAMA> -> <SENTENCIA>
 <SALIDA> -> STRING
-	NODO [ASIG]
-	IZQ[@STDOUT], DER[STDOUT]
+	NODO [:=]
+	IZQ[@STDOUT], DER[SALIDA POR PANTALLA]
 <SENTENCIA> -> <SALIDA>
 	Desapile el valor :=
 		Estado de Pila = PROGRAMA < PROGRAMA
 	NODO [PROGRAMA]
-	IZQ[:=], DER[ASIG]
+	IZQ[:=], DER[:=]
 	programaPtr -> PROGRAMA, pila, sentenciaPtr
 	Apila el valor PROGRAMA
 		Estado de Pila = PROGRAMA PROGRAMA < PROGRAMA

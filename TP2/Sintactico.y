@@ -218,18 +218,18 @@ sentencia:
 entrada: 
     ENTRADA ID {
         verificarIdDeclarado(tsObtenerTipo($2));
-        entradaPtr = crearNodo("ASIG", crearHoja($2), crearHoja("@STDIN"));
+        entradaPtr = crearNodo(":=", crearHoja($2), crearHoja("@STDIN"));
         printRule("<ENTRADA>", "ID");
     };
 
 salida: 
     SALIDA STRING {
         printRule("<SALIDA>", "STRING");
-        salidaPtr = crearNodo("ASIG", crearHoja("@STDOUT"), crearHoja($2));
+        salidaPtr = crearNodo(":=", crearHoja("@STDOUT"), crearHoja($2));
     } 
     | SALIDA ID {
         verificarIdDeclarado(tsObtenerTipo($2));
-        salidaPtr = crearNodo("ASIG", crearHoja("@STDOUT"), crearHoja($2));
+        salidaPtr = crearNodo(":=", crearHoja("@STDOUT"), crearHoja($2));
         printRule("<SALIDA>", "ID");
     }
     ;

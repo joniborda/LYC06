@@ -18,7 +18,7 @@ IF (a < 4) {
 	}
 } ELSE {
 	c := 2;
-	DISPLAY "STDOUT";
+	DISPLAY "SALIDA POR PANTALLA";
 }
 f := 4;
 c := COMB(a*3+1, b+e+d);

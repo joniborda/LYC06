@@ -90,11 +90,12 @@ int inOrden(FILE * archivo, struct nodo* raiz) {
                 // la izquierda ya esta, y la derecha es hoja
                 fprintf(archivo, "%s  ", raiz->hijoIzq);
                 fprintf(archivo, "%s  ", raiz->dato);
-                fprintf(archivo, "%s  ", raiz->hijoDer); 
+                fprintf(archivo, "%s  ", raiz->hijoDer);
+                fprintf(archivo, "\n");
                 return 1;
             }
             // estoy pasando de izquierda a derecha (ya dibuje la izquierda)
-            fprintf(archivo, "%s  ", raiz->dato);
+            // fprintf(archivo, "%s  ", raiz->dato);
         }
 
         inOrden(archivo, raiz->hijoDer);
@@ -103,7 +104,8 @@ int inOrden(FILE * archivo, struct nodo* raiz) {
             // soy nodo mas a la izquierda con dos hijos hojas 
             fprintf(archivo, "%s  ", raiz->hijoIzq);
             fprintf(archivo, "%s  ", raiz->dato);
-            fprintf(archivo, "%s  ", raiz->hijoDer); 
+            fprintf(archivo, "%s  ", raiz->hijoDer);
+            fprintf(archivo, "\n");  
             return 1;
         }
 
@@ -117,6 +119,7 @@ int inOrden(FILE * archivo, struct nodo* raiz) {
             fprintf(archivo, "%s  ", raiz->hijoIzq);
             fprintf(archivo, "%s  ", raiz->dato);
             fprintf(archivo, "%s  ", raiz->hijoDer);
+            fprintf(archivo, "\n");
             return 1;
         }
     }
