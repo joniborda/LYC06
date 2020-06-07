@@ -606,8 +606,6 @@ int main(int argc,char *argv[]) {
     }
 
     fclose(yyin);
-
-    compararArchivo(argv[1]);
     return 0;
 }
 
