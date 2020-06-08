@@ -64,25 +64,10 @@ int generarInstrucciones(nodo * raiz) {
 
 }
 
-int recorreArbolAsm(FILE * fp, nodo* raiz) {
+void recorreArbolAsm(FILE * fp, nodo* raiz) {
     if (raiz != NULL) {
-        int izq = recorreArbolAsm(fp, raiz->hijoIzq);
-        if (izq == 1) {
-            if (esHoja(raiz->hijoDer)) {
-                // la izquierda ya esta, y la derecha es hoja
-                printf("DATO1 : %s", raiz -> dato);
-                int cantidad = determinarOperacion(fp, raiz);
-                // reduzco arbol
-                sprintf(raiz->dato, "@aux%d", cantidad);
+        recorreArbolAsm(fp, raiz->hijoIzq);
 
-                raiz->hijoIzq = NULL;
-                raiz->hijoDer = NULL;
-
-                return 1;
-            }
-            // estoy pasando de izquierda a derecha (ya dibuje la izquierda)
-            // fprintf(archivo, "%s  ", raiz->dato);
-        }
         printf("dato padre %s", raiz->dato);
         int iff = 0;
         int elseiff = 0;
@@ -99,10 +84,8 @@ int recorreArbolAsm(FILE * fp, nodo* raiz) {
             elseiff = 1;
             fprintf(fp, "jump endif\n");
             fprintf(fp, "else\n");
-
         }
-
-
+        
         recorreArbolAsm(fp, raiz->hijoDer);
         if (iff == 1) {
             fprintf(fp, "endif\n");
@@ -116,12 +99,9 @@ int recorreArbolAsm(FILE * fp, nodo* raiz) {
             sprintf(raiz->dato, "@aux%d", cantidad);
             raiz->hijoIzq = NULL;
             raiz->hijoDer = NULL;
-
-            return 1;
         }
     }
     // porque estoy a la izquierda pero soy hoja y mi padre todavia no me imprimio
-    return 0;
 }
 
 int determinarOperacion(FILE * fp, nodo * raiz) {

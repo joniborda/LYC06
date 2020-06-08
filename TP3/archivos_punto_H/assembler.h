@@ -6,7 +6,7 @@ void generarAssembler(nodo *);
 int generarHeader();
 int generarData();
 int generarInstrucciones(nodo *);
-int recorreArbolAsm(FILE *, nodo *);
+void recorreArbolAsm(FILE *, nodo *);
 int determinarOperacion(FILE * , nodo *);
 
 #endif
