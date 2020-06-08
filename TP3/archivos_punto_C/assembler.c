@@ -1,5 +1,6 @@
 #include "../archivos_punto_h/assembler.h"
 int cantAux = 0;
+int cantEtiqueta = 0;
 
 void generarAssembler(nodo * raiz) {
 	if (/*generarHeader()*/ 0 == 1) {
@@ -58,50 +59,58 @@ int generarInstrucciones(nodo * raiz) {
 		printf("Error al abrir el archivo instrucciones");
 		return 1;
 	}
-	recorreArbolAsm(fp, raiz);
+	recorreArbolAsm(fp, raiz, 0);
 	fclose(fp);
 	return 0;
 
 }
 
-void recorreArbolAsm(FILE * fp, nodo* raiz) {
+void recorreArbolAsm(FILE * fp, nodo* raiz, int etiquetaActual) {
     if (raiz != NULL) {
-        recorreArbolAsm(fp, raiz->hijoIzq);
-
-        printf("dato padre %s", raiz->dato);
         int iff = 0;
-        int elseiff = 0;
         if(strcmp(raiz->dato, "IF") == 0) {
             iff = 1;
+            // pido nueva etiqueta porque estoy empezando a recorrer un IF
+            etiquetaActual = pedirNumEtiqueta();
+        }
+
+        // RECORRO LA IZQUIERDA
+        recorreArbolAsm(fp, raiz->hijoIzq, etiquetaActual);
+
+        printf("dato padre %s", raiz->dato);
+
+        int elseiff = 0;
+        if(strcmp(raiz->dato, "IF") == 0) {
+
             if (strcmp(raiz->hijoDer->dato, "CUERPO") == 0) {
-                fprintf(fp, "jna else\n");
+                fprintf(fp, "JNA else%d\n", etiquetaActual);
             } else {
-                fprintf(fp, "jna endif\n");
+                fprintf(fp, "JNA endif%d\n", etiquetaActual);
             }
         }
 
         if(strcmp(raiz->dato, "CUERPO") == 0) {
             elseiff = 1;
-            fprintf(fp, "jump endif\n");
-            fprintf(fp, "else\n");
+            fprintf(fp, "JMP endif%d\n", etiquetaActual);
+            fprintf(fp, "else%d:\n", etiquetaActual);
         }
         
-        recorreArbolAsm(fp, raiz->hijoDer);
+        // RECORRO LA DERECHA
+        recorreArbolAsm(fp, raiz->hijoDer, etiquetaActual);
         if (iff == 1) {
-            fprintf(fp, "endif\n");
+            fprintf(fp, "endif%d:\n", etiquetaActual);
         }
 
         if (esHoja(raiz->hijoIzq) && esHoja(raiz->hijoDer)) {
             // soy nodo mas a la izquierda con dos hijos hojas
             printf("DATO2 : %s\n", raiz -> dato);
-            int cantidad = determinarOperacion(fp, raiz);
+            determinarOperacion(fp, raiz);
+            
             // reduzco arbol
-            sprintf(raiz->dato, "@aux%d", cantidad);
             raiz->hijoIzq = NULL;
             raiz->hijoDer = NULL;
         }
     }
-    // porque estoy a la izquierda pero soy hoja y mi padre todavia no me imprimio
 }
 
 int determinarOperacion(FILE * fp, nodo * raiz) {
@@ -111,7 +120,9 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
         fprintf(fp, "fld %s\n", raiz->hijoIzq);
         fprintf(fp, "fld %s\n", raiz->hijoDer);
         fprintf(fp, "fadd\n");
-        fprintf(fp, "fstp @aux%d\n", nuevoAux());
+        fprintf(fp, "fstp @aux%d\n", pedirAux());
+        // Guardo en el arbola el dato del resultado, si uso un aux
+        sprintf(raiz->dato, "@aux%d", cantAux);
         return cantAux;
     }
 
@@ -119,7 +130,9 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
         fprintf(fp, "fld %s\n", raiz->hijoIzq);
         fprintf(fp, "fld %s\n", raiz->hijoDer);
         fprintf(fp, "fsub\n");
-        fprintf(fp, "fstp @aux%d\n", nuevoAux());
+        fprintf(fp, "fstp @aux%d\n", pedirAux());
+        // Guardo en el arbola el dato del resultado, si uso un aux
+        sprintf(raiz->dato, "@aux%d", cantAux);
         return cantAux;
     }
 
@@ -127,7 +140,9 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
         fprintf(fp, "fld %s\n", raiz->hijoIzq);
         fprintf(fp, "fld %s\n", raiz->hijoDer);
         fprintf(fp, "fmul\n");
-        fprintf(fp, "fstp @aux%d\n", nuevoAux());
+        fprintf(fp, "fstp @aux%d\n", pedirAux());
+        // Guardo en el arbola el dato del resultado, si uso un aux
+        sprintf(raiz->dato, "@aux%d", cantAux);
         return cantAux;
     }
 
@@ -135,7 +150,9 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
         fprintf(fp, "fld %s\n", raiz->hijoIzq);
         fprintf(fp, "fld %s\n", raiz->hijoDer);
         fprintf(fp, "fdiv\n");
-        fprintf(fp, "fstp @aux%d\n", nuevoAux());
+        fprintf(fp, "fstp @aux%d\n", pedirAux());
+        // Guardo en el arbola el dato del resultado, si uso un aux
+        sprintf(raiz->dato, "@aux%d", cantAux);
         return cantAux;
     }
 
@@ -144,6 +161,16 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
         fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq
         fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq
         fprintf(fp, "fxch\n");
+        fprintf(fp, "fcom\n"); // compara ST0 con ST1"
+        fprintf(fp, "fstsw ax\n");
+        fprintf(fp, "sahf\n");
+        return 0;
+    }
+
+    if(strcmp(raiz->dato, "<") == 0) {
+        // esto funciona para comparaciones simples
+        fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq
+        fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq
         fprintf(fp, "fcom\n"); // compara ST0 con ST1"
         fprintf(fp, "fstsw ax\n");
         fprintf(fp, "sahf\n");
@@ -162,6 +189,17 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
     return 0;
 }
 
-int nuevoAux() {
+int pedirAux() {
     return ++cantAux;
+}
+
+int auxActual() {
+    return cantAux;
+}
+
+int pedirNumEtiqueta() {
+    return ++cantEtiqueta;
+}
+int etiquetaActual() {
+    return cantEtiqueta;
 }

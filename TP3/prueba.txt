@@ -4,9 +4,13 @@ DEFVAR
 	FLOAT : fl
 ENDVAR
 
+a := 3 + 1 + 2;
 IF (1 > 2) {
 	a := 3;
+	IF (4 < 5) {
+		b := 6;
+	}
 } ELSE {
-	b := 4;
+	c := 7;
 }
-c := 5;
+d := 8;
