@@ -247,34 +247,35 @@
 	Apila el valor PROGRAMA
 		Estado de Pila = PROGRAMA < PROGRAMA
 <PROGRAMA> -> <PROGRAMA> <SENTENCIA>
-	factorPtr -> b
-<FACTOR> -> ID
-	terminoPtr -> factorPtr
-<TERMINO> -> <FACTOR>
-	Apila el valor b
-		Estado de Pila = b PROGRAMA < PROGRAMA
-	Pila -> terminoPtr
-<EXPRESION> -> <TERMINO>
-	comparadorPtr -> >=
-<COMPARADOR> -> OP_CMP_MAYOR_IGUAL
 	factorPtr -> 3
 <FACTOR> -> ENTERO
 	terminoPtr -> factorPtr
 <TERMINO> -> <FACTOR>
 	Apila el valor _3
-		Estado de Pila = _3 b PROGRAMA < PROGRAMA
+		Estado de Pila = _3 PROGRAMA < PROGRAMA
 	Pila -> terminoPtr
 <EXPRESION> -> <TERMINO>
+	factorPtr -> 5
+<FACTOR> -> ENTERO
+	terminoPtr -> factorPtr
+<TERMINO> -> <FACTOR>
+	Apila el valor _5
+		Estado de Pila = _5 _3 PROGRAMA < PROGRAMA
+	Pila -> terminoPtr
+<EXPRESION> -> <TERMINO>
+	Desapile el valor _5
+		Estado de Pila = _3 PROGRAMA < PROGRAMA
+	NODO [=<]
+	IZQ[b], DER[_5]
 	Desapile el valor _3
-		Estado de Pila = b PROGRAMA < PROGRAMA
-	Desapile el valor b
 		Estado de Pila = PROGRAMA < PROGRAMA
-	NODO [>=]
+	NODO [=>]
 	IZQ[b], DER[_3]
-	comparacionPtr -> comparadorPtr, Pila, Pila
-	Apila el valor >=
-		Estado de Pila = >= PROGRAMA < PROGRAMA
-<COMPARACION> -> <EXPRESION> <COMPARADOR> <EXPRESION>
+	NODO [AND]
+	IZQ[=>], DER[=<]
+	Apila el valor AND
+		Estado de Pila = AND PROGRAMA < PROGRAMA
+<COMPARACION> -> BETWEEN P_A ID COMA C_A <EXPRESION> PUNTO_Y_COMA <EXPRESION> C_C P_C
 	condicionPtr -> comparacionPtr
 <CONDICION> -> <COMPARACION>
 	factorPtr -> 5
@@ -282,11 +283,11 @@
 	terminoPtr -> factorPtr
 <TERMINO> -> <FACTOR>
 	Apila el valor _5
-		Estado de Pila = _5 >= PROGRAMA < PROGRAMA
+		Estado de Pila = _5 AND PROGRAMA < PROGRAMA
 	Pila -> terminoPtr
 <EXPRESION> -> <TERMINO>
 	Desapile el valor _5
-		Estado de Pila = >= PROGRAMA < PROGRAMA
+		Estado de Pila = AND PROGRAMA < PROGRAMA
 	NODO [:=]
 	IZQ[d], DER[_5]
 	asignacionPtr -> :=, ID, Pila
@@ -295,26 +296,26 @@
 <SENTENCIA> -> <ASIGNACION>
 	programaPtr -> sentenciaPtr
 	Apila el valor :=
-		Estado de Pila = := >= PROGRAMA < PROGRAMA
+		Estado de Pila = := AND PROGRAMA < PROGRAMA
 <PROGRAMA> -> <SENTENCIA>
 	NODO [:=]
 	IZQ[b], DER[@STDIN]
 <ENTRADA> -> ID
 <SENTENCIA> -> <ENTRADA>
 	Desapile el valor :=
-		Estado de Pila = >= PROGRAMA < PROGRAMA
+		Estado de Pila = AND PROGRAMA < PROGRAMA
 	NODO [PROGRAMA]
 	IZQ[:=], DER[:=]
 	programaPtr -> PROGRAMA, pila, sentenciaPtr
 	Apila el valor PROGRAMA
-		Estado de Pila = PROGRAMA >= PROGRAMA < PROGRAMA
+		Estado de Pila = PROGRAMA AND PROGRAMA < PROGRAMA
 <PROGRAMA> -> <PROGRAMA> <SENTENCIA>
 	Desapile el valor PROGRAMA
-		Estado de Pila = >= PROGRAMA < PROGRAMA
-	Desapile el valor >=
+		Estado de Pila = AND PROGRAMA < PROGRAMA
+	Desapile el valor AND
 		Estado de Pila = PROGRAMA < PROGRAMA
 	NODO [IF]
-	IZQ[>=], DER[PROGRAMA]
+	IZQ[AND], DER[PROGRAMA]
 	seleccionPtr -> IF, condicionPtr, programaPtr
 <SELECCION> -> IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C
 	sentenciaPtr -> Pila
