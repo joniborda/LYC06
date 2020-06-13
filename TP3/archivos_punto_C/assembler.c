@@ -69,6 +69,7 @@ void recorreArbolAsm(FILE * fp, nodo* raiz, int etiquetaActual) {
     if (raiz != NULL) {
         int iff = 0;
         if(strcmp(raiz->dato, "IF") == 0) {
+            tieneElse = 0;
             iff = 1;
             // pido nueva etiqueta porque estoy empezando a recorrer un IF
             etiquetaActual = pedirNumEtiqueta();
@@ -84,22 +85,22 @@ void recorreArbolAsm(FILE * fp, nodo* raiz, int etiquetaActual) {
 
         int elseiff = 0;
         if(strcmp(raiz->dato, "IF") == 0) {
-
-            if (strcmp(raiz->hijoDer->dato, "CUERPO") == 0) {
-                fprintf(fp, "JNA else%d\n", etiquetaActual);
-            } else {
-                fprintf(fp, "JNA endif%d\n", etiquetaActual);
-            }
+            fprintf(fp, "startIf%d:\n", etiquetaActual);
+            // ver si la comp es <= entonces el salto es por JNAE
         }
 
+        /*
         if(strcmp(raiz->dato, "AND") == 0) {
+        }
             if (tieneElse == 1) {
                 fprintf(fp, "JNA else%d\n", etiquetaActual);
+                // ver si la comp es <= entonces el salto es por JNAE
                 tieneElse = 0;
             } else {
                 fprintf(fp, "JNA endif%d\n", etiquetaActual);
+                // ver si la comp es <= entonces el salto es por JNAE
             }
-        }
+        }*/
 
         if(strcmp(raiz->dato, "CUERPO") == 0) {
             elseiff = 1;
@@ -116,7 +117,7 @@ void recorreArbolAsm(FILE * fp, nodo* raiz, int etiquetaActual) {
         if (esHoja(raiz->hijoIzq) && esHoja(raiz->hijoDer)) {
             // soy nodo mas a la izquierda con dos hijos hojas
             printf("DATO2 : %s\n", raiz -> dato);
-            determinarOperacion(fp, raiz);
+            determinarOperacion(fp, raiz, etiquetaActual);
             
             // reduzco arbol
             raiz->hijoIzq = NULL;
@@ -125,7 +126,7 @@ void recorreArbolAsm(FILE * fp, nodo* raiz, int etiquetaActual) {
     }
 }
 
-int determinarOperacion(FILE * fp, nodo * raiz) {
+int determinarOperacion(FILE * fp, nodo * raiz, int etiquetaActual) {
    	printf("DATO : %s\n", raiz -> dato);
 
     if(strcmp(raiz->dato, "+") == 0) {
@@ -176,16 +177,30 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
         fprintf(fp, "fcom\n"); // compara ST0 con ST1"
         fprintf(fp, "fstsw ax\n");
         fprintf(fp, "sahf\n");
+        if (tieneElse) {
+            fprintf(fp, "JNA else%d\n", etiquetaActual);
+            // ver si la comp es <= entonces el salto es por JNAE
+        } else {
+            fprintf(fp, "JNA endif%d\n", etiquetaActual);
+            // ver si la comp es <= entonces el salto es por JNAE
+        }
         return 0;
     }
 
     if(strcmp(raiz->dato, "<") == 0) {
-        // esto funciona para comparaciones simples
-        fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq
-        fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq
-        fprintf(fp, "fcom\n"); // compara ST0 con ST1"
+        // esto funciona para comparaciones simples Ejemplo: 1 < 2
+        fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq  (apila 1)
+        fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq (apila 2)
+        fprintf(fp, "fcom\n"); // compara ST0 con ST1" (resta 2 - 1)
         fprintf(fp, "fstsw ax\n");
         fprintf(fp, "sahf\n");
+        if (tieneElse) {
+            fprintf(fp, "JNA else%d\n", etiquetaActual);
+            // ver si la comp es <= entonces el salto es por JNAE
+        } else {
+            fprintf(fp, "JNA endif%d\n", etiquetaActual);
+            // ver si la comp es <= entonces el salto es por JNAE
+        }
         return 0;
     }
 
