@@ -1,6 +1,7 @@
 #include "../archivos_punto_h/assembler.h"
 int cantAux = 0;
 int cantEtiqueta = 0;
+int tieneElse = 0;
 
 void generarAssembler(nodo * raiz) {
 	if (/*generarHeader()*/ 0 == 1) {
@@ -64,7 +65,6 @@ int generarInstrucciones(nodo * raiz) {
 	return 0;
 
 }
-
 void recorreArbolAsm(FILE * fp, nodo* raiz, int etiquetaActual) {
     if (raiz != NULL) {
         int iff = 0;
@@ -72,6 +72,9 @@ void recorreArbolAsm(FILE * fp, nodo* raiz, int etiquetaActual) {
             iff = 1;
             // pido nueva etiqueta porque estoy empezando a recorrer un IF
             etiquetaActual = pedirNumEtiqueta();
+            if (strcmp(raiz->hijoDer->dato, "CUERPO") == 0) {
+                tieneElse = 1;
+            }
         }
 
         // RECORRO LA IZQUIERDA
@@ -84,6 +87,15 @@ void recorreArbolAsm(FILE * fp, nodo* raiz, int etiquetaActual) {
 
             if (strcmp(raiz->hijoDer->dato, "CUERPO") == 0) {
                 fprintf(fp, "JNA else%d\n", etiquetaActual);
+            } else {
+                fprintf(fp, "JNA endif%d\n", etiquetaActual);
+            }
+        }
+
+        if(strcmp(raiz->dato, "AND") == 0) {
+            if (tieneElse == 1) {
+                fprintf(fp, "JNA else%d\n", etiquetaActual);
+                tieneElse = 0;
             } else {
                 fprintf(fp, "JNA endif%d\n", etiquetaActual);
             }
