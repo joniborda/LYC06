@@ -115,140 +115,115 @@ void recorreArbolAsm(FILE * fp, nodo* raiz, int etiquetaActual) {
 int determinarOperacion(FILE * fp, nodo * raiz, int etiquetaActual) {
    	printf("DATO : %s\n", raiz -> dato);
 
-    if(strcmp(raiz->dato, "+") == 0) {
-        fprintf(fp, "fld %s\n", raiz->hijoIzq);
-        fprintf(fp, "fld %s\n", raiz->hijoDer);
-        fprintf(fp, "fadd\n");
-        fprintf(fp, "fstp @aux%d\n", pedirAux());
-        // Guardo en el arbola el dato del resultado, si uso un aux
-        sprintf(raiz->dato, "@aux%d", cantAux);
-        return cantAux;
-    }
-
-    if(strcmp(raiz->dato, "-") == 0) {
-        fprintf(fp, "fld %s\n", raiz->hijoIzq);
-        fprintf(fp, "fld %s\n", raiz->hijoDer);
-        fprintf(fp, "fsub\n");
-        fprintf(fp, "fstp @aux%d\n", pedirAux());
-        // Guardo en el arbola el dato del resultado, si uso un aux
-        sprintf(raiz->dato, "@aux%d", cantAux);
-        return cantAux;
-    }
-
-    if(strcmp(raiz->dato, "*") == 0) {
-        fprintf(fp, "fld %s\n", raiz->hijoIzq);
-        fprintf(fp, "fld %s\n", raiz->hijoDer);
-        fprintf(fp, "fmul\n");
-        fprintf(fp, "fstp @aux%d\n", pedirAux());
-        // Guardo en el arbola el dato del resultado, si uso un aux
-        sprintf(raiz->dato, "@aux%d", cantAux);
-        return cantAux;
-    }
-
-    if(strcmp(raiz->dato, "/") == 0) {
-        fprintf(fp, "fld %s\n", raiz->hijoIzq);
-        fprintf(fp, "fld %s\n", raiz->hijoDer);
-        fprintf(fp, "fdiv\n");
-        fprintf(fp, "fstp @aux%d\n", pedirAux());
-        // Guardo en el arbola el dato del resultado, si uso un aux
-        sprintf(raiz->dato, "@aux%d", cantAux);
-        return cantAux;
-    }
-
-    if(strcmp(raiz->dato, ">") == 0) {
-        // esto funciona para comparaciones simples
-        fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq
-        fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq
-        fprintf(fp, "fxch\n");
-        fprintf(fp, "fcom\n"); // compara ST0 con ST1"
-        fprintf(fp, "fstsw ax\n");
-        fprintf(fp, "sahf\n");
-        if (tieneElse) {
-            fprintf(fp, "JNA else%d\n", etiquetaActual);
+    if(esAritmetica(raiz->dato)) {
+        if(strcmp(raiz->dato, ":=") == 0) {
+            fprintf(fp, "MOV %s, %s\n", raiz->hijoIzq, raiz->hijoDer);
+            return 0;
         } else {
-            fprintf(fp, "JNA endif%d\n", etiquetaActual);
+            fprintf(fp, "fld %s\n", raiz->hijoIzq);
+            fprintf(fp, "fld %s\n", raiz->hijoDer);
+            fprintf(fp, "%s\n", obtenerInstruccionAritmetica(raiz->dato));
+            fprintf(fp, "fstp @aux%d\n", pedirAux());
+            // Guardo en el arbola el dato del resultado, si uso un aux
+            sprintf(raiz->dato, "@aux%d", cantAux);
+            return cantAux;
         }
-        return 0;
-    }
+    } else {
+        if(strcmp(raiz->dato, ">") == 0) {
+            // esto funciona para comparaciones simples
+            fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq
+            fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq
+            fprintf(fp, "fxch\n");
+            fprintf(fp, "fcom\n"); // compara ST0 con ST1"
+            fprintf(fp, "fstsw ax\n");
+            fprintf(fp, "sahf\n");
+            if (tieneElse) {
+                fprintf(fp, "JNA else%d\n", etiquetaActual);
+            } else {
+                fprintf(fp, "JNA endif%d\n", etiquetaActual);
+            }
+            return 0;
+        }
 
-    if(strcmp(raiz->dato, ">=") == 0) {
-        // esto funciona para comparaciones simples
-        fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq
-        fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq
-        fprintf(fp, "fxch\n");
-        fprintf(fp, "fcom\n"); // compara ST0 con ST1"
-        fprintf(fp, "fstsw ax\n");
-        fprintf(fp, "sahf\n");
-        if (tieneElse) {
-            fprintf(fp, "JNAE else%d\n", etiquetaActual);
-        } else {
-            fprintf(fp, "JNAE endif%d\n", etiquetaActual);
+        if(strcmp(raiz->dato, ">=") == 0) {
+            // esto funciona para comparaciones simples
+            fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq
+            fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq
+            fprintf(fp, "fxch\n");
+            fprintf(fp, "fcom\n"); // compara ST0 con ST1"
+            fprintf(fp, "fstsw ax\n");
+            fprintf(fp, "sahf\n");
+            if (tieneElse) {
+                fprintf(fp, "JNAE else%d\n", etiquetaActual);
+            } else {
+                fprintf(fp, "JNAE endif%d\n", etiquetaActual);
+            }
+            return 0;
         }
-        return 0;
-    }
 
-    if(strcmp(raiz->dato, "<") == 0) {
-        // esto funciona para comparaciones simples Ejemplo: 1 < 2
-        fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq  (apila 1)
-        fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq (apila 2)
-        fprintf(fp, "fxch\n");
-        fprintf(fp, "fcom\n"); // compara ST0 con ST1" (resta 2 - 1)
-        fprintf(fp, "fstsw ax\n");
-        fprintf(fp, "sahf\n");
-        if (tieneElse) {
-            fprintf(fp, "JNB else%d\n", etiquetaActual);
-        } else {
-            fprintf(fp, "JNB endif%d\n", etiquetaActual);
+        if(strcmp(raiz->dato, "<") == 0) {
+            // esto funciona para comparaciones simples Ejemplo: 1 < 2
+            fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq  (apila 1)
+            fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq (apila 2)
+            fprintf(fp, "fxch\n");
+            fprintf(fp, "fcom\n"); // compara ST0 con ST1" (resta 2 - 1)
+            fprintf(fp, "fstsw ax\n");
+            fprintf(fp, "sahf\n");
+            if (tieneElse) {
+                fprintf(fp, "JNB else%d\n", etiquetaActual);
+            } else {
+                fprintf(fp, "JNB endif%d\n", etiquetaActual);
+            }
+            return 0;
         }
-        return 0;
-    }
 
-    if(strcmp(raiz->dato, "<=") == 0) {
-        // esto funciona para comparaciones simples Ejemplo: 1 < 2
-        fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq  (apila 1)
-        fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq (apila 2)
-        fprintf(fp, "fxch\n");
-        fprintf(fp, "fcom\n"); // compara ST0 con ST1" (resta 2 - 1)
-        fprintf(fp, "fstsw ax\n");
-        fprintf(fp, "sahf\n");
-        if (tieneElse) {
-            fprintf(fp, "JNBE else%d\n", etiquetaActual);
-        } else {
-            fprintf(fp, "JNBE endif%d\n", etiquetaActual);
+        if(strcmp(raiz->dato, "<=") == 0) {
+            // esto funciona para comparaciones simples Ejemplo: 1 < 2
+            fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq  (apila 1)
+            fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq (apila 2)
+            fprintf(fp, "fxch\n");
+            fprintf(fp, "fcom\n"); // compara ST0 con ST1" (resta 2 - 1)
+            fprintf(fp, "fstsw ax\n");
+            fprintf(fp, "sahf\n");
+            if (tieneElse) {
+                fprintf(fp, "JNBE else%d\n", etiquetaActual);
+            } else {
+                fprintf(fp, "JNBE endif%d\n", etiquetaActual);
+            }
+            return 0;
         }
-        return 0;
-    }
 
-    if(strcmp(raiz->dato, "==") == 0) {
-        // esto funciona para comparaciones simples Ejemplo: 1 < 2
-        fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq  (apila 1)
-        fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq (apila 2)
-        fprintf(fp, "fxch\n");
-        fprintf(fp, "fcom\n"); // compara ST0 con ST1" (resta 2 - 1)
-        fprintf(fp, "fstsw ax\n");
-        fprintf(fp, "sahf\n");
-        if (tieneElse) {
-            fprintf(fp, "JNE else%d\n", etiquetaActual);
-        } else {
-            fprintf(fp, "JNE endif%d\n", etiquetaActual);
+        if(strcmp(raiz->dato, "==") == 0) {
+            // esto funciona para comparaciones simples Ejemplo: 1 < 2
+            fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq  (apila 1)
+            fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq (apila 2)
+            fprintf(fp, "fxch\n");
+            fprintf(fp, "fcom\n"); // compara ST0 con ST1" (resta 2 - 1)
+            fprintf(fp, "fstsw ax\n");
+            fprintf(fp, "sahf\n");
+            if (tieneElse) {
+                fprintf(fp, "JNE else%d\n", etiquetaActual);
+            } else {
+                fprintf(fp, "JNE endif%d\n", etiquetaActual);
+            }
+            return 0;
         }
-        return 0;
-    }
 
-    if(strcmp(raiz->dato, "!=") == 0) {
-        // esto funciona para comparaciones simples Ejemplo: 1 < 2
-        fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq  (apila 1)
-        fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq (apila 2)
-        fprintf(fp, "fxch\n");
-        fprintf(fp, "fcom\n"); // compara ST0 con ST1" (resta 2 - 1)
-        fprintf(fp, "fstsw ax\n");
-        fprintf(fp, "sahf\n");
-        if (tieneElse) {
-            fprintf(fp, "JE else%d\n", etiquetaActual);
-        } else {
-            fprintf(fp, "JE endif%d\n", etiquetaActual);
+        if(strcmp(raiz->dato, "!=") == 0) {
+            // esto funciona para comparaciones simples Ejemplo: 1 < 2
+            fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq  (apila 1)
+            fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq (apila 2)
+            fprintf(fp, "fxch\n");
+            fprintf(fp, "fcom\n"); // compara ST0 con ST1" (resta 2 - 1)
+            fprintf(fp, "fstsw ax\n");
+            fprintf(fp, "sahf\n");
+            if (tieneElse) {
+                fprintf(fp, "JE else%d\n", etiquetaActual);
+            } else {
+                fprintf(fp, "JE endif%d\n", etiquetaActual);
+            }
+            return 0;
         }
-        return 0;
     }
 
     if(strcmp(raiz->dato, "IF") == 0) {
@@ -256,10 +231,6 @@ int determinarOperacion(FILE * fp, nodo * raiz, int etiquetaActual) {
         return 0;
     }
 
-    if(strcmp(raiz->dato, ":=") == 0) {
-        fprintf(fp, "MOV %s, %s\n", raiz->hijoIzq, raiz->hijoDer);
-        return 0;
-    }
     return 0;
 }
 
@@ -276,4 +247,23 @@ int pedirNumEtiqueta() {
 }
 int etiquetaActual() {
     return cantEtiqueta;
+}
+
+int esAritmetica(const char *operador) {
+    return strcmp(operador, "+") == 0 ||
+    strcmp(operador, "-") == 0 ||
+    strcmp(operador, "*") == 0 ||
+    strcmp(operador, "/") == 0 ||
+    strcmp(operador, ":=") == 0;
+}
+
+char* obtenerInstruccionAritmetica(const char *operador) {
+    if (strcmp(operador, "+") == 0)
+        return "fadd";
+    if (strcmp(operador, "-") == 0)
+        return "fsub";
+    if (strcmp(operador, "*") == 0)
+        return "fmul";
+    if (strcmp(operador, "/") == 0)
+        return "fdiv";
 }

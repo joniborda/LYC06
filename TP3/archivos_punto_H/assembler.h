@@ -8,5 +8,7 @@ int generarData();
 int generarInstrucciones(nodo *);
 void recorreArbolAsm(FILE *, nodo *, int);
 int determinarOperacion(FILE * , nodo *, int);
+int esAritmetica(const char *);
+char* obtenerInstruccionAritmetica(const char *);
 
 #endif
