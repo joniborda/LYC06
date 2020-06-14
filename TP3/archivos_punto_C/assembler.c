@@ -128,102 +128,22 @@ int determinarOperacion(FILE * fp, nodo * raiz, int etiquetaActual) {
             sprintf(raiz->dato, "@aux%d", cantAux);
             return cantAux;
         }
-    } else {
-        if(strcmp(raiz->dato, ">") == 0) {
-            // esto funciona para comparaciones simples
-            fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq
-            fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq
-            fprintf(fp, "fxch\n");
-            fprintf(fp, "fcom\n"); // compara ST0 con ST1"
-            fprintf(fp, "fstsw ax\n");
-            fprintf(fp, "sahf\n");
-            if (tieneElse) {
-                fprintf(fp, "JNA else%d\n", etiquetaActual);
-            } else {
-                fprintf(fp, "JNA endif%d\n", etiquetaActual);
-            }
-            return 0;
-        }
+    }
 
-        if(strcmp(raiz->dato, ">=") == 0) {
-            // esto funciona para comparaciones simples
-            fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq
-            fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq
-            fprintf(fp, "fxch\n");
-            fprintf(fp, "fcom\n"); // compara ST0 con ST1"
-            fprintf(fp, "fstsw ax\n");
-            fprintf(fp, "sahf\n");
-            if (tieneElse) {
-                fprintf(fp, "JNAE else%d\n", etiquetaActual);
-            } else {
-                fprintf(fp, "JNAE endif%d\n", etiquetaActual);
-            }
-            return 0;
+    if(esComparacion(raiz->dato)) {
+        // esto funciona para comparaciones simples
+        fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq
+        fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq
+        fprintf(fp, "fxch\n");
+        fprintf(fp, "fcom\n"); // compara ST0 con ST1"
+        fprintf(fp, "fstsw ax\n");
+        fprintf(fp, "sahf\n");
+        if (tieneElse) {
+            fprintf(fp, "%s else%d\n", obtenerInstruccionComparacion(raiz->dato), etiquetaActual);
+        } else {
+            fprintf(fp, "%s endif%d\n", obtenerInstruccionComparacion(raiz->dato), etiquetaActual);
         }
-
-        if(strcmp(raiz->dato, "<") == 0) {
-            // esto funciona para comparaciones simples Ejemplo: 1 < 2
-            fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq  (apila 1)
-            fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq (apila 2)
-            fprintf(fp, "fxch\n");
-            fprintf(fp, "fcom\n"); // compara ST0 con ST1" (resta 2 - 1)
-            fprintf(fp, "fstsw ax\n");
-            fprintf(fp, "sahf\n");
-            if (tieneElse) {
-                fprintf(fp, "JNB else%d\n", etiquetaActual);
-            } else {
-                fprintf(fp, "JNB endif%d\n", etiquetaActual);
-            }
-            return 0;
-        }
-
-        if(strcmp(raiz->dato, "<=") == 0) {
-            // esto funciona para comparaciones simples Ejemplo: 1 < 2
-            fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq  (apila 1)
-            fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq (apila 2)
-            fprintf(fp, "fxch\n");
-            fprintf(fp, "fcom\n"); // compara ST0 con ST1" (resta 2 - 1)
-            fprintf(fp, "fstsw ax\n");
-            fprintf(fp, "sahf\n");
-            if (tieneElse) {
-                fprintf(fp, "JNBE else%d\n", etiquetaActual);
-            } else {
-                fprintf(fp, "JNBE endif%d\n", etiquetaActual);
-            }
-            return 0;
-        }
-
-        if(strcmp(raiz->dato, "==") == 0) {
-            // esto funciona para comparaciones simples Ejemplo: 1 < 2
-            fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq  (apila 1)
-            fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq (apila 2)
-            fprintf(fp, "fxch\n");
-            fprintf(fp, "fcom\n"); // compara ST0 con ST1" (resta 2 - 1)
-            fprintf(fp, "fstsw ax\n");
-            fprintf(fp, "sahf\n");
-            if (tieneElse) {
-                fprintf(fp, "JNE else%d\n", etiquetaActual);
-            } else {
-                fprintf(fp, "JNE endif%d\n", etiquetaActual);
-            }
-            return 0;
-        }
-
-        if(strcmp(raiz->dato, "!=") == 0) {
-            // esto funciona para comparaciones simples Ejemplo: 1 < 2
-            fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq  (apila 1)
-            fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq (apila 2)
-            fprintf(fp, "fxch\n");
-            fprintf(fp, "fcom\n"); // compara ST0 con ST1" (resta 2 - 1)
-            fprintf(fp, "fstsw ax\n");
-            fprintf(fp, "sahf\n");
-            if (tieneElse) {
-                fprintf(fp, "JE else%d\n", etiquetaActual);
-            } else {
-                fprintf(fp, "JE endif%d\n", etiquetaActual);
-            }
-            return 0;
-        }
+        return 0;
     }
 
     if(strcmp(raiz->dato, "IF") == 0) {
@@ -250,11 +170,22 @@ int etiquetaActual() {
 }
 
 int esAritmetica(const char *operador) {
+    // siendo aritmetica hay un lote de instrucciones predefinido, igual si es comparacion
     return strcmp(operador, "+") == 0 ||
     strcmp(operador, "-") == 0 ||
     strcmp(operador, "*") == 0 ||
     strcmp(operador, "/") == 0 ||
     strcmp(operador, ":=") == 0;
+}
+
+int esComparacion(const char *comparador) {
+    // es necesaria esta funcion para que no entren los nodos AND, OR, NOR, etc que no tienen accion
+    return strcmp(comparador, ">") == 0 ||
+    strcmp(comparador, ">=") == 0 ||
+    strcmp(comparador, "<") == 0 ||
+    strcmp(comparador, "<=") == 0 ||
+    strcmp(comparador, "==") == 0 ||
+    strcmp(comparador, "!=") == 0;
 }
 
 char* obtenerInstruccionAritmetica(const char *operador) {
@@ -266,4 +197,21 @@ char* obtenerInstruccionAritmetica(const char *operador) {
         return "fmul";
     if (strcmp(operador, "/") == 0)
         return "fdiv";
+}
+
+char* obtenerInstruccionComparacion(const char *comparador) {
+    // Esto nos va a servir para cuando venga un OR, ya que hay que invertir la primer comparacion
+    // para que pueda evaluar las dos, sin hacer tantos if
+    if (strcmp(comparador, ">") == 0)
+        return "JNA";
+    if (strcmp(comparador, ">=") == 0)
+        return "JNAE";
+    if (strcmp(comparador, "<") == 0)
+        return "JNB";
+    if (strcmp(comparador, "<=") == 0)
+        return "JNBE";
+    if (strcmp(comparador, "==") == 0)
+        return "JNE";
+    if (strcmp(comparador, "!=") == 0)
+        return "JE";
 }
