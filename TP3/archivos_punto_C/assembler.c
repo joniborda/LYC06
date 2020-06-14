@@ -235,6 +235,22 @@ int determinarOperacion(FILE * fp, nodo * raiz, int etiquetaActual) {
         return 0;
     }
 
+    if(strcmp(raiz->dato, "!=") == 0) {
+        // esto funciona para comparaciones simples Ejemplo: 1 < 2
+        fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq  (apila 1)
+        fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq (apila 2)
+        fprintf(fp, "fxch\n");
+        fprintf(fp, "fcom\n"); // compara ST0 con ST1" (resta 2 - 1)
+        fprintf(fp, "fstsw ax\n");
+        fprintf(fp, "sahf\n");
+        if (tieneElse) {
+            fprintf(fp, "JE else%d\n", etiquetaActual);
+        } else {
+            fprintf(fp, "JE endif%d\n", etiquetaActual);
+        }
+        return 0;
+    }
+
     if(strcmp(raiz->dato, "IF") == 0) {
         // no sabemos todavia
         return 0;
