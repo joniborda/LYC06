@@ -191,13 +191,14 @@ int determinarOperacion(FILE * fp, nodo * raiz, int etiquetaActual) {
         // esto funciona para comparaciones simples Ejemplo: 1 < 2
         fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq  (apila 1)
         fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq (apila 2)
+        fprintf(fp, "fxch\n");
         fprintf(fp, "fcom\n"); // compara ST0 con ST1" (resta 2 - 1)
         fprintf(fp, "fstsw ax\n");
         fprintf(fp, "sahf\n");
         if (tieneElse) {
-            fprintf(fp, "JNA else%d\n", etiquetaActual);
+            fprintf(fp, "JNB else%d\n", etiquetaActual);
         } else {
-            fprintf(fp, "JNA endif%d\n", etiquetaActual);
+            fprintf(fp, "JNB endif%d\n", etiquetaActual);
         }
         return 0;
     }
@@ -206,13 +207,30 @@ int determinarOperacion(FILE * fp, nodo * raiz, int etiquetaActual) {
         // esto funciona para comparaciones simples Ejemplo: 1 < 2
         fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq  (apila 1)
         fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq (apila 2)
+        fprintf(fp, "fxch\n");
         fprintf(fp, "fcom\n"); // compara ST0 con ST1" (resta 2 - 1)
         fprintf(fp, "fstsw ax\n");
         fprintf(fp, "sahf\n");
         if (tieneElse) {
-            fprintf(fp, "JNAE else%d\n", etiquetaActual);
+            fprintf(fp, "JNBE else%d\n", etiquetaActual);
         } else {
-            fprintf(fp, "JNAE endif%d\n", etiquetaActual);
+            fprintf(fp, "JNBE endif%d\n", etiquetaActual);
+        }
+        return 0;
+    }
+
+    if(strcmp(raiz->dato, "==") == 0) {
+        // esto funciona para comparaciones simples Ejemplo: 1 < 2
+        fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq  (apila 1)
+        fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq (apila 2)
+        fprintf(fp, "fxch\n");
+        fprintf(fp, "fcom\n"); // compara ST0 con ST1" (resta 2 - 1)
+        fprintf(fp, "fstsw ax\n");
+        fprintf(fp, "sahf\n");
+        if (tieneElse) {
+            fprintf(fp, "JNE else%d\n", etiquetaActual);
+        } else {
+            fprintf(fp, "JNE endif%d\n", etiquetaActual);
         }
         return 0;
     }
