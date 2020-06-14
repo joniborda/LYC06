@@ -2,6 +2,7 @@
 int cantAux = 0;
 int cantEtiqueta = 0;
 int tieneElse = 0;
+int condicionOR = 0;
 
 void generarAssembler(nodo * raiz) {
 	if (/*generarHeader()*/ 0 == 1) {
@@ -76,6 +77,9 @@ void recorreArbolAsm(FILE * fp, nodo* raiz, int etiquetaActual) {
             if (strcmp(raiz->hijoDer->dato, "CUERPO") == 0) {
                 tieneElse = 1;
             }
+            if (strcmp(raiz->hijoIzq->dato, "OR") == 0) {
+                condicionOR = 1;
+            }
         }
 
         // RECORRO LA IZQUIERDA
@@ -138,10 +142,14 @@ int determinarOperacion(FILE * fp, nodo * raiz, int etiquetaActual) {
         fprintf(fp, "fcom\n"); // compara ST0 con ST1"
         fprintf(fp, "fstsw ax\n");
         fprintf(fp, "sahf\n");
-        if (tieneElse) {
-            fprintf(fp, "%s else%d\n", obtenerInstruccionComparacion(raiz->dato), etiquetaActual);
+        if(condicionOR) {
+            fprintf(fp, "%s startIf%d\n", obtenerInstruccionComparacion(raiz->dato), etiquetaActual);
         } else {
-            fprintf(fp, "%s endif%d\n", obtenerInstruccionComparacion(raiz->dato), etiquetaActual);
+            if (tieneElse) {
+                fprintf(fp, "%s else%d\n", obtenerInstruccionComparacion(raiz->dato), etiquetaActual);
+            } else {
+                fprintf(fp, "%s endif%d\n", obtenerInstruccionComparacion(raiz->dato), etiquetaActual);
+        }
         }
         return 0;
     }
@@ -202,16 +210,32 @@ char* obtenerInstruccionAritmetica(const char *operador) {
 char* obtenerInstruccionComparacion(const char *comparador) {
     // Esto nos va a servir para cuando venga un OR, ya que hay que invertir la primer comparacion
     // para que pueda evaluar las dos, sin hacer tantos if
-    if (strcmp(comparador, ">") == 0)
-        return "JNA";
-    if (strcmp(comparador, ">=") == 0)
-        return "JNAE";
-    if (strcmp(comparador, "<") == 0)
-        return "JNB";
-    if (strcmp(comparador, "<=") == 0)
-        return "JNBE";
-    if (strcmp(comparador, "==") == 0)
-        return "JNE";
-    if (strcmp(comparador, "!=") == 0)
-        return "JE";
+    if(condicionOR) {
+        condicionOR = 0;
+        if (strcmp(comparador, ">") == 0)
+            return "JNBE";
+        if (strcmp(comparador, ">=") == 0)
+            return "JNB";
+        if (strcmp(comparador, "<") == 0)
+            return "JNAE";
+        if (strcmp(comparador, "<=") == 0)
+            return "JNA";
+        if (strcmp(comparador, "==") == 0)
+            return "JE";
+        if (strcmp(comparador, "!=") == 0)
+            return "JNE";
+    } else {
+        if (strcmp(comparador, ">") == 0)
+            return "JNA";
+        if (strcmp(comparador, ">=") == 0)
+            return "JNAE";
+        if (strcmp(comparador, "<") == 0)
+            return "JNB";
+        if (strcmp(comparador, "<=") == 0)
+            return "JNBE";
+        if (strcmp(comparador, "==") == 0)
+            return "JNE";
+        if (strcmp(comparador, "!=") == 0)
+            return "JE";
+    }
 }
