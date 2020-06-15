@@ -3,14 +3,15 @@ DEFVAR
 	STRING : var_string
 	FLOAT : fl
 ENDVAR
+a:=1;
 
-a := 3 + 1 + 2;
-IF (1 > 2) {
-	a := 3;
-	IF (4 < 5) {
-		b := 6;
+
+WHILE (a<10) {
+	b:=11;
+	IF ( b<20) {
+		c := 9;
+	} ELSE {
+		c := 2;
 	}
-} ELSE {
-	c := 7;
+	a := b+c;
 }
-d := 8;

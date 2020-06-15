@@ -3,7 +3,20 @@ int cantAux = 0;
 int cantEtiqueta = 0;
 int tieneElse = 0;
 int condicionOR = 0;
-
+int esWhile = 0;
+int numEtiqWhile = 0;
+int pilaNumEtiqWhile [10];
+int topePila = 0;
+int cambiarNombre = 0;
+void apilarNumEtiq(int num) {
+    pilaNumEtiqWhile[topePila++] = num;
+}
+int desapilarNumEtiq() {
+    return pilaNumEtiqWhile[--topePila];
+}
+int verTopePilaNumEtiq() {
+    return pilaNumEtiqWhile[topePila - 1];
+}
 void generarAssembler(nodo * raiz) {
 	if (/*generarHeader()*/ 0 == 1) {
 		printf("Error al generar el assembler");
@@ -80,6 +93,14 @@ void recorreArbolAsm(FILE * fp, nodo* raiz, int etiquetaActual) {
             if (strcmp(raiz->hijoIzq->dato, "OR") == 0) {
                 condicionOR = 1;
             }
+            cambiarNombre = 1;
+        }
+
+        //WHILE
+        if(strcmp(raiz->dato, "WHILE") == 0) {
+            esWhile = 1;
+            apilarNumEtiq(numEtiqWhile++);
+            fprintf(fp, "startwhile%d:\n", verTopePilaNumEtiq());
         }
 
         // RECORRO LA IZQUIERDA
@@ -102,6 +123,15 @@ void recorreArbolAsm(FILE * fp, nodo* raiz, int etiquetaActual) {
         recorreArbolAsm(fp, raiz->hijoDer, etiquetaActual);
         if (iff == 1) {
             fprintf(fp, "endif%d:\n", etiquetaActual);
+        }
+
+        //while 
+        if(strcmp(raiz->dato, "WHILE") == 0) {
+            fprintf(fp, "JMP startwhile%d\n", verTopePilaNumEtiq());
+            fprintf(fp, "endwhile%d:\n", desapilarNumEtiq());
+            if (topePila == 0) { //pila vacia
+                esWhile = 0;//termino el while
+            }
         }
 
         if (esHoja(raiz->hijoIzq) && esHoja(raiz->hijoDer)) {
@@ -142,14 +172,18 @@ int determinarOperacion(FILE * fp, nodo * raiz, int etiquetaActual) {
         fprintf(fp, "fcom\n"); // compara ST0 con ST1"
         fprintf(fp, "fstsw ax\n");
         fprintf(fp, "sahf\n");
+        if (esWhile && cambiarNombre==0) {
+            fprintf(fp, "%s endwhile%d\n", obtenerInstruccionComparacion(raiz->dato), verTopePilaNumEtiq());
+        } 
+        
         if(condicionOR) {
             fprintf(fp, "%s startIf%d\n", obtenerInstruccionComparacion(raiz->dato), etiquetaActual);
-        } else {
+        } else if (cambiarNombre) {
             if (tieneElse) {
                 fprintf(fp, "%s else%d\n", obtenerInstruccionComparacion(raiz->dato), etiquetaActual);
             } else {
                 fprintf(fp, "%s endif%d\n", obtenerInstruccionComparacion(raiz->dato), etiquetaActual);
-        }
+            }
         }
         return 0;
     }
@@ -210,6 +244,9 @@ char* obtenerInstruccionAritmetica(const char *operador) {
 char* obtenerInstruccionComparacion(const char *comparador) {
     // Esto nos va a servir para cuando venga un OR, ya que hay que invertir la primer comparacion
     // para que pueda evaluar las dos, sin hacer tantos if
+    if (cambiarNombre) {
+        cambiarNombre = 0;
+    }
     if(condicionOR) {
         condicionOR = 0;
         if (strcmp(comparador, ">") == 0)

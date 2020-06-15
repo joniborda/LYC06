@@ -52,7 +52,7 @@
     void validarComparacion();
     void mostrarEstadoPila();
     char * obtenerComparadorOpuesto(nodo* );
-    nodo* semanticaFactorial(nodo*);
+    nodo* semanticaFactorial(nodo*, const char*);
 
     nodo* apilar(nodo*);
     nodo* desapilar();
@@ -325,7 +325,14 @@ comparador:
 
 asignacion:
     ID ASIG expresion PUNTO_Y_COMA {
-        asignacionPtr = crearNodo(":=", crearHoja($1), desapilar());
+        nodo* aux = desapilar();
+        if ( strcmp(aux->dato, "FACT") == 0 ) {
+            nodo* aux1 = crearNodo(":=", crearHoja($1), crearHoja("@NUMFACT0"));
+            asignacionPtr = crearNodo("CUERPO_WHILE", aux, aux1);
+        } else {
+            asignacionPtr = crearNodo(":=", crearHoja($1), aux);
+        }
+        
         printLog("\tasignacionPtr -> :=, ID, Pila", "");
         
         verificarIdDeclarado(tsObtenerTipo($1)); 
@@ -424,7 +431,7 @@ factor:
 	
 funcion:
 	FACT P_A expresion P_C {
-        funcionPtr = semanticaFactorial(desapilar());
+        funcionPtr = semanticaFactorial(desapilar(), "@NUMFACT0");
         printRule("<FUNCION>", "FACTORIAL(<EXPRESION>)");
     }
 	| COMB P_A expresion COMA expresion P_C	{
@@ -433,8 +440,8 @@ funcion:
         nodo* exp2Comb = desapilar();
         nodo* exp1Comb = desapilar();
         nodo* resComb = crearNodo("-", exp1Comb, exp2Comb);
-        nodo* mulComb = crearNodo("*", semanticaFactorial(exp2Comb), semanticaFactorial(resComb));
-        funcionPtr = crearNodo("/", semanticaFactorial(exp1Comb), mulComb);
+        nodo* mulComb = crearNodo("*", semanticaFactorial(exp2Comb, "@NUMFACT1"), semanticaFactorial(resComb, "@NUMFACT2"));
+        funcionPtr = crearNodo("/", semanticaFactorial(exp1Comb, "@NUMFACT3"), mulComb);
         printRule("<FUNCION>", "COMBINATORIO(<EXPRESION>, <EXPRESION>)");
     }
 	;
@@ -652,7 +659,7 @@ char * obtenerComparadorOpuesto(nodo* raiz) {
     }
 }
 
-nodo * semanticaFactorial(nodo* exp) {
+nodo * semanticaFactorial(nodo* exp, const char* nomVarFact) {
     /* Lógica de Factorial
     nroMaximo = expresion;
     factorial = 1;
@@ -661,12 +668,12 @@ nodo * semanticaFactorial(nodo* exp) {
         nroMaximo--;
     }
     */
-    nodo* numeroFactorial = crearNodo(":=", crearHoja("@NUMFACT"), exp);
-    nodo* decrementado = crearNodo(":=", crearHoja("@NUMFACT"), crearNodo("OP_MENOS", crearHoja("@NUMFACT"), crearHoja(aConstante("1"))));
-    nodo* mulFact = crearNodo(":=", crearHoja("@SUM"), crearNodo("*", crearHoja("@SUM"), crearHoja("@NUMFACT")));
-    nodo* cuerpoWhileFact = crearNodo("CUERPO", mulFact, decrementado);
-    nodo* whileFact = crearNodo("WHILE", crearNodo(">", crearHoja("@NUMFACT"), crearHoja(aConstante("1"))), cuerpoWhileFact);
+    nodo* numeroFactorial = crearNodo(":=", crearHoja(nomVarFact), exp);
+    nodo* decrementado = crearNodo(":=", crearHoja(nomVarFact), crearNodo("-", crearHoja(nomVarFact), crearHoja(aConstante("1"))));
+    nodo* mulFact = crearNodo(":=", crearHoja("@SUM"), crearNodo("*", crearHoja("@SUM"), crearHoja(nomVarFact)));
+    nodo* cuerpoWhileFact = crearNodo("CUERPO_WHILE", mulFact, decrementado);
+    nodo* whileFact = crearNodo("WHILE", crearNodo(">", crearHoja(nomVarFact), crearHoja(aConstante("1"))), cuerpoWhileFact);
     nodo* sumaFact = crearNodo(":=", crearHoja("@SUM"), crearHoja(aConstante("1")));
     nodo* progFactorial = crearNodo("PROGRAMA", sumaFact , whileFact);
-    return crearNodo("FACT", numeroFactorial, progFactorial);
+    return crearNodo(nomVarFact, numeroFactorial, progFactorial);
 }
