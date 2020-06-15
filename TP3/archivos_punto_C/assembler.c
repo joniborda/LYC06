@@ -8,15 +8,19 @@ int numEtiqWhile = 0;
 int pilaNumEtiqWhile [10];
 int topePila = 0;
 int cambiarNombre = 0;
-void apilarNumEtiq(int num) {
+
+void apilarNumEtiqWhile(int num) {
     pilaNumEtiqWhile[topePila++] = num;
 }
-int desapilarNumEtiq() {
+
+int desapilarNumEtiqWhile() {
     return pilaNumEtiqWhile[--topePila];
 }
-int verTopePilaNumEtiq() {
+
+int verTopePilaNumEtiqWhile() {
     return pilaNumEtiqWhile[topePila - 1];
 }
+
 void generarAssembler(nodo * raiz) {
 	if (/*generarHeader()*/ 0 == 1) {
 		printf("Error al generar el assembler");
@@ -99,8 +103,8 @@ void recorreArbolAsm(FILE * fp, nodo* raiz, int etiquetaActual) {
         //WHILE
         if(strcmp(raiz->dato, "WHILE") == 0) {
             esWhile = 1;
-            apilarNumEtiq(numEtiqWhile++);
-            fprintf(fp, "startwhile%d:\n", verTopePilaNumEtiq());
+            apilarNumEtiqWhile(numEtiqWhile++);
+            fprintf(fp, "startwhile%d:\n", verTopePilaNumEtiqWhile());
         }
 
         // RECORRO LA IZQUIERDA
@@ -127,8 +131,8 @@ void recorreArbolAsm(FILE * fp, nodo* raiz, int etiquetaActual) {
 
         //while 
         if(strcmp(raiz->dato, "WHILE") == 0) {
-            fprintf(fp, "JMP startwhile%d\n", verTopePilaNumEtiq());
-            fprintf(fp, "endwhile%d:\n", desapilarNumEtiq());
+            fprintf(fp, "JMP startwhile%d\n", verTopePilaNumEtiqWhile());
+            fprintf(fp, "endwhile%d:\n", desapilarNumEtiqWhile());
             if (topePila == 0) { //pila vacia
                 esWhile = 0;//termino el while
             }
@@ -173,7 +177,7 @@ int determinarOperacion(FILE * fp, nodo * raiz, int etiquetaActual) {
         fprintf(fp, "fstsw ax\n");
         fprintf(fp, "sahf\n");
         if (esWhile && cambiarNombre==0) {
-            fprintf(fp, "%s endwhile%d\n", obtenerInstruccionComparacion(raiz->dato), verTopePilaNumEtiq());
+            fprintf(fp, "%s endwhile%d\n", obtenerInstruccionComparacion(raiz->dato), verTopePilaNumEtiqWhile());
         } 
         
         if(condicionOR) {
