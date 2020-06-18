@@ -22,5 +22,5 @@ void tsActualizarTipos(char *, int);
 int tsObtenerTipo(char *);
 char * obtenerNombreTipo(int);
 char *aConstante(const char *);
-
+int resolverTipo(const int, const int);
 #endif

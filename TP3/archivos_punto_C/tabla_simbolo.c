@@ -101,3 +101,13 @@ char * aConstante(const char * valor) {
 	strcat(nombre, valor);
 	return strdup(nombre);
 }
+
+int resolverTipo(const int tipo1, const int tipo2) {
+    if (tipo1 == tipo2) {
+        return tipo1;
+    }
+
+    //TODO: agregar mas logica
+    
+    return tipo1;
+}

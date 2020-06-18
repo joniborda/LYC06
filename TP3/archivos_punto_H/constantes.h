@@ -10,9 +10,11 @@
 #define TODO_OK 0
 #define ERROR 1
 
+// estos tipos son solo para la declaracion
 #define T_INTEGER 1
 #define T_FLOAT 2
 #define T_STRING 3
+// estos tipos si se usan en la tabla de simobolos
 #define CTE_INTEGER 4
 #define CTE_FLOAT 5
 #define CTE_STRING 6
