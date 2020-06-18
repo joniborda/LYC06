@@ -1,25 +1,27 @@
 #include "../archivos_punto_H/arbol_sintactico.h"
 
-nodo* crearNodo(const char *d, nodo* hI, nodo* hD) {
-	nodo* nodoPadre = (nodo*)malloc(sizeof(nodo));
-    if(nodoPadre == NULL) {
-        printf("No hay memoria disponible");
-        exit(1);
-    }
-    strcpy(nodoPadre->dato, d);
-    nodoPadre->hijoDer = hD;
-    nodoPadre->hijoIzq = hI;
-    escribeLog(nodoPadre->dato, nodoPadre->hijoIzq->dato, nodoPadre->hijoDer->dato);
-    return nodoPadre;
-}
-
-nodo* crearHoja(const char *d) {
+nodo* crearNodo(const char *d, nodo* hI, nodo* hD, const int tipo) {
 	nodo* nuevoNodo = (nodo*)malloc(sizeof(nodo));
     if(nuevoNodo == NULL) {
         printf("No hay memoria disponible");
         exit(1);
     }
     strcpy(nuevoNodo->dato, d);
+    nuevoNodo->tipo = tipo;
+    nuevoNodo->hijoDer = hD;
+    nuevoNodo->hijoIzq = hI;
+    escribeLog(nuevoNodo->dato, nuevoNodo->hijoIzq->dato, nuevoNodo->hijoDer->dato);
+    return nuevoNodo;
+}
+
+nodo* crearHoja(const char *d, const int tipo) {
+	nodo* nuevoNodo = (nodo*)malloc(sizeof(nodo));
+    if(nuevoNodo == NULL) {
+        printf("No hay memoria disponible");
+        exit(1);
+    }
+    strcpy(nuevoNodo->dato, d);
+    nuevoNodo->tipo = tipo;
     nuevoNodo->hijoDer = NULL;
     nuevoNodo->hijoIzq = NULL;
     if(strncmp(nuevoNodo->dato, "@", 1) == 0) {

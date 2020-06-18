@@ -10,6 +10,7 @@
 // Estructura para el arbol sintactico
 typedef struct nodo{
     char dato[20];
+    int tipo;
     struct nodo* hijoDer;
     struct nodo* hijoIzq;
 }nodo;
@@ -27,8 +28,8 @@ typedef struct s_nodo
 // Estructura para la pila dinamica
 typedef t_nodo* t_pila;
 
-nodo* crearNodo(const char* , nodo* , nodo* );
-nodo* crearHoja(const char*);
+nodo* crearNodo(const char* , nodo* , nodo*, const int);
+nodo* crearHoja(const char*, const int);
 void liberarMemoria(nodo* );
 void llegarGragh(nodo* , FILE*, int );
 void escribirGragh(nodo*);
