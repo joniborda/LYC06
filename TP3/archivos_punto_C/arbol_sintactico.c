@@ -48,10 +48,12 @@ void llenarGragh(nodo* padre, FILE *arch, int numNodo) {
     int numHD = numNodo*2+2;
     
     if(padre->hijoIzq) {
-        fprintf(arch, "\t\"%s@%d\" -> \"%s@%d\"\n", padre->dato, numNodo, padre->hijoIzq->dato, numHI);
+        fprintf(arch, "\t\"(%s) %s@%d\" -> \"(%s) %s@%d\"\n", 
+        obtenerNombreTipo(padre->tipo), padre->dato, numNodo, obtenerNombreTipo(padre->hijoIzq->tipo), padre->hijoIzq->dato, numHI);
     }
     if(padre->hijoDer) {
-        fprintf(arch, "\t\"%s@%d\" -> \"%s@%d\"\n", padre->dato, numNodo, padre->hijoDer->dato, numHD);
+        fprintf(arch, "\t\"(%s) %s@%d\" -> \"(%s) %s@%d\"\n", 
+        obtenerNombreTipo(padre->tipo), padre->dato, numNodo, obtenerNombreTipo(padre->hijoDer->tipo), padre->hijoDer->dato, numHD);
     }
     llenarGragh(padre->hijoIzq, arch, numHI);
     llenarGragh(padre->hijoDer, arch, numHD);
