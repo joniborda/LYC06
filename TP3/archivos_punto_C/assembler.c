@@ -104,7 +104,10 @@ void recorreArbolAsm(FILE * fp, nodo* raiz, int etiquetaActual) {
         if(strcmp(raiz->dato, "WHILE") == 0) {
             esWhile = 1;
             apilarNumEtiqWhile(numEtiqWhile++);
-            fprintf(fp, "startwhile%d:\n", verTopePilaNumEtiqWhile());
+            fprintf(fp, "condicionWhile%d:\n", verTopePilaNumEtiqWhile());
+            if (strcmp(raiz->hijoIzq->dato, "OR") == 0) {
+                condicionOR = 1;
+            }
         }
 
         // RECORRO LA IZQUIERDA
@@ -112,15 +115,18 @@ void recorreArbolAsm(FILE * fp, nodo* raiz, int etiquetaActual) {
 
         printf("dato padre %s", raiz->dato);
 
-        int elseiff = 0;
         if(strcmp(raiz->dato, "IF") == 0) {
             fprintf(fp, "startIf%d:\n", etiquetaActual);
         }
 
         if(strcmp(raiz->dato, "CUERPO") == 0) {
-            elseiff = 1;
             fprintf(fp, "JMP endif%d\n", etiquetaActual);
             fprintf(fp, "else%d:\n", etiquetaActual);
+        }
+
+        if(strcmp(raiz->dato, "WHILE") == 0) {
+            fprintf(fp, "startWhile%d:\n", etiquetaActual);
+            // si ponemos acá esWhile = 0; no sería necesario la variable cambiarNombre
         }
         
         // RECORRO LA DERECHA
@@ -131,7 +137,7 @@ void recorreArbolAsm(FILE * fp, nodo* raiz, int etiquetaActual) {
 
         //while 
         if(strcmp(raiz->dato, "WHILE") == 0) {
-            fprintf(fp, "JMP startwhile%d\n", verTopePilaNumEtiqWhile());
+            fprintf(fp, "JMP condicionWhile%d\n", verTopePilaNumEtiqWhile());
             fprintf(fp, "endwhile%d:\n", desapilarNumEtiqWhile());
             if (topePila == 0) { //pila vacia
                 esWhile = 0;//termino el while
@@ -177,7 +183,10 @@ int determinarOperacion(FILE * fp, nodo * raiz, int etiquetaActual) {
         fprintf(fp, "fstsw ax\n");
         fprintf(fp, "sahf\n");
         if (esWhile && cambiarNombre==0) {
-            fprintf(fp, "%s endwhile%d\n", obtenerInstruccionComparacion(raiz->dato), verTopePilaNumEtiqWhile());
+            if(condicionOR)
+                fprintf(fp, "%s startWhile%d\n", obtenerInstruccionComparacion(raiz->dato), verTopePilaNumEtiqWhile());
+            else
+                fprintf(fp, "%s endwhile%d\n", obtenerInstruccionComparacion(raiz->dato), verTopePilaNumEtiqWhile());
         } 
         
         if(condicionOR) {
