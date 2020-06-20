@@ -180,22 +180,10 @@ int determinarOperacion(FILE * fp, nodo * raiz, int etiquetaActual) {
         fprintf(fp, "fcom\n"); // compara ST0 con ST1"
         fprintf(fp, "fstsw ax\n");
         fprintf(fp, "sahf\n");
-        if (esWhile) {
-            if(condicionOR)
-                fprintf(fp, "%s startWhile%d\n", obtenerInstruccionComparacion(raiz->dato), verTopePilaNumEtiqWhile());
-            else
-                fprintf(fp, "%s endwhile%d\n", obtenerInstruccionComparacion(raiz->dato), verTopePilaNumEtiqWhile());
-        } else {
-            if(condicionOR) {
-                fprintf(fp, "%s startIf%d\n", obtenerInstruccionComparacion(raiz->dato), etiquetaActual);
-            } else {
-                if (tieneElse) {
-                    fprintf(fp, "%s else%d\n", obtenerInstruccionComparacion(raiz->dato), etiquetaActual);
-                } else {
-                    fprintf(fp, "%s endif%d\n", obtenerInstruccionComparacion(raiz->dato), etiquetaActual);
-                }
-            }
-        }
+        if (esWhile)
+            fprintf(fp, "%s %s%d\n", obtenerInstruccionComparacion(raiz->dato), obtenerSalto(), verTopePilaNumEtiqWhile());
+        else
+            fprintf(fp, "%s %s%d\n", obtenerInstruccionComparacion(raiz->dato), obtenerSalto(), etiquetaActual);
         return 0;
     }
 
@@ -282,5 +270,21 @@ char* obtenerInstruccionComparacion(const char *comparador) {
             return "JNE";
         if (strcmp(comparador, "!=") == 0)
             return "JE";
+    }
+}
+
+char* obtenerSalto() {
+    if(condicionOR) {
+        if(esWhile)
+            return "startWhile";
+        return "startIf";
+    } else {
+        if(esWhile)
+            return "endwhile";
+        if (tieneElse) {
+            return "else";
+        } else {
+            return "endif";
+        }
     }
 }

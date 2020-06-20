@@ -12,5 +12,6 @@ int esAritmetica(const char *);
 int esComparacion(const char *);
 char* obtenerInstruccionAritmetica(const char *);
 char* obtenerInstruccionComparacion(const char *);
+char* obtenerSalto();
 
 #endif
