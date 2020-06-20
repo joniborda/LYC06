@@ -95,13 +95,13 @@ void textoFuncion() {
 		exit(1);
 	}
 	if (imprimir) printf("Flex: String (%s)\n", subBuff);
-	tsInsertarToken(CTE_STRING, yylval.str_val, strlen(subBuff), subBuff);
+	tsInsertarToken(CTE_STRING, yylval.str_val, subBuff, strlen(subBuff));
 }
 
 void idFuncion() {
 	yylval.str_val = strdup(yytext);
 	if (imprimir) printf("Flex: ID (%s)\n", yytext);
-	tsInsertarToken(T_ID, yylval.str_val, strlen(yytext), "");
+	tsInsertarToken(T_ID, yylval.str_val, "", 0);
 }
 
 void enteroFuncion() {
@@ -114,7 +114,7 @@ void enteroFuncion() {
 	}
 
 	if (imprimir) printf("Flex Entero: %s (%d)\n", yytext, aux);
-	tsInsertarToken(CTE_INTEGER, strdup(yytext), 0, yytext);
+	tsInsertarToken(CTE_INTEGER, strdup(yytext), yytext, 0);
 }
 
 void floatFuncion() {
@@ -126,6 +126,8 @@ void floatFuncion() {
 		printf("ERROR: La constante float supera el máximo del límite permitido (32bits).\n");
 		exit(1);
 	}
-	if (imprimir) printf("Flex Float: %s (%f)\n", yytext,aux);
-	tsInsertarToken(CTE_FLOAT, strdup(yytext), 0, yytext);
+	if (imprimir) 
+		printf("Flex Float: %s (%f)\n", yytext, aux);
+	
+	tsInsertarToken(CTE_FLOAT, strdup(yytext), yytext, 0);
 }

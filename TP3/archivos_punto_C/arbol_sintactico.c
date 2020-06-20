@@ -24,8 +24,11 @@ nodo* crearHoja(const char *d, const int tipo) {
     nuevoNodo->tipo = tipo;
     nuevoNodo->hijoDer = NULL;
     nuevoNodo->hijoIzq = NULL;
+    /* 
+    Inserta en la tabla los auxiliares utilizados en el sintactico
+    */
     if(strncmp(nuevoNodo->dato, "@", 1) == 0) {
-        tsInsertarToken(T_INTEGER, nuevoNodo->dato, strlen(nuevoNodo->dato), "");
+        tsInsertarToken(tipo, nuevoNodo->dato, "", strlen(nuevoNodo->dato));
     }
     return nuevoNodo;
 }

@@ -2,7 +2,7 @@
 
 int posicion_en_ts = 0; // Incremento Longitud en la estructura tabla de simbolos
 
-void tsInsertarToken(int tipo, char *nombre, int longitud, char *valor) {
+void tsInsertarToken(int tipo, char *nombre, char *valor, int longitud) {
 	int i;
 
 	for (i = 0; i < posicion_en_ts; i++) {

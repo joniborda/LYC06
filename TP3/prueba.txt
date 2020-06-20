@@ -3,7 +3,7 @@ DEFVAR
 	STRING : var_string
 	FLOAT : fl
 ENDVAR
-
+var_string := "algo";
 a := 3 + 1 + 2;
 IF (1 > 2 AND 4 == 8) {
 	a := 3;
