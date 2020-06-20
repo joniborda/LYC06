@@ -169,9 +169,6 @@ void recorreArbolAsm(FILE * fp, nodo* raiz) {
         if(strcmp(raiz->dato, "WHILE") == 0) {
             fprintf(fp, "JMP condicionWhile%d\n", verTopePilaEtiqueta(ETIQUETA_WHILE));
             fprintf(fp, "endwhile%d:\n", desapilarEtiqueta(ETIQUETA_WHILE));
-            if (topePilaWhile == 0) { //pila vacia
-                esWhile = 0;//termino el while
-            }
         }
         
         if (esHoja(raiz->hijoIzq) && esHoja(raiz->hijoDer)) {
