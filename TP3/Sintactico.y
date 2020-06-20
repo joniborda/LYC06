@@ -183,7 +183,7 @@ programa:
     }
     | programa sentencia { 
         programaPtr = desapilar();
-        programaPtr = crearNodo("PROGRAMA", programaPtr, sentenciaPtr, resolverTipo(programaPtr->tipo, sentenciaPtr->tipo)); 
+        programaPtr = crearNodo("PROGRAMA", programaPtr, sentenciaPtr, T_NULL); 
         printLog("\tprogramaPtr -> PROGRAMA, pila, sentenciaPtr", ""); 
         apilar(programaPtr);
         printRule("<PROGRAMA>", "<PROGRAMA> <SENTENCIA>");}
@@ -219,7 +219,8 @@ entrada:
     ENTRADA ID {
         int tipo2 = tsObtenerTipo($2);
         verificarIdDeclarado(tipo2);
-        entradaPtr = crearNodo(":=", crearHoja($2, tipo2), crearHoja("@STDIN", CTE_STRING), resolverTipo(tipo2, CTE_STRING));
+        // TODO: ojo con el tipo de dato del valor ingresado
+        entradaPtr = crearNodo(":=", crearHoja($2, tipo2), crearHoja("@STDIN", tipo2), tipo2);
         printRule("<ENTRADA>", "ID");
     };
 
@@ -231,7 +232,7 @@ salida:
     | SALIDA ID {
         int tipo2 = tsObtenerTipo($2);
         verificarIdDeclarado(tipo2);
-        salidaPtr = crearNodo(":=", crearHoja("@STDOUT", CTE_STRING), crearHoja($2, tipo2), resolverTipo(CTE_STRING, tipo2));
+        salidaPtr = crearNodo(":=", crearHoja("@STDOUT", tipo2), crearHoja($2, tipo2), tipo2);
         printRule("<SALIDA>", "ID");
     }
     ;
@@ -239,12 +240,12 @@ salida:
 seleccion: 
     IF P_A condicion P_C L_A programa L_C {
         programaPtr = desapilar();
-        seleccionPtr = crearNodo("IF", desapilar(), programaPtr, CTE_STRING);
+        seleccionPtr = crearNodo("IF", desapilar(), programaPtr, T_NULL);
         printLog("\tseleccionPtr -> IF, condicionPtr, programaPtr", ""); 
         printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C");}
     | IF P_A condicion P_C L_A programa L_C ELSE L_A programa L_C {
         programaPtr = desapilar();
-        seleccionPtr = crearNodo("IF", desapilar(), crearNodo("CUERPO", desapilar(), programaPtr, CTE_STRING), CTE_STRING);
+        seleccionPtr = crearNodo("IF", desapilar(), crearNodo("CUERPO", desapilar(), programaPtr, T_NULL), T_NULL);
         printLog("\tseleccionPtr -> IF, Pila, nodo", ""); 
         printRule("<SELECCION>", "IF P_A <CONDICION> P_C L_A <PROGRAMA> L_C ELSE L_A <PROGRAMA> L_C");
     }
@@ -253,7 +254,7 @@ seleccion:
 iteracion: 
     WHILE P_A condicion P_C L_A programa L_C {
         programaPtr = desapilar();
-        iteracionPtr = crearNodo("WHILE", desapilar(), programaPtr, CTE_STRING);
+        iteracionPtr = crearNodo("WHILE", desapilar(), programaPtr, T_NULL);
         printLog("\titeracionPtr -> WHILE, Pila, programaPtr", ""); 
         printRule("<ITERACION>", "WHILE P_A <CONDICION> P_C L_A <PROGRAMA> L_C");
     }
@@ -270,12 +271,12 @@ condicion:
         printLog("\tcondicionPtr -> comparacionPtr", "");
         printRule("<CONDICION>", "OP_NOT <COMPARACION>");}
     | comparacion OP_AND comparacion {
-        condicionPtr = crearNodo("AND", desapilar(), desapilar(), CTE_STRING);
+        condicionPtr = crearNodo("AND", desapilar(), desapilar(), T_NULL);
         printLog("\tcondicionPtr -> AND, Pila, Pila", "");
         apilar(condicionPtr);
         printRule("<CONDICION>", "<COMPARACION> OP_AND <COMPARACION>");}
     | comparacion OP_OR comparacion {
-        condicionPtr = crearNodo("OR", desapilar(), desapilar(), CTE_STRING);
+        condicionPtr = crearNodo("OR", desapilar(), desapilar(), T_NULL);
         printLog("\tcondicionPtr -> OP_OR, Pila, Pila", "");
         apilar(condicionPtr);
         printRule("<CONDICION>", "<COMPARACION> OP_OR <COMPARACION>");}
@@ -294,7 +295,7 @@ comparacion:
                 "AND", 
                 crearNodo("=>", crearHoja($3, tipo3), nodo1, resolverTipo(tipo3, nodo1->tipo)), 
                 crearNodo("=<", crearHoja($3, tipo3), nodo2, resolverTipo(tipo3, nodo2->tipo)), 
-                CTE_STRING
+                T_NULL
             );
             apilar(comparacionPtr);
             printRule("<COMPARACION>", "BETWEEN P_A ID COMA C_A <EXPRESION> PUNTO_Y_COMA <EXPRESION> C_C P_C");
@@ -317,27 +318,27 @@ comparacion:
 
 comparador: 
     CMP_MAYOR {
-        comparadorPtr = crearHoja(">", CTE_STRING);
+        comparadorPtr = crearHoja(">", T_NULL);
         printLog("\tcomparadorPtr -> >", "");
         printRule("<COMPARADOR>", "OP_CMP_MAYOR");
     } 
     | CMP_MENOR {
-        comparadorPtr = crearHoja("<", CTE_STRING);
+        comparadorPtr = crearHoja("<", T_NULL);
         printLog("\tcomparadorPtr -> <", "");
         printRule("<COMPARADOR>", "OP_CMP_MENOR");
     } 
     | CMP_MAYOR_IGUAL {
-        comparadorPtr = crearHoja(">=", CTE_STRING);
+        comparadorPtr = crearHoja(">=", T_NULL);
         printLog("\tcomparadorPtr -> >=", "");
         printRule("<COMPARADOR>", "OP_CMP_MAYOR_IGUAL");
     } 
     | CMP_MENOR_IGUAL {
-        comparadorPtr = crearHoja("<=", CTE_STRING);
+        comparadorPtr = crearHoja("<=", T_NULL);
         printLog("\tcomparadorPtr -> <=", "");
         printRule("<COMPARADOR>", "OP_CMP_MENOR_IGUAL");
     } 
     | CMP_IGUAL  {
-        comparadorPtr = crearHoja("==", CTE_STRING);
+        comparadorPtr = crearHoja("==", T_NULL);
         printLog("\tcomparadorPtr -> ==", "");
         printRule("<COMPARADOR>", "OP_CMP_IGUAL");
     };
@@ -355,11 +356,11 @@ asignacion:
         printRule("<ASIGNACION>", "ID ASIG <EXPRESION> PUNTO_Y_COMA");}
 	| ID ASIG STRING PUNTO_Y_COMA {
         int tipo1 = tsObtenerTipo($1);
+        verificarIdDeclarado(tipo1);
 
         asignacionPtr = crearNodo(":=", crearHoja($1, tipo1), crearHoja(aConstante($3), CTE_STRING), resolverTipo(tipo1, CTE_STRING));
         printLog("\tasignacionPtr -> :=, ID, ", $3);
         
-        verificarIdDeclarado(tipo1);
         printRule("<ASIGNACION>", "ID ASIG STRING PUNTO_Y_COMA");
         if (tipo1 != T_STRING) {
             yyerror("Asignacion no permitidad: La variable no es de tipo String");
@@ -529,6 +530,7 @@ void validarIdNumerico(const int tipo) {
 }
 
 void verificarIdDeclarado(const int tipo) {
+    // Recibe el tipo de dato porque el lexico ya lo leyo pero todavia no está declaro en el bloque de declaraciones
     if (tipo == T_ID) {
         yyerror("Variable indefinida");
     }

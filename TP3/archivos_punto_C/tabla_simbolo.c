@@ -79,6 +79,8 @@ int tsObtenerTipo(char * identificador) {
 
 char * obtenerNombreTipo(const int tipo) {
 	switch(tipo) {
+		case T_NULL:
+			return "";
 		case T_INTEGER:
 			return "INTEGER";
 		case T_FLOAT:
@@ -102,12 +104,28 @@ char * aConstante(const char * valor) {
 	return strdup(nombre);
 }
 
-int resolverTipo(const int tipo1, const int tipo2) {
-    if (tipo1 == tipo2) {
-        return tipo1;
-    }
+int resolverTipo(int tipo1, int tipo2) {
+	tipo1 = typeDecorator(tipo1);
+	tipo2 = typeDecorator(tipo2);
+	// Los tipos que deberian llegar serian, T_STRING, T_INTEGER, T_FLOAT
+	const int retTipo = resolucionTipos[tipo1][tipo2];
+	if (retTipo == T_ERROR) {
+		yyerror("Error de compatibilidad de tipos");
+	}
 
-    //TODO: agregar mas logica
-    
-    return tipo1;
+    return retTipo;
+}
+
+int typeDecorator(const int tipo) {
+	switch(tipo) {
+		case CTE_INTEGER:
+			return T_INTEGER;
+		case CTE_FLOAT:
+			return T_FLOAT;
+		case CTE_STRING:
+			return T_STRING;
+		case T_ID:
+			return T_ERROR;
+	}
+	return tipo;
 }
