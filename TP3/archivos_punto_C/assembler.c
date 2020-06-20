@@ -1,23 +1,52 @@
 #include "../archivos_punto_h/assembler.h"
 int cantAux = 0;
-int cantEtiqueta = 0;
 int tieneElse = 0;
 int condicionOR = 0;
 int esWhile = 0;
+
 int numEtiqWhile = 0;
+int numEtiqIf = 0;
+
 int pilaNumEtiqWhile [10];
-int topePila = 0;
+int pilaNumEtiqIf [10];
 
-void apilarNumEtiqWhile(int num) {
-    pilaNumEtiqWhile[topePila++] = num;
+int topePilaWhile = 0;
+int topePilaIf = 0;
+
+void apilarEtiqueta(const int tipoEtiqueta);
+
+int desapilarEtiqueta(const int tipoEtiqueta);
+
+int verTopePilaEtiqueta(const int tipoEtiqueta);
+
+void apilarEtiqueta(const int tipoEtiqueta) {
+    if (tipoEtiqueta == ETIQUETA_IF) {
+        numEtiqIf++;
+        pilaNumEtiqIf[topePilaIf++] = numEtiqIf;
+    }
+
+    if (tipoEtiqueta == ETIQUETA_WHILE) {
+        numEtiqWhile++;
+        pilaNumEtiqWhile[topePilaWhile++] = numEtiqWhile;
+    }
 }
 
-int desapilarNumEtiqWhile() {
-    return pilaNumEtiqWhile[--topePila];
+int desapilarEtiqueta(const int tipoEtiqueta) {
+    if (tipoEtiqueta == ETIQUETA_IF) {
+        return pilaNumEtiqIf[--topePilaIf];
+    }
+    if (tipoEtiqueta == ETIQUETA_WHILE) {
+        return pilaNumEtiqWhile[--topePilaWhile];
+    }
 }
 
-int verTopePilaNumEtiqWhile() {
-    return pilaNumEtiqWhile[topePila - 1];
+int verTopePilaEtiqueta(const int tipoEtiqueta) {
+    if (tipoEtiqueta == ETIQUETA_IF) {
+        return pilaNumEtiqIf[topePilaIf - 1];
+    }
+    if (tipoEtiqueta == ETIQUETA_WHILE) {
+        return pilaNumEtiqWhile[topePilaWhile - 1];
+    }
 }
 
 void generarAssembler(nodo * raiz) {
@@ -77,19 +106,20 @@ int generarInstrucciones(nodo * raiz) {
 		printf("Error al abrir el archivo instrucciones");
 		return 1;
 	}
-	recorreArbolAsm(fp, raiz, 0);
+	recorreArbolAsm(fp, raiz);
 	fclose(fp);
 	return 0;
 
 }
-void recorreArbolAsm(FILE * fp, nodo* raiz, int etiquetaActual) {
+void recorreArbolAsm(FILE * fp, nodo* raiz) {
     if (raiz != NULL) {
         int iff = 0;
         if(strcmp(raiz->dato, "IF") == 0) {
             tieneElse = 0;
             iff = 1;
             // pido nueva etiqueta porque estoy empezando a recorrer un IF
-            etiquetaActual = pedirNumEtiqueta();
+            apilarEtiqueta(ETIQUETA_IF);
+            
             if (strcmp(raiz->hijoDer->dato, "CUERPO") == 0) {
                 tieneElse = 1;
             }
@@ -101,51 +131,53 @@ void recorreArbolAsm(FILE * fp, nodo* raiz, int etiquetaActual) {
         //WHILE
         if(strcmp(raiz->dato, "WHILE") == 0) {
             esWhile = 1;
-            apilarNumEtiqWhile(numEtiqWhile++);
-            fprintf(fp, "condicionWhile%d:\n", verTopePilaNumEtiqWhile());
+            apilarEtiqueta(ETIQUETA_WHILE);
+            fprintf(fp, "condicionWhile%d:\n", verTopePilaEtiqueta(ETIQUETA_WHILE));
             if (strcmp(raiz->hijoIzq->dato, "OR") == 0) {
                 condicionOR = 1;
             }
         }
 
         // RECORRO LA IZQUIERDA
-        recorreArbolAsm(fp, raiz->hijoIzq, etiquetaActual);
+        recorreArbolAsm(fp, raiz->hijoIzq);
 
         printf("dato padre %s", raiz->dato);
 
         if(strcmp(raiz->dato, "IF") == 0) {
-            fprintf(fp, "startIf%d:\n", etiquetaActual);
+            fprintf(fp, "startIf%d:\n", verTopePilaEtiqueta(ETIQUETA_IF));
         }
 
         if(strcmp(raiz->dato, "CUERPO") == 0) {
-            fprintf(fp, "JMP endif%d\n", etiquetaActual);
-            fprintf(fp, "else%d:\n", etiquetaActual);
+            fprintf(fp, "JMP endif%d\n", verTopePilaEtiqueta(ETIQUETA_IF));
+            fprintf(fp, "else%d:\n", verTopePilaEtiqueta(ETIQUETA_IF));
         }
 
         if(strcmp(raiz->dato, "WHILE") == 0) {
-            fprintf(fp, "startWhile%d:\n", verTopePilaNumEtiqWhile());
+            fprintf(fp, "startWhile%d:\n", verTopePilaEtiqueta(ETIQUETA_WHILE));
             esWhile = 0; // No sería necesario la variable cambiarNombre
         }
         
         // RECORRO LA DERECHA
-        recorreArbolAsm(fp, raiz->hijoDer, etiquetaActual);
+        recorreArbolAsm(fp, raiz->hijoDer);
+        // PASE POR LA DERECHA
+
         if (iff == 1) {
-            fprintf(fp, "endif%d:\n", etiquetaActual);
+            fprintf(fp, "endif%d:\n", desapilarEtiqueta(ETIQUETA_IF));
         }
 
         //while 
         if(strcmp(raiz->dato, "WHILE") == 0) {
-            fprintf(fp, "JMP condicionWhile%d\n", verTopePilaNumEtiqWhile());
-            fprintf(fp, "endwhile%d:\n", desapilarNumEtiqWhile());
-            if (topePila == 0) { //pila vacia
+            fprintf(fp, "JMP condicionWhile%d\n", verTopePilaEtiqueta(ETIQUETA_WHILE));
+            fprintf(fp, "endwhile%d:\n", desapilarEtiqueta(ETIQUETA_WHILE));
+            if (topePilaWhile == 0) { //pila vacia
                 esWhile = 0;//termino el while
             }
         }
-
+        
         if (esHoja(raiz->hijoIzq) && esHoja(raiz->hijoDer)) {
             // soy nodo mas a la izquierda con dos hijos hojas
             printf("DATO2 : %s\n", raiz -> dato);
-            determinarOperacion(fp, raiz, etiquetaActual);
+            determinarOperacion(fp, raiz);
             
             // reduzco arbol
             raiz->hijoIzq = NULL;
@@ -154,7 +186,7 @@ void recorreArbolAsm(FILE * fp, nodo* raiz, int etiquetaActual) {
     }
 }
 
-int determinarOperacion(FILE * fp, nodo * raiz, int etiquetaActual) {
+int determinarOperacion(FILE * fp, nodo * raiz) {
    	printf("DATO : %s\n", raiz -> dato);
 
     if(esAritmetica(raiz->dato)) {
@@ -181,9 +213,9 @@ int determinarOperacion(FILE * fp, nodo * raiz, int etiquetaActual) {
         fprintf(fp, "fstsw ax\n");
         fprintf(fp, "sahf\n");
         if (esWhile)
-            fprintf(fp, "%s %s%d\n", obtenerInstruccionComparacion(raiz->dato), obtenerSalto(), verTopePilaNumEtiqWhile());
+            fprintf(fp, "%s %s%d\n", obtenerInstruccionComparacion(raiz->dato), obtenerSalto(), verTopePilaEtiqueta(ETIQUETA_WHILE));
         else
-            fprintf(fp, "%s %s%d\n", obtenerInstruccionComparacion(raiz->dato), obtenerSalto(), etiquetaActual);
+            fprintf(fp, "%s %s%d\n", obtenerInstruccionComparacion(raiz->dato), obtenerSalto(), verTopePilaEtiqueta(ETIQUETA_IF));
         return 0;
     }
 
@@ -201,13 +233,6 @@ int pedirAux() {
 
 int auxActual() {
     return cantAux;
-}
-
-int pedirNumEtiqueta() {
-    return ++cantEtiqueta;
-}
-int etiquetaActual() {
-    return cantEtiqueta;
 }
 
 int esAritmetica(const char *operador) {

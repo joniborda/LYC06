@@ -40,4 +40,7 @@ static const int resolucionTipos [4][4] =
 #define ARCHIVO_INSTRUCCIONES "intermedia.txt"
 #define ARCHIVO_LOG "compilador.log"
 
+#define ETIQUETA_IF 0
+#define ETIQUETA_WHILE 1
+
 #endif
