@@ -488,7 +488,7 @@ void printRule(const char *lhs, const char *rhs) {
     if (YYDEBUG) {
         char *regla = (char *) malloc(100);
         sprintf(regla, "%s -> %s", lhs, rhs);
-        printf("%s\n\n", regla);
+        printf("%s\n", regla);
         printLog(regla, "");
     }
     return;

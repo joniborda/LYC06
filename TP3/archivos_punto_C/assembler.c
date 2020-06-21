@@ -113,10 +113,12 @@ int generarInstrucciones(nodo * raiz) {
 }
 void recorreArbolAsm(FILE * fp, nodo* raiz) {
     if (raiz != NULL) {
-        int iff = 0;
+        int nodoActualIf = 0;
+        int nodoActualWhile = 0;
+
         if(strcmp(raiz->dato, "IF") == 0) {
             tieneElse = 0;
-            iff = 1;
+            nodoActualIf = 1;
             // pido nueva etiqueta porque estoy empezando a recorrer un IF
             apilarEtiqueta(ETIQUETA_IF);
             
@@ -130,6 +132,7 @@ void recorreArbolAsm(FILE * fp, nodo* raiz) {
 
         //WHILE
         if(strcmp(raiz->dato, "WHILE") == 0) {
+            nodoActualWhile = 1;
             esWhile = 1;
             apilarEtiqueta(ETIQUETA_WHILE);
             fprintf(fp, "condicionWhile%d:\n", verTopePilaEtiqueta(ETIQUETA_WHILE));
@@ -140,10 +143,11 @@ void recorreArbolAsm(FILE * fp, nodo* raiz) {
 
         // RECORRO LA IZQUIERDA
         recorreArbolAsm(fp, raiz->hijoIzq);
+        // PASE POR LA IZQUIERDA
 
         printf("dato padre %s", raiz->dato);
 
-        if(strcmp(raiz->dato, "IF") == 0) {
+        if(nodoActualIf) {
             fprintf(fp, "startIf%d:\n", verTopePilaEtiqueta(ETIQUETA_IF));
         }
 
@@ -152,7 +156,7 @@ void recorreArbolAsm(FILE * fp, nodo* raiz) {
             fprintf(fp, "else%d:\n", verTopePilaEtiqueta(ETIQUETA_IF));
         }
 
-        if(strcmp(raiz->dato, "WHILE") == 0) {
+        if(nodoActualWhile) {
             fprintf(fp, "startWhile%d:\n", verTopePilaEtiqueta(ETIQUETA_WHILE));
             esWhile = 0; // No sería necesario la variable cambiarNombre
         }
@@ -161,12 +165,12 @@ void recorreArbolAsm(FILE * fp, nodo* raiz) {
         recorreArbolAsm(fp, raiz->hijoDer);
         // PASE POR LA DERECHA
 
-        if (iff == 1) {
+        if (nodoActualIf) {
             fprintf(fp, "endif%d:\n", desapilarEtiqueta(ETIQUETA_IF));
         }
 
         //while 
-        if(strcmp(raiz->dato, "WHILE") == 0) {
+        if(nodoActualWhile) {
             fprintf(fp, "JMP condicionWhile%d\n", verTopePilaEtiqueta(ETIQUETA_WHILE));
             fprintf(fp, "endwhile%d:\n", desapilarEtiqueta(ETIQUETA_WHILE));
         }
