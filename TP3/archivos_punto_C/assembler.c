@@ -13,14 +13,6 @@ int pilaNumEtiqIf [10];
 int topePilaWhile = 0;
 int topePilaIf = 0;
 
-void apilarEtiqueta(const int tipoEtiqueta);
-
-int desapilarEtiqueta(const int tipoEtiqueta);
-
-int verTopePilaEtiqueta(const int tipoEtiqueta);
-
-char *determinarTipoCargaPila(const nodo * raiz, const nodo * hijo);
-
 void apilarEtiqueta(const int tipoEtiqueta) {
     if (tipoEtiqueta == ETIQUETA_IF) {
         numEtiqIf++;
@@ -147,8 +139,6 @@ void recorreArbolAsm(FILE * fp, nodo* raiz) {
         recorreArbolAsm(fp, raiz->hijoIzq);
         // PASE POR LA IZQUIERDA
 
-        printf("dato padre %s", raiz->dato);
-
         if(nodoActualIf) {
             fprintf(fp, "startIf%d:\n", verTopePilaEtiqueta(ETIQUETA_IF));
         }
@@ -179,7 +169,6 @@ void recorreArbolAsm(FILE * fp, nodo* raiz) {
         
         if (esHoja(raiz->hijoIzq) && esHoja(raiz->hijoDer)) {
             // soy nodo mas a la izquierda con dos hijos hojas
-            printf("DATO2 : %s\n", raiz -> dato);
             determinarOperacion(fp, raiz);
             
             // reduzco arbol
@@ -196,11 +185,11 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
             fprintf(fp, "MOV %s, %s\n", raiz->hijoIzq, raiz->hijoDer);
             return 0;
         } else {
-            fprintf(fp, "f%sld %s\n", determinarTipoCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq); //st0 = izq
-            fprintf(fp, "f%sld %s\n", determinarTipoCargaPila(raiz, raiz->hijoDer), raiz->hijoDer); //st0 = der st1 = izq
+            fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq); //st0 = izq
+            fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoDer), raiz->hijoDer); //st0 = der st1 = izq
             fprintf(fp, "%s\n", obtenerInstruccionAritmetica(raiz->dato));
-            fprintf(fp, "fstp @aux%d\n", pedirAux(raiz->tipo));
-            
+            fprintf(fp, "f%sstp @aux%d\n", determinarDescargaPila(raiz), pedirAux(raiz->tipo));
+
             // Guardo en el arbol el dato del resultado, si uso un aux
             sprintf(raiz->dato, "@aux%d", cantAux);
             return cantAux;
@@ -209,8 +198,8 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
 
     if(esComparacion(raiz->dato)) {
         // esto funciona para comparaciones simples
-        fprintf(fp, "f%sld %s\n", determinarTipoCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq); //st0 = izq
-        fprintf(fp, "f%sld %s\n", determinarTipoCargaPila(raiz, raiz->hijoDer), raiz->hijoDer); //st0 = der st1 = izq
+        fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq); //st0 = izq
+        fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoDer), raiz->hijoDer); //st0 = der st1 = izq
         fprintf(fp, "fxch\n");
         fprintf(fp, "fcom\n"); // compara ST0 con ST1"
         fprintf(fp, "fstsw ax\n");
@@ -230,8 +219,15 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
     return 0;
 }
 
-char *determinarTipoCargaPila(const nodo * raiz, const nodo * hijo) {
+char *determinarCargaPila(const nodo * raiz, const nodo * hijo) {
     if (typeDecorator(raiz->tipo) == T_FLOAT && typeDecorator(hijo->tipo) == T_INTEGER) {
+        return "i";
+    }
+    return "";
+}
+
+char *determinarDescargaPila(const nodo * raiz) {
+    if (typeDecorator(raiz->tipo) == T_INTEGER) {
         return "i";
     }
     return "";
