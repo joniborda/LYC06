@@ -199,8 +199,9 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
             fprintf(fp, "f%sld %s\n", determinarTipoCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq); //st0 = izq
             fprintf(fp, "f%sld %s\n", determinarTipoCargaPila(raiz, raiz->hijoDer), raiz->hijoDer); //st0 = der st1 = izq
             fprintf(fp, "%s\n", obtenerInstruccionAritmetica(raiz->dato));
-            fprintf(fp, "fstp @aux%d\n", pedirAux());
-            // Guardo en el arbola el dato del resultado, si uso un aux
+            fprintf(fp, "fstp @aux%d\n", pedirAux(raiz->tipo));
+            
+            // Guardo en el arbol el dato del resultado, si uso un aux
             sprintf(raiz->dato, "@aux%d", cantAux);
             return cantAux;
         }
@@ -236,8 +237,12 @@ char *determinarTipoCargaPila(const nodo * raiz, const nodo * hijo) {
     return "";
 }
 
-int pedirAux() {
-    return ++cantAux;
+int pedirAux(const int tipo) {
+    cantAux++;
+    char aux[10];
+    sprintf(aux, "@aux%d", cantAux);
+    tsInsertarToken(tipo, aux, "", 0);
+    return cantAux;
 }
 
 int auxActual() {

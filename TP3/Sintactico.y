@@ -121,8 +121,8 @@ program:
         printLog("\nCOMPILACION OK", "");
         escribirArbol(algortimoPtr);
         escribirGragh(algortimoPtr);
-        tsCrearArchivo();
         generarAssembler(algortimoPtr);
+        tsCrearArchivo();
     }
     ;
 
