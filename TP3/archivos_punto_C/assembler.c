@@ -19,6 +19,8 @@ int desapilarEtiqueta(const int tipoEtiqueta);
 
 int verTopePilaEtiqueta(const int tipoEtiqueta);
 
+char *determinarTipoCargaPila(const nodo * raiz, const nodo * hijo);
+
 void apilarEtiqueta(const int tipoEtiqueta) {
     if (tipoEtiqueta == ETIQUETA_IF) {
         numEtiqIf++;
@@ -188,15 +190,14 @@ void recorreArbolAsm(FILE * fp, nodo* raiz) {
 }
 
 int determinarOperacion(FILE * fp, nodo * raiz) {
-   	printf("DATO : %s\n", raiz -> dato);
 
     if(esAritmetica(raiz->dato)) {
         if(strcmp(raiz->dato, ":=") == 0) {
             fprintf(fp, "MOV %s, %s\n", raiz->hijoIzq, raiz->hijoDer);
             return 0;
         } else {
-            fprintf(fp, "fld %s\n", raiz->hijoIzq);
-            fprintf(fp, "fld %s\n", raiz->hijoDer);
+            fprintf(fp, "f%sld %s\n", determinarTipoCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq); //st0 = izq
+            fprintf(fp, "f%sld %s\n", determinarTipoCargaPila(raiz, raiz->hijoDer), raiz->hijoDer); //st0 = der st1 = izq
             fprintf(fp, "%s\n", obtenerInstruccionAritmetica(raiz->dato));
             fprintf(fp, "fstp @aux%d\n", pedirAux());
             // Guardo en el arbola el dato del resultado, si uso un aux
@@ -207,8 +208,8 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
 
     if(esComparacion(raiz->dato)) {
         // esto funciona para comparaciones simples
-        fprintf(fp, "fld %s\n", raiz->hijoIzq); //st0 = izq
-        fprintf(fp, "fld %s\n", raiz->hijoDer); //st0 = der st1 = izq
+        fprintf(fp, "f%sld %s\n", determinarTipoCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq); //st0 = izq
+        fprintf(fp, "f%sld %s\n", determinarTipoCargaPila(raiz, raiz->hijoDer), raiz->hijoDer); //st0 = der st1 = izq
         fprintf(fp, "fxch\n");
         fprintf(fp, "fcom\n"); // compara ST0 con ST1"
         fprintf(fp, "fstsw ax\n");
@@ -226,6 +227,13 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
     }
 
     return 0;
+}
+
+char *determinarTipoCargaPila(const nodo * raiz, const nodo * hijo) {
+    if (typeDecorator(raiz->tipo) == T_FLOAT && typeDecorator(hijo->tipo) == T_INTEGER) {
+        return "i";
+    }
+    return "";
 }
 
 int pedirAux() {
