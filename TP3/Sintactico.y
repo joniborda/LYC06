@@ -289,8 +289,8 @@ comparacion:
                 yyerror("Tipo de datos no compatible (Expresion real)");
             }
             int tipo3 = tsObtenerTipo($3);
-            nodo *nodo1 = desapilar();
             nodo *nodo2 = desapilar();
+            nodo *nodo1 = desapilar();
             comparacionPtr = crearNodo(
                 "AND", 
                 crearNodo("=>", crearHoja($3, tipo3), nodo1, resolverTipo(tipo3, nodo1->tipo)), 
@@ -302,8 +302,8 @@ comparacion:
         }
     | expresion comparador expresion { 
         validarComparacion(); 
-        nodo *nodo1 = desapilar();
         nodo *nodo2 = desapilar();
+        nodo *nodo1 = desapilar();
             
         comparacionPtr = crearNodo(
             comparadorPtr->dato, 
