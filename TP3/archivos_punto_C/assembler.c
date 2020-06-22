@@ -44,7 +44,7 @@ int verTopePilaEtiqueta(const int tipoEtiqueta) {
 }
 
 void generarAssembler(nodo * raiz) {
-	if (/*generarHeader()*/ 0 == 1) {
+	if (generarHeader() == 1) {
 		printf("Error al generar el assembler");
 		return;
 	}
@@ -58,6 +58,13 @@ void generarAssembler(nodo * raiz) {
 		printf("Error al generar el assembler");
 		return;
 	}
+
+    if (generarFooter() == 1) {
+		printf("Error al generar el assembler");
+		return;
+	}
+
+
 }
 
 int generarHeader() {
@@ -99,6 +106,22 @@ int generarData() {
     return 0;
 }
 
+int generarFooter() {
+	FILE * fp = fopen("./assembler/footer.txt", "w");
+	if (fp == NULL) {
+		printf("Error al abrir el archivo fotter");
+		return 1;
+	}
+
+    fprintf(fp, "ffree\n");
+	fprintf(fp, "mov ax, 4c00h\n");
+    fprintf(fp, "int 21h\n");
+    fprintf(fp, "End\n"); 
+
+    fclose(fp);
+    return 0;
+}
+
 char *getNombre(const int i) {
     if (tablaSimbolos[i].tipo == T_INTEGER || 
         tablaSimbolos[i].tipo == T_FLOAT ||
@@ -127,6 +150,7 @@ int generarInstrucciones(nodo * raiz) {
 	return 0;
 
 }
+
 void recorreArbolAsm(FILE * fp, nodo* raiz) {
     if (raiz != NULL) {
         int nodoActualIf = 0;

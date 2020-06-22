@@ -10,6 +10,7 @@ char *determinarDescargaPila(const nodo *);
 void generarAssembler(nodo *);
 int generarHeader();
 int generarData();
+int generarFooter();
 int generarInstrucciones(nodo *);
 void recorreArbolAsm(FILE *, nodo *);
 int determinarOperacion(FILE * , nodo *);
