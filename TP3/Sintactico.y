@@ -697,7 +697,10 @@ nodo * semanticaFactorial(nodo* exp) {
         nroMaximo--;
     }
     */
-    
+    if (typeDecorator(exp->tipo) != T_INTEGER) {
+        yyerror("Syntax error en factorial.\n");
+    }
+
     char nomVarFact[10];
     sprintf(nomVarFact, "@SUM%d", cantVarFact);
     cantVarFact++;
