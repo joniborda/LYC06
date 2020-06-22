@@ -702,22 +702,22 @@ nodo * semanticaFactorial(nodo* exp) {
     sprintf(nomVarFact, "@SUM%d", cantVarFact);
     cantVarFact++;
 
-    nodo* numeroFactorial = crearNodo(":=", crearHoja("@NUMFACT", CTE_INTEGER), exp, exp->tipo);
+    nodo* numeroFactorial = crearNodo(":=", crearHoja("@NUMFACT", T_INTEGER), exp, exp->tipo);
     nodo* decrementado = crearNodo(
         ":=", 
-        crearHoja("@NUMFACT", CTE_INTEGER), 
+        crearHoja("@NUMFACT", T_INTEGER), 
         crearNodo(
             "-", 
             crearHoja("@NUMFACT", CTE_STRING), 
-            crearHoja(aConstante("1"), CTE_INTEGER),
-            CTE_INTEGER
+            crearHoja(aConstante("1"), T_INTEGER),
+            T_INTEGER
         ),
-        CTE_INTEGER
+        T_INTEGER
     );
-    nodo* mulFact = crearNodo(":=", crearHoja(nomVarFact, exp->tipo), crearNodo("*", crearHoja(nomVarFact, exp->tipo), crearHoja("@NUMFACT", CTE_INTEGER), exp->tipo), exp->tipo);
+    nodo* mulFact = crearNodo(":=", crearHoja(nomVarFact, T_INTEGER), crearNodo("*", crearHoja(nomVarFact, T_INTEGER), crearHoja("@NUMFACT", T_INTEGER), exp->tipo), exp->tipo);
     nodo* cuerpoWhileFact = crearNodo("CUERPO_WHILE", mulFact, decrementado, CTE_STRING);
-    nodo* whileFact = crearNodo("WHILE", crearNodo(">", crearHoja("@NUMFACT", CTE_INTEGER), crearHoja(aConstante("1"), CTE_INTEGER), CTE_INTEGER), cuerpoWhileFact, exp->tipo);
-    nodo* sumaFact = crearNodo(":=", crearHoja(nomVarFact, exp->tipo), crearHoja(aConstante("1"), CTE_INTEGER), exp->tipo);
+    nodo* whileFact = crearNodo("WHILE", crearNodo(">", crearHoja("@NUMFACT", T_INTEGER), crearHoja(aConstante("1"), CTE_INTEGER), CTE_INTEGER), cuerpoWhileFact, exp->tipo);
+    nodo* sumaFact = crearNodo(":=", crearHoja(nomVarFact, T_INTEGER), crearHoja(aConstante("1"), CTE_INTEGER), exp->tipo);
     nodo* progFactorial = crearNodo("PROGRAMA", sumaFact , whileFact, exp->tipo);
     return crearNodo(nomVarFact, numeroFactorial, progFactorial, exp->tipo);
 }

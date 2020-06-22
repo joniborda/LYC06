@@ -198,9 +198,8 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
 
     if(esComparacion(raiz->dato)) {
         // esto funciona para comparaciones simples
-        fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq); //st0 = izq
-        fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoDer), raiz->hijoDer); //st0 = der st1 = izq
-        fprintf(fp, "fxch\n");
+        fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoDer), raiz->hijoDer); //st0 = der
+        fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq); //st0 = izq  st1 = der
         fprintf(fp, "fcom\n"); // compara ST0 con ST1"
         fprintf(fp, "fstsw ax\n");
         fprintf(fp, "sahf\n");
@@ -221,6 +220,7 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
 
 char *determinarCargaPila(const nodo * raiz, const nodo * hijo) {
     if (typeDecorator(raiz->tipo) == T_FLOAT && typeDecorator(hijo->tipo) == T_INTEGER) {
+        // TODO: Ver si solo hay que verificar que el hijo sea T_INTEGER
         return "i";
     }
     return "";
@@ -237,7 +237,7 @@ int pedirAux(const int tipo) {
     cantAux++;
     char aux[10];
     sprintf(aux, "@aux%d", cantAux);
-    tsInsertarToken(tipo, aux, "", 0);
+    tsInsertarToken(typeDecorator(tipo), aux, "", 0);
     return cantAux;
 }
 
