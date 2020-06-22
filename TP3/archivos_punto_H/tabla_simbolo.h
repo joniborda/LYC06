@@ -13,6 +13,7 @@ struct struct_tablaSimbolos {
     char valor[100];
     char longitud[100];
 };
+int getPosicionTS();
 
 struct struct_tablaSimbolos tablaSimbolos[1000];
 

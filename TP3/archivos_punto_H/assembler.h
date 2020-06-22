@@ -18,5 +18,6 @@ int esComparacion(const char *);
 char* obtenerInstruccionAritmetica(const char *);
 char* obtenerInstruccionComparacion(const char *);
 char* obtenerSalto();
-
+char * verSiVaInterrogacion(char *);
+char *getNombre(const int i);
 #endif

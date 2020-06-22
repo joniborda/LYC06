@@ -2,6 +2,10 @@
 
 int posicion_en_ts = 0; // Incremento Longitud en la estructura tabla de simbolos
 
+int getPosicionTS() {
+	return posicion_en_ts;
+}
+
 void tsInsertarToken(int tipo, char *nombre, char *valor, int longitud) {
 	int i;
 

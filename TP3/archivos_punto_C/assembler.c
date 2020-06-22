@@ -49,14 +49,14 @@ void generarAssembler(nodo * raiz) {
 		return;
 	}
 
-	if (/*generarData()*/ 0 == 1) {
-		printf("Error al generar el assembler");
-		return;
-	}
-
 	if (generarInstrucciones(raiz) == 1) {
 		printf("Error al generar el assembler");
 		return;	
+	}
+
+	if (generarData() == 1) {
+		printf("Error al generar el assembler");
+		return;
 	}
 }
 
@@ -89,9 +89,31 @@ int generarData() {
     fprintf(fp, "\tMAXTEXTSIZE equ %d\n", 200);
 
     //Aca va la tabla de simbolo con todos los auxiliares
+    int i;
+    int a = getPosicionTS();
+    for (i = 0; i < a; i++) {
+        fprintf(fp, "%-32s\tdd\t%s\n", getNombre(i), verSiVaInterrogacion(tablaSimbolos[i].valor));
+    }
 
     fclose(fp);
     return 0;
+}
+
+char *getNombre(const int i) {
+    if (tablaSimbolos[i].tipo == T_INTEGER || 
+        tablaSimbolos[i].tipo == T_FLOAT ||
+        tablaSimbolos[i].tipo == T_STRING
+    ) {
+        return tablaSimbolos[i].nombre;
+    }
+    return aConstante(tablaSimbolos[i].nombre);
+}
+
+char * verSiVaInterrogacion(char *valor) {
+    if (strcmp(valor, "") == 0) {
+        return "?";
+    }
+    return valor;
 }
 
 int generarInstrucciones(nodo * raiz) {
