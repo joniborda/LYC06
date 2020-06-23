@@ -3,4 +3,7 @@ DEFVAR
 	STRING : var_string
 	FLOAT : fl
 ENDVAR
+b := 33;
+a:= b * 3;
+fl := 2.3 + 3.5;
 var_string := "algo";

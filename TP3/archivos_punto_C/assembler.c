@@ -72,58 +72,36 @@ void generarAssembler(nodo * raiz) {
 
 int generarArchivoAssemblerFinal() {
     FILE * fpFinal = fopen("./assembler/final.asm", "w");
+
     char buffer[100];
-	if (fpFinal == NULL) {
+	
+    if (fpFinal == NULL) {
 		printf("Error al abrir el archivo final.asm");
 		return 1;
 	}
 
-    FILE * fpHeader = fopen("./assembler/header.txt", "r");
-	if (fpHeader == NULL) {
-		printf("Error al abrir el archivo final.asm");
-		return 1;
-	}
-
-    while(fgets(buffer, sizeof(buffer), fpHeader)) {
-        fprintf(fpFinal, "%s", buffer);
-    }
-    fclose(fpHeader);
-
-    FILE * fpData = fopen("./assembler/data.txt", "r");
-	if (fpData == NULL) {
-		printf("Error al abrir el archivo final.asm");
-		return 1;
-	}
-
-    while(fgets(buffer, sizeof(buffer), fpData)) {
-        fprintf(fpFinal, "%s", buffer);
-    }
-    fclose(fpData);
-
-    FILE * fpInstruccion = fopen("./assembler/instrucciones.txt", "r");
-	if (fpInstruccion == NULL) {
-		printf("Error al abrir el archivo final.asm");
-		return 1;
-	}
-
-    while(fgets(buffer, sizeof(buffer), fpInstruccion)) {
-        fprintf(fpFinal, "%s", buffer);
-    }
-    fclose(fpInstruccion);
-
-    FILE * fpFooter = fopen("./assembler/footer.txt", "r");
-	if (fpFooter == NULL) {
-		printf("Error al abrir el archivo final.asm");
-		return 1;
-	}
-
-    while(fgets(buffer, sizeof(buffer), fpFooter)) {
-        fprintf(fpFinal, "%s", buffer);
-    }
-    fclose(fpFooter);
+    setFile(fpFinal, "./assembler/header.txt", buffer);
+    setFile(fpFinal, "./assembler/data.txt", buffer);
+    setFile(fpFinal, "./assembler/instrucciones.txt", buffer);
+    setFile(fpFinal, "./assembler/footer.txt", buffer);
 
     fclose(fpFinal);
     return 0;
+}
+
+int setFile(FILE* fpFinal, char * nameFile, char* buffer){
+    FILE * file = fopen( nameFile, "r");
+
+	if (file == NULL) {
+		printf("Error al abrir el archivo final.asm");
+		return 1;
+	}
+
+    while(fgets(buffer, sizeof(buffer), file)) {
+        fprintf(fpFinal, "%s", buffer);
+    }
+
+    fclose(file);
 }
 
 int generarHeader() {
@@ -149,7 +127,7 @@ int generarData() {
 		return 1;
 	}
 
-	fprintf(fp, "\t.DATA");    
+	fprintf(fp, "\t.DATA\n");    
     fprintf(fp, "\tTRUE equ 1\n");
     fprintf(fp, "\tFALSE equ 0\n");
     fprintf(fp, "\tMAXTEXTSIZE equ %d\n", 200);

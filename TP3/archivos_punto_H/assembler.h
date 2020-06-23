@@ -21,4 +21,5 @@ char* obtenerInstruccionComparacion(const char *);
 char* obtenerSalto();
 char * verSiVaInterrogacion(char *);
 char *getNombre(const int i);
+int setFile(FILE*, char *, char*);
 #endif
