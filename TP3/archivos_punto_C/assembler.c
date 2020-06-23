@@ -93,7 +93,7 @@ int setFile(FILE* fpFinal, char * nameFile, char* buffer){
     FILE * file = fopen( nameFile, "r");
 
 	if (file == NULL) {
-		printf("Error al abrir el archivo final.asm");
+		printf("Error al abrir el archivo %s", nameFile);
 		return 1;
 	}
 
@@ -304,7 +304,7 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
 }
 
 char *determinarCargaPila(const nodo * raiz, const nodo * hijo) {
-    if (typeDecorator(raiz->tipo) == T_FLOAT && typeDecorator(hijo->tipo) == T_INTEGER) {
+    if (/*typeDecorator(raiz->tipo) == T_FLOAT &&*/ typeDecorator(hijo->tipo) == T_INTEGER) {
         // TODO: Ver si solo hay que verificar que el hijo sea T_INTEGER
         return "i";
     }
