@@ -8,14 +8,23 @@ INCLUDE number.asm
 	MAXTEXTSIZE equ 200
 a                               	dd	?
 b                               	dd	?
-_1                              	dd	1
-_2                              	dd	2
-@aux1                           	dd	?
-fld _1
-fld _2
-fmul
-fistp @aux1
-MOV a, @aux1
+c                               	dd	?
+d                               	dd	?
+e                               	dd	?
+f                               	dd	?
+var_string                      	dd	?
+fl                              	dd	?
+_algo                           	dd	algo
+
+.CODE
+
+MOV AX,@DATA
+MOV DS,AX
+MOV es,ax
+FINIT
+FFREE
+
+MOV var_string, _algo
 ffree
 mov ax, 4c00h
 int 21h

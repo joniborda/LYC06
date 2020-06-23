@@ -4,16 +4,3 @@ DEFVAR
 	FLOAT : fl
 ENDVAR
 var_string := "algo";
-a := 3 + 1 + 2;
-IF (1 > 2.0 AND 4.0 == 8) {
-	a := 3;
-	WHILE (4 <= 5 OR 5 == 5) {
-		b := 6;
-		a := 3;
-		IF (NOT 1 < 2) {
-			e := 1;
-		}
-	}
-} ELSE {
-	c := 7;
-}

@@ -204,6 +204,8 @@ int generarInstrucciones(nodo * raiz) {
 		printf("Error al abrir el archivo instrucciones");
 		return 1;
 	}
+
+    fprintf(fp, "\n.CODE\n\nMOV AX,@DATA\nMOV DS,AX\nMOV es,ax\nFINIT\nFFREE\n\n");
 	recorreArbolAsm(fp, raiz);
 	fclose(fp);
 	return 0;
