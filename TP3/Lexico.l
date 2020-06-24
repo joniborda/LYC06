@@ -119,7 +119,13 @@ void enteroFuncion() {
 
 void floatFuncion() {
 	float aux = atof(yytext);
-	yylval.str_val = strdup(yytext);
+	char fString [50];
+	strcpy(fString, strdup(yytext));
+	char* ptr = strchr(fString, '.');
+	if (ptr != NULL) {
+		*ptr = '_';
+	}
+	yylval.str_val = strdup(fString);
 
 	//Ver tema del limite máximo, debido a que trunca.
 	if(log2f(atof(yytext)) > 32) {
@@ -129,5 +135,5 @@ void floatFuncion() {
 	if (imprimir) 
 		printf("Flex Float: %s (%f)\n", yytext, aux);
 	
-	tsInsertarToken(CTE_FLOAT, strdup(yytext), yytext, 0);
+	tsInsertarToken(CTE_FLOAT, strdup(fString), yytext, 0);
 }

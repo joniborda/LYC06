@@ -3,6 +3,7 @@ DEFVAR
 	STRING : var_string
 	FLOAT : fl
 ENDVAR
+fl := 239;
 b := 33;
 a:= b * 3;
 IF (5 < a) {
