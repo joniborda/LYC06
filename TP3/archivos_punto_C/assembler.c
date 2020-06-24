@@ -13,6 +13,8 @@ int pilaNumEtiqIf [10];
 int topePilaWhile = 0;
 int topePilaIf = 0;
 
+char instruccionDisplay[60];
+
 void apilarEtiqueta(const int tipoEtiqueta) {
     if (tipoEtiqueta == ETIQUETA_IF) {
         numEtiqIf++;
@@ -153,7 +155,7 @@ int generarFooter() {
     fprintf(fp, "ffree\n");
 	fprintf(fp, "mov ax, 4c00h\n");
     fprintf(fp, "int 21h\n");
-    fprintf(fp, "End\n"); 
+    fprintf(fp, "End START\n"); 
 
     fclose(fp);
     return 0;
@@ -183,7 +185,7 @@ int generarInstrucciones(nodo * raiz) {
 		return 1;
 	}
 
-    fprintf(fp, "\n.CODE\n\nMOV AX,@DATA\nMOV DS,AX\nMOV es,ax\nFINIT\nFFREE\n\n");
+    fprintf(fp, "\n.CODE\n\nSTART:\nMOV AX,@DATA\nMOV DS,AX\nMOV es,ax\nFINIT\nFFREE\n\n");
 	recorreArbolAsm(fp, raiz);
 	fclose(fp);
 	return 0;
@@ -267,7 +269,11 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
 
     if(esAritmetica(raiz->dato)) {
         if(strcmp(raiz->dato, ":=") == 0) {
-            fprintf(fp, "MOV %s, %s\n", raiz->hijoIzq, raiz->hijoDer);
+            fprintf(fp, "MOV eax, %s\n", raiz->hijoDer);
+            fprintf(fp, "MOV %s, eax\n", raiz->hijoIzq);
+            if (strcmp(raiz->hijoIzq->dato, "@STDOUT") == 0) {                
+                fprintf(fp, "%s\n", obtenerInstruccionDisplay(raiz->hijoIzq->dato));
+            }
             return 0;
         } else {
             fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq); //st0 = izq
@@ -407,4 +413,19 @@ char* obtenerSalto() {
             return "endif";
         }
     }
+}
+
+char* obtenerInstruccionDisplay(char* nombreDato) {
+    
+    if (tsObtenerTipo(nombreDato) == T_INTEGER ||
+        tsObtenerTipo(nombreDato) == CTE_INTEGER) {
+        sprintf(instruccionDisplay, "DisplayInteger %s", nombreDato);
+    } else if (tsObtenerTipo(nombreDato) == T_FLOAT ||
+               tsObtenerTipo(nombreDato) == CTE_FLOAT) {
+        sprintf(instruccionDisplay, "DisplayFloat %s,2", nombreDato);
+    } else if (tsObtenerTipo(nombreDato) == T_STRING ||
+               tsObtenerTipo(nombreDato) == CTE_STRING) {
+        sprintf(instruccionDisplay, "displayString %s", nombreDato);
+    }
+    return instruccionDisplay;
 }

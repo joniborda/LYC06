@@ -5,5 +5,14 @@ DEFVAR
 ENDVAR
 b := 33;
 a:= b * 3;
-fl := 2.3 + 3.5;
-var_string := "algo";
+IF (5 < a) {
+	c:= 1111;
+} ELSE {
+	c := 000;
+}
+DISPLAY c;
+c:= 0;
+WHILE (c <= 6 AND c >= 1) {
+	c:= c+1;
+}
+DISPLAY c;
