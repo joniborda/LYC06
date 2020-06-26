@@ -73,7 +73,7 @@ void generarAssembler(nodo * raiz) {
 }
 
 int generarArchivoAssemblerFinal() {
-    FILE * fpFinal = fopen("./assembler/final.asm", "w");
+    FILE * fpFinal = fopen("./assembler/Final.asm", "w");
 
     char buffer[100];
 	
@@ -138,7 +138,11 @@ int generarData() {
     int i;
     int a = getPosicionTS();
     for (i = 0; i < a; i++) {
-        fprintf(fp, "%-32s\tdd\t%s\n", getNombre(i), verSiVaInterrogacion(tablaSimbolos[i].valor));
+        if (tablaSimbolos[i].tipo == CTE_STRING)
+            fprintf(fp, "%-32s\tdb\t%s,'$', %s dup (?)\n", getNombre(i), tablaSimbolos[i].valor,
+                    tablaSimbolos[i].longitud);
+        else
+            fprintf(fp, "%-32s\tdd\t%s\n", getNombre(i), verSiVaInterrogacion(tablaSimbolos[i].valor));
     }
 
     fclose(fp);

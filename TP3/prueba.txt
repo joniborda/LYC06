@@ -3,7 +3,8 @@ DEFVAR
 	STRING : var_string
 	FLOAT : fl
 ENDVAR
-fl := 239;
+var_string := "Soy un string";
+fl := 2.39;
 b := 33;
 a:= b * 3;
 IF (5 < a) {

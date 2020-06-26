@@ -15,7 +15,8 @@ e                               	dd	?
 f                               	dd	?
 var_string                      	dd	?
 fl                              	dd	?
-_239                            	dd	239
+_Soy_un_string                  	db	"Soy un string",'$', 13 dup (?)
+_2_39                           	dd	2.39
 _33                             	dd	33
 _3                              	dd	3
 _5                              	dd	5
@@ -37,7 +38,9 @@ MOV es,ax
 FINIT
 FFREE
 
-MOV eax, _239
+MOV eax, _Soy_un_string
+MOV var_string, eax
+MOV eax, _2_39
 MOV fl, eax
 MOV eax, _33
 MOV b, eax
