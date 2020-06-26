@@ -89,13 +89,18 @@ void textoFuncion() {
 	char* subBuff = (char *) malloc(longitud + 1);
 	strncpy(subBuff, yytext+1, longitud);
 	subBuff[longitud] = '\0';
+    char* ptr = strchr(subBuff, ' ');
+    while (ptr != NULL) {
+        *ptr = '_';
+        ptr = strchr(subBuff, ' ');
+    }
 	yylval.str_val = strdup(subBuff);
 	if (strlen(subBuff) > LIMITE_STR) {
 		printf("Error: El string supero los 30 caracteres\n\tvariable: %s", yytext);
 		exit(1);
 	}
 	if (imprimir) printf("Flex: String (%s)\n", subBuff);
-	tsInsertarToken(CTE_STRING, yylval.str_val, subBuff, strlen(subBuff));
+	tsInsertarToken(CTE_STRING, yylval.str_val, strdup(yytext), strlen(subBuff));
 }
 
 void idFuncion() {
