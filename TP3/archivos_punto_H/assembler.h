@@ -22,5 +22,5 @@ char* obtenerSalto();
 char * verSiVaInterrogacion(char *);
 char *getNombre(const int i);
 int setFile(FILE*, char *, char*);
-char* obtenerInstruccionDisplay(char*);
+char* obtenerInstruccionDisplay(nodo *);
 #endif

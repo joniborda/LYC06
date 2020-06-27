@@ -276,7 +276,7 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
             fprintf(fp, "MOV eax, %s\n", raiz->hijoDer);
             fprintf(fp, "MOV %s, eax\n", raiz->hijoIzq);
             if (strcmp(raiz->hijoIzq->dato, "@STDOUT") == 0) {                
-                fprintf(fp, "%s\n", obtenerInstruccionDisplay(raiz->hijoIzq->dato));
+                fprintf(fp, "%s\n", obtenerInstruccionDisplay(raiz->hijoIzq));
             }
             return 0;
         } else {
@@ -419,17 +419,19 @@ char* obtenerSalto() {
     }
 }
 
-char* obtenerInstruccionDisplay(char* nombreDato) {
+char* obtenerInstruccionDisplay(nodo* nodo) {
     
-    if (tsObtenerTipo(nombreDato) == T_INTEGER ||
-        tsObtenerTipo(nombreDato) == CTE_INTEGER) {
-        sprintf(instruccionDisplay, "DisplayInteger %s", nombreDato);
-    } else if (tsObtenerTipo(nombreDato) == T_FLOAT ||
-               tsObtenerTipo(nombreDato) == CTE_FLOAT) {
-        sprintf(instruccionDisplay, "DisplayFloat %s,2", nombreDato);
-    } else if (tsObtenerTipo(nombreDato) == T_STRING ||
-               tsObtenerTipo(nombreDato) == CTE_STRING) {
-        sprintf(instruccionDisplay, "displayString %s", nombreDato);
+    int tipo = nodo->tipo;
+
+    if (tipo == T_INTEGER ||
+        tipo == CTE_INTEGER) {
+        sprintf(instruccionDisplay, "DisplayInteger %s", nodo);
+    } else if (tipo == T_FLOAT ||
+               tipo == CTE_FLOAT) {
+        sprintf(instruccionDisplay, "DisplayFloat %s,2", nodo);
+    } else if (tipo == T_STRING ||
+               tipo == CTE_STRING) {
+        sprintf(instruccionDisplay, "displayString %s", nodo);
     }
     return instruccionDisplay;
 }

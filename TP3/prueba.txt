@@ -3,18 +3,8 @@ DEFVAR
 	STRING : var_string
 	FLOAT : fl
 ENDVAR
-var_string := "Soy un string";
+
 fl := 2.39;
 b := 33;
-a:= b * 3;
-IF (5 < a) {
-	c:= 1111;
-} ELSE {
-	c := 000;
-}
-DISPLAY c;
-c:= 0;
-WHILE (c <= 6 AND c >= 1) {
-	c:= c+1;
-}
-DISPLAY c;
+DISPLAY fl;
+DISPLAY b;
