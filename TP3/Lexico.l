@@ -126,6 +126,7 @@ void floatFuncion() {
 	float aux = atof(yytext);
 	char fString [50];
 	strcpy(fString, strdup(yytext));
+	// Reemplaza el punto por un guion bajo
 	char* ptr = strchr(fString, '.');
 	if (ptr != NULL) {
 		*ptr = '_';
