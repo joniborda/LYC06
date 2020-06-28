@@ -89,10 +89,12 @@ void textoFuncion() {
 	char* subBuff = (char *) malloc(longitud + 1);
 	strncpy(subBuff, yytext+1, longitud);
 	subBuff[longitud] = '\0';
-    char* ptr = strchr(subBuff, ' ');
-    while (ptr != NULL) {
-        *ptr = '_';
-        ptr = strchr(subBuff, ' ');
+
+	// Reemplaza cada espacio por un guion bajo
+    char* ptrEspacio = strchr(subBuff, ' ');
+    while (ptrEspacio != NULL) {
+        *ptrEspacio = '_';
+        ptrEspacio = strchr(subBuff, ' ');
     }
 	yylval.str_val = strdup(subBuff);
 	if (strlen(subBuff) > LIMITE_STR) {
@@ -127,9 +129,9 @@ void floatFuncion() {
 	char fString [50];
 	strcpy(fString, strdup(yytext));
 	// Reemplaza el punto por un guion bajo
-	char* ptr = strchr(fString, '.');
-	if (ptr != NULL) {
-		*ptr = '_';
+	char* ptrPunto = strchr(fString, '.');
+	if (ptrPunto != NULL) {
+		*ptrPunto = '_';
 	}
 	yylval.str_val = strdup(fString);
 
