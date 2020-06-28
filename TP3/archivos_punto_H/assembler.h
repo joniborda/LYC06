@@ -23,4 +23,5 @@ char * verSiVaInterrogacion(char *);
 char *getNombre(const int i);
 int setFile(FILE*, char *, char*);
 char* obtenerInstruccionDisplay(nodo *);
+char* obtenerInstruccionGet(nodo*);
 #endif

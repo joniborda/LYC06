@@ -279,6 +279,10 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
                 fprintf(fp, "%s\n", obtenerInstruccionDisplay(raiz->hijoIzq));
                 fprintf(fp, "newLine 1\n");
             }
+            if (strcmp(raiz->hijoDer->dato, "@STDIN") == 0) {
+                fprintf(fp, "%s %s\n", obtenerInstruccionGet(raiz->hijoIzq), raiz->hijoIzq->dato);
+                fprintf(fp, "newLine 1\n");
+            }
             return 0;
         } else {
             fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq); //st0 = izq
@@ -435,4 +439,13 @@ char* obtenerInstruccionDisplay(nodo* nodo) {
         sprintf(instruccionDisplay, "displayString %s", nodo);
     }
     return instruccionDisplay;
+}
+
+char* obtenerInstruccionGet(nodo* nodo) {
+    if (nodo->tipo == T_INTEGER)
+        return "GetInteger";
+    if (nodo->tipo == T_FLOAT)
+        return "GetFloat";
+    if (nodo->tipo == T_STRING)
+        return "getString";
 }
