@@ -269,13 +269,12 @@ void recorreArbolAsm(FILE * fp, nodo* raiz) {
     }
 }
 
-int determinarOperacion(FILE * fp, nodo * raiz) {
+void determinarOperacion(FILE * fp, nodo * raiz) {
 
     if(esAritmetica(raiz->dato)) {
         if(strcmp(raiz->dato, ":=") == 0) {
             fprintf(fp, "MOV eax, %s\n", raiz->hijoDer);
             fprintf(fp, "MOV %s, eax\n", raiz->hijoIzq);
-            return 0;
         } else {
             fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq); //st0 = izq
             fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoDer), raiz->hijoDer); //st0 = der st1 = izq
@@ -284,7 +283,6 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
 
             // Guardo en el arbol el dato del resultado, si uso un aux
             sprintf(raiz->dato, "@aux%d", cantAux);
-            return cantAux;
         }
     }
 
@@ -299,21 +297,17 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
             fprintf(fp, "%s %s%d\n", obtenerInstruccionComparacion(raiz->dato), obtenerSalto(), verTopePilaEtiqueta(ETIQUETA_WHILE));
         else
             fprintf(fp, "%s %s%d\n", obtenerInstruccionComparacion(raiz->dato), obtenerSalto(), verTopePilaEtiqueta(ETIQUETA_IF));
-        return 0;
     }
 
     if(strcmp(raiz->dato, "GET") == 0) {
         fprintf(fp, "%s %s\n", obtenerInstruccionGet(raiz->hijoIzq), raiz->hijoIzq->dato);
-        return 0;
     }
 
     if(strcmp(raiz->dato, "DISPLAY") == 0) {
         fprintf(fp, "%s\n", obtenerInstruccionDisplay(raiz->hijoDer));
         fprintf(fp, "newLine 1\n");
-        return 0;
     }
 
-    return 0;
 }
 
 char *determinarCargaPila(const nodo * raiz, const nodo * hijo) {

@@ -13,7 +13,7 @@ int generarData();
 int generarFooter();
 int generarInstrucciones(nodo *);
 void recorreArbolAsm(FILE *, nodo *);
-int determinarOperacion(FILE * , nodo *);
+void determinarOperacion(FILE * , nodo *);
 int esAritmetica(const char *);
 int esComparacion(const char *);
 char* obtenerInstruccionAritmetica(const char *);
