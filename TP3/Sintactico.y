@@ -711,12 +711,15 @@ nodo * semanticaFactorial(nodo* exp) {
         crearHoja("@NUMFACT", T_INTEGER), 
         crearNodo(
             "-", 
-            crearHoja("@NUMFACT", CTE_STRING), 
+            crearHoja("@NUMFACT", T_INTEGER), 
             crearHoja(aConstante("1"), T_INTEGER),
             T_INTEGER
         ),
         T_INTEGER
     );
+    if (tsObtenerTipo("_1") == -1) {
+        tsInsertarToken(CTE_INTEGER, "1", "1", 0);
+    }
     nodo* mulFact = crearNodo(":=", crearHoja(nomVarFact, T_INTEGER), crearNodo("*", crearHoja(nomVarFact, T_INTEGER), crearHoja("@NUMFACT", T_INTEGER), exp->tipo), exp->tipo);
     nodo* cuerpoWhileFact = crearNodo("CUERPO_WHILE", mulFact, decrementado, CTE_STRING);
     nodo* whileFact = crearNodo("WHILE", crearNodo(">", crearHoja("@NUMFACT", T_INTEGER), crearHoja(aConstante("1"), CTE_INTEGER), CTE_INTEGER), cuerpoWhileFact, exp->tipo);

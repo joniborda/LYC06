@@ -277,6 +277,7 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
             fprintf(fp, "MOV %s, eax\n", raiz->hijoIzq);
             if (strcmp(raiz->hijoIzq->dato, "@STDOUT") == 0) {                
                 fprintf(fp, "%s\n", obtenerInstruccionDisplay(raiz->hijoIzq));
+                fprintf(fp, "newLine 1\n");
             }
             return 0;
         } else {
