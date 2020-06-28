@@ -4,5 +4,10 @@ DEFVAR
 	FLOAT : fl
 ENDVAR
 
-b:=COMB(5,2);
-DISPLAY b;
+GET a;
+DISPLAY a;
+GET fl;
+DISPLAY fl;
+GET var_string;
+DISPLAY var_string;
+DISPLAY "hola como estas";

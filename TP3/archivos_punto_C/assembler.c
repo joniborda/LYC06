@@ -275,14 +275,6 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
         if(strcmp(raiz->dato, ":=") == 0) {
             fprintf(fp, "MOV eax, %s\n", raiz->hijoDer);
             fprintf(fp, "MOV %s, eax\n", raiz->hijoIzq);
-            if (strcmp(raiz->hijoIzq->dato, "@STDOUT") == 0) {                
-                fprintf(fp, "%s\n", obtenerInstruccionDisplay(raiz->hijoIzq));
-                fprintf(fp, "newLine 1\n");
-            }
-            if (strcmp(raiz->hijoDer->dato, "@STDIN") == 0) {
-                fprintf(fp, "%s %s\n", obtenerInstruccionGet(raiz->hijoIzq), raiz->hijoIzq->dato);
-                fprintf(fp, "newLine 1\n");
-            }
             return 0;
         } else {
             fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq); //st0 = izq
@@ -310,8 +302,14 @@ int determinarOperacion(FILE * fp, nodo * raiz) {
         return 0;
     }
 
-    if(strcmp(raiz->dato, "IF") == 0) {
-        // no sabemos todavia
+    if(strcmp(raiz->dato, "GET") == 0) {
+        fprintf(fp, "%s %s\n", obtenerInstruccionGet(raiz->hijoIzq), raiz->hijoIzq->dato);
+        return 0;
+    }
+
+    if(strcmp(raiz->dato, "DISPLAY") == 0) {
+        fprintf(fp, "%s\n", obtenerInstruccionDisplay(raiz->hijoDer));
+        fprintf(fp, "newLine 1\n");
         return 0;
     }
 
@@ -425,23 +423,23 @@ char* obtenerSalto() {
 }
 
 char* obtenerInstruccionDisplay(nodo* nodo) {
-    
+    // Los prints solo se permiten pueden IDs o strings
     int tipo = nodo->tipo;
 
-    if (tipo == T_INTEGER ||
-        tipo == CTE_INTEGER) {
+    if (tipo == T_INTEGER) {
         sprintf(instruccionDisplay, "DisplayInteger %s", nodo);
-    } else if (tipo == T_FLOAT ||
-               tipo == CTE_FLOAT) {
+    } else if (tipo == T_FLOAT) {
         sprintf(instruccionDisplay, "DisplayFloat %s,2", nodo);
-    } else if (tipo == T_STRING ||
-               tipo == CTE_STRING) {
+    } else if (tipo == T_STRING) {
         sprintf(instruccionDisplay, "displayString %s", nodo);
+    } else if (tipo == CTE_STRING) {
+        sprintf(instruccionDisplay, "displayString %s", aConstante(nodo->dato));
     }
     return instruccionDisplay;
 }
 
 char* obtenerInstruccionGet(nodo* nodo) {
+    // Solo se permite get para IDs
     if (nodo->tipo == T_INTEGER)
         return "GetInteger";
     if (nodo->tipo == T_FLOAT)

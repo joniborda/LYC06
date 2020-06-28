@@ -220,19 +220,19 @@ entrada:
         int tipo2 = tsObtenerTipo($2);
         verificarIdDeclarado(tipo2);
         // TODO: ojo con el tipo de dato del valor ingresado
-        entradaPtr = crearNodo(":=", crearHoja($2, tipo2), crearHoja("@STDIN", tipo2), tipo2);
+        entradaPtr = crearNodo("GET", crearHoja($2, tipo2), crearHoja("@STDIN", tipo2), T_NULL);
         printRule("<ENTRADA>", "ID");
     };
 
 salida: 
     SALIDA STRING {
         printRule("<SALIDA>", "STRING");
-        salidaPtr = crearNodo(":=", crearHoja("@STDOUT", CTE_STRING), crearHoja($2, CTE_STRING), CTE_STRING);
+        salidaPtr = crearNodo("DISPLAY", crearHoja("@STDOUT", CTE_STRING), crearHoja($2, CTE_STRING), T_NULL);
     } 
     | SALIDA ID {
         int tipo2 = tsObtenerTipo($2);
         verificarIdDeclarado(tipo2);
-        salidaPtr = crearNodo(":=", crearHoja("@STDOUT", tipo2), crearHoja($2, tipo2), tipo2);
+        salidaPtr = crearNodo("DISPLAY", crearHoja("@STDOUT", tipo2), crearHoja($2, tipo2), T_NULL);
         printRule("<SALIDA>", "ID");
     }
     ;
