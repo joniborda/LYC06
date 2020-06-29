@@ -314,8 +314,8 @@ void determinarOperacion(FILE * fp, nodo * raiz) {
                 fprintf(fp, "f%sstp %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq->dato);
             }
         } else {
-            fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq); //st0 = izq
-            fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoDer), raiz->hijoDer); //st0 = der st1 = izq
+            fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq->dato); //st0 = izq
+            fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoDer), raiz->hijoDer->dato); //st0 = der st1 = izq
             fprintf(fp, "%s\n", obtenerInstruccionAritmetica(raiz->dato));
             fprintf(fp, "f%sstp @aux%d\n", determinarDescargaPila(raiz), pedirAux(raiz->tipo));
 
@@ -326,8 +326,8 @@ void determinarOperacion(FILE * fp, nodo * raiz) {
 
     if(esComparacion(raiz->dato)) {
         // esto funciona para comparaciones simples
-        fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoDer), raiz->hijoDer); //st0 = der
-        fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq); //st0 = izq  st1 = der
+        fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoDer), raiz->hijoDer->dato); //st0 = der
+        fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq->dato); //st0 = izq  st1 = der
         fprintf(fp, "fcom\n"); // compara ST0 con ST1"
         fprintf(fp, "fstsw ax\n");
         fprintf(fp, "sahf\n");
