@@ -12,6 +12,7 @@ int pilaNumEtiqIf [10];
 
 int topePilaWhile = 0;
 int topePilaIf = 0;
+int addProcToAssignString = 0;
 
 char instruccionDisplay[60];
 
@@ -145,6 +146,35 @@ int generarData() {
             fprintf(fp, "%-32s\tdd\t%s\n", getNombre(i), verSiVaInterrogacion(tablaSimbolos[i].valor));
     }
 
+    fprintf(fp, "\n.CODE\n");
+    if (addProcToAssignString == 1) {
+        // Agrego los procesimiento para asginar string
+        fprintf(fp, "strlen proc\n");
+        fprintf(fp, "\tmov bx, 0\n");
+        fprintf(fp, "\tstrLoop:\n");
+        fprintf(fp, "\t\tcmp BYTE PTR [si+bx],'$'\n");
+        fprintf(fp, "\t\tje strend\n");
+        fprintf(fp, "\t\tinc bx\n");
+        fprintf(fp, "\t\tjmp strLoop\n");
+        fprintf(fp, "\tstrend:\n");
+        fprintf(fp, "\t\tret\n");
+        fprintf(fp, "strlen endp\n");
+
+        fprintf(fp, "assignString proc\n");
+        fprintf(fp, "\tcall strlen\n");
+        fprintf(fp, "\tcmp bx , MAXTEXTSIZE\n");
+        fprintf(fp, "\tjle assignStringSizeOk\n");
+        fprintf(fp, "\tmov bx , MAXTEXTSIZE\n");
+        fprintf(fp, "\tassignStringSizeOk:\n");
+        fprintf(fp, "\t\tmov cx , bx\n");
+        fprintf(fp, "\t\tcld\n");
+        fprintf(fp, "\t\trep movsb\n");
+        fprintf(fp, "\t\tmov al , '$'\n");
+        fprintf(fp, "\t\tmov byte ptr[di],al\n");
+        fprintf(fp, "\t\tret\n");
+        fprintf(fp, "assignString endp\n");
+    }
+
     fclose(fp);
     return 0;
 }
@@ -156,7 +186,7 @@ int generarFooter() {
 		return 1;
 	}
 
-    fprintf(fp, "ffree\n");
+    fprintf(fp, "\nffree\n");
 	fprintf(fp, "mov ax, 4c00h\n");
     fprintf(fp, "int 21h\n");
     fprintf(fp, "End START\n"); 
@@ -189,7 +219,8 @@ int generarInstrucciones(nodo * raiz) {
 		return 1;
 	}
 
-    fprintf(fp, "\n.CODE\n\nSTART:\nMOV AX,@DATA\nMOV DS,AX\nMOV es,ax\nFINIT\nFFREE\n\n");
+    
+    fprintf(fp, "\nSTART:\nMOV AX,@DATA\nMOV DS,AX\nMOV es,ax\nFINIT\nFFREE\n\n");
 	recorreArbolAsm(fp, raiz);
 	fclose(fp);
 	return 0;
@@ -273,8 +304,15 @@ void determinarOperacion(FILE * fp, nodo * raiz) {
 
     if(esAritmetica(raiz->dato)) {
         if(strcmp(raiz->dato, ":=") == 0) {
-            fprintf(fp, "MOV eax, %s\n", raiz->hijoDer);
-            fprintf(fp, "MOV %s, eax\n", raiz->hijoIzq);
+            if (raiz->tipo == T_STRING) {
+                addProcToAssignString = 1; 
+                fprintf(fp, "MOV si, OFFSET   %s\n", raiz->hijoDer);
+                fprintf(fp, "MOV di, OFFSET  %s\n", raiz->hijoIzq);
+                fprintf(fp, "CALL assignString\n");
+            } else {
+                fprintf(fp, "MOV eax, %s\n", raiz->hijoDer);
+                fprintf(fp, "MOV %s, eax\n", raiz->hijoIzq);
+            }
         } else {
             fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq); //st0 = izq
             fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoDer), raiz->hijoDer); //st0 = der st1 = izq
