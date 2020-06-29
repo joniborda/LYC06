@@ -310,8 +310,8 @@ void determinarOperacion(FILE * fp, nodo * raiz) {
                 fprintf(fp, "MOV di, OFFSET  %s\n", raiz->hijoIzq);
                 fprintf(fp, "CALL assignString\n");
             } else {
-                fprintf(fp, "MOV eax, %s\n", raiz->hijoDer);
-                fprintf(fp, "MOV %s, eax\n", raiz->hijoIzq);
+                fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoDer), raiz->hijoDer->dato);
+                fprintf(fp, "f%sstp %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq->dato);
             }
         } else {
             fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq); //st0 = izq
