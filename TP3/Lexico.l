@@ -90,11 +90,29 @@ void textoFuncion() {
 	strncpy(subBuff, yytext+1, longitud);
 	subBuff[longitud] = '\0';
 
-	// Reemplaza cada espacio por un guion bajo
-    char* ptrEspacio = strchr(subBuff, ' ');
-    while (ptrEspacio != NULL) {
-        *ptrEspacio = '_';
-        ptrEspacio = strchr(subBuff, ' ');
+	// Reemplaza cada caracter invalido por un guion bajo
+    char* ptrPuntoYComa = strchr(subBuff, ';');
+	char* ptrEspacio = strchr(subBuff, ' ');
+	char* ptrDosPuntos = strchr(subBuff, ':');
+	char* ptrIgual = strchr(subBuff, '=');
+	
+    while (ptrEspacio != NULL || ptrDosPuntos != NULL || ptrPuntoYComa != NULL || ptrIgual != NULL) {
+        if (ptrEspacio != NULL) {
+			*ptrEspacio = '_';
+		}
+		if (ptrDosPuntos != NULL) {
+			*ptrDosPuntos = '_';
+		}
+		if (ptrPuntoYComa != NULL) {
+			*ptrPuntoYComa = '_';
+		}
+		if (ptrIgual != NULL) {
+			*ptrIgual = '_';
+		}		
+		ptrPuntoYComa = strchr(subBuff, ';');
+		ptrEspacio = strchr(subBuff, ' ');
+		ptrDosPuntos = strchr(subBuff, ':');
+		ptrIgual = strchr(subBuff, '=');
     }
 	yylval.str_val = strdup(subBuff);
 	if (strlen(subBuff) > LIMITE_STR) {
