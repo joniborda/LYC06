@@ -13,6 +13,7 @@ int pilaNumEtiqIf [10];
 int topePilaWhile = 0;
 int topePilaIf = 0;
 int addProcToAssignString = 0;
+int hayFactorial = 0;
 
 char instruccionDisplay[60];
 
@@ -186,10 +187,21 @@ int generarFooter() {
 		return 1;
 	}
 
-    fprintf(fp, "\nffree\n");
-	fprintf(fp, "mov ax, 4c00h\n");
-    fprintf(fp, "int 21h\n");
-    fprintf(fp, "End START\n"); 
+    
+    fprintf(fp, "\nliberar:\n");
+    fprintf(fp, "\tffree\n");
+	fprintf(fp, "\tmov ax, 4c00h\n");
+    fprintf(fp, "\tint 21h\n");
+    fprintf(fp, "\tjmp fin\n");
+
+    if (hayFactorial) {
+        fprintf(fp, "showErrorFact:\n");
+        fprintf(fp, "\tDisplayString __errorFact\n");
+        fprintf(fp, "\tjmp liberar\n");
+    }
+
+    fprintf(fp, "fin:\n");
+    fprintf(fp, "\tEnd START\n"); 
 
     fclose(fp);
     return 0;
@@ -310,12 +322,25 @@ void determinarOperacion(FILE * fp, nodo * raiz) {
                 fprintf(fp, "MOV di, OFFSET  %s\n", raiz->hijoIzq);
                 fprintf(fp, "CALL assignString\n");
             } else {
-                fprintf(fp, "MOV eax, %s\n", raiz->hijoDer);
-                fprintf(fp, "MOV %s, eax\n", raiz->hijoIzq);
+
+                if (strcmp(raiz->hijoIzq->dato, "@NUMFACT") == 0) {
+                    hayFactorial = 1;
+                    tsInsertarToken(CTE_STRING, "_errorFact", "\"Error factorial\"", 16);
+                    tsInsertarToken(CTE_INTEGER, "0", "0", 0);
+                    
+                    fprintf(fp, "fild %s\n", raiz->hijoDer->dato);
+                    fprintf(fp, "fild _0\n");
+                    fprintf(fp, "fcom\n");
+                    fprintf(fp, "fstsw ax\n");
+                    fprintf(fp, "sahf\n");
+                    fprintf(fp, "JNBE showErrorFact\n");
+                }
+                fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoDer), raiz->hijoDer->dato);
+                fprintf(fp, "f%sstp %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq->dato);
             }
         } else {
-            fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq); //st0 = izq
-            fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoDer), raiz->hijoDer); //st0 = der st1 = izq
+            fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq->dato); //st0 = izq
+            fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoDer), raiz->hijoDer->dato); //st0 = der st1 = izq
             fprintf(fp, "%s\n", obtenerInstruccionAritmetica(raiz->dato));
             fprintf(fp, "f%sstp @aux%d\n", determinarDescargaPila(raiz), pedirAux(raiz->tipo));
 
@@ -326,8 +351,8 @@ void determinarOperacion(FILE * fp, nodo * raiz) {
 
     if(esComparacion(raiz->dato)) {
         // esto funciona para comparaciones simples
-        fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoDer), raiz->hijoDer); //st0 = der
-        fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq); //st0 = izq  st1 = der
+        fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoDer), raiz->hijoDer->dato); //st0 = der
+        fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq->dato); //st0 = izq  st1 = der
         fprintf(fp, "fcom\n"); // compara ST0 con ST1"
         fprintf(fp, "fstsw ax\n");
         fprintf(fp, "sahf\n");
