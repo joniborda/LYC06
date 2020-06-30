@@ -333,7 +333,7 @@ void determinarOperacion(FILE * fp, nodo * raiz) {
                     fprintf(fp, "fcom\n");
                     fprintf(fp, "fstsw ax\n");
                     fprintf(fp, "sahf\n");
-                    fprintf(fp, "JNB showErrorFact\n");
+                    fprintf(fp, "JNBE showErrorFact\n");
                 }
                 fprintf(fp, "f%sld %s\n", determinarCargaPila(raiz, raiz->hijoDer), raiz->hijoDer->dato);
                 fprintf(fp, "f%sstp %s\n", determinarCargaPila(raiz, raiz->hijoIzq), raiz->hijoIzq->dato);
