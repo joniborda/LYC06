@@ -1,13 +1,16 @@
 DEFVAR
-	INT : a; b; c; d; e; f
+	INT : a; b; c
 	STRING : var_string
 	FLOAT : fl
 ENDVAR
 
+
+
+***/ PROBAMOS TEMA ESPECIAL - BETWEEN /***
+DISPLAY "ingrese un num";
 GET a;
-DISPLAY a;
-GET fl;
-DISPLAY fl;
-GET var_string;
-DISPLAY var_string;
-DISPLAY "hola como estas";
+IF (BETWEEN(a, [1 ; 10])) {
+	DISPLAY "el valor entre 1 y 10";
+} ELSE {
+	DISPLAY "el valor no esta entre 1 y 10";
+}
