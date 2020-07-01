@@ -95,8 +95,9 @@ void textoFuncion() {
 	char* ptrEspacio = strchr(subBuff, ' ');
 	char* ptrDosPuntos = strchr(subBuff, ':');
 	char* ptrIgual = strchr(subBuff, '=');
+	char* ptrComa = strchr(subBuff, ',');
 	
-    while (ptrEspacio != NULL || ptrDosPuntos != NULL || ptrPuntoYComa != NULL || ptrIgual != NULL) {
+    while (ptrEspacio != NULL || ptrDosPuntos != NULL || ptrPuntoYComa != NULL || ptrIgual != NULL || ptrComa != NULL) {
         if (ptrEspacio != NULL) {
 			*ptrEspacio = '_';
 		}
@@ -108,11 +109,15 @@ void textoFuncion() {
 		}
 		if (ptrIgual != NULL) {
 			*ptrIgual = '_';
-		}		
+		}
+		if (ptrComa != NULL) {
+			*ptrComa = '_';
+		}	
 		ptrPuntoYComa = strchr(subBuff, ';');
 		ptrEspacio = strchr(subBuff, ' ');
 		ptrDosPuntos = strchr(subBuff, ':');
 		ptrIgual = strchr(subBuff, '=');
+		ptrComa = strchr(subBuff, ',');
     }
 	yylval.str_val = strdup(subBuff);
 	if (strlen(subBuff) > LIMITE_STR) {
