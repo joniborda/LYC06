@@ -14,7 +14,7 @@ IF (BETWEEN(a, [1 ; 10])) {
 }
 
 ***/ PROBAMOS TEMA ESPECIAL - COMBINATORIO /***
-DISPLAY "combinatoria de 5,3";
+DISPLAY "combinatoria de (5,3)";
 c := COMB(5,3);
 DISPLAY "resultado";
 DISPLAY c;
