@@ -293,8 +293,8 @@ comparacion:
             nodo *nodo1 = desapilar();
             comparacionPtr = crearNodo(
                 "AND", 
-                crearNodo("=>", crearHoja($3, tipo3), nodo1, resolverTipo(tipo3, nodo1->tipo)), 
-                crearNodo("=<", crearHoja($3, tipo3), nodo2, resolverTipo(tipo3, nodo2->tipo)), 
+                crearNodo(">=", crearHoja($3, tipo3), nodo1, resolverTipo(tipo3, nodo1->tipo)), 
+                crearNodo("<=", crearHoja($3, tipo3), nodo2, resolverTipo(tipo3, nodo2->tipo)), 
                 T_NULL
             );
             apilar(comparacionPtr);
