@@ -91,34 +91,17 @@ void textoFuncion() {
 	subBuff[longitud] = '\0';
 
 	// Reemplaza cada caracter invalido por un guion bajo
-    char* ptrPuntoYComa = strchr(subBuff, ';');
-	char* ptrEspacio = strchr(subBuff, ' ');
-	char* ptrDosPuntos = strchr(subBuff, ':');
-	char* ptrIgual = strchr(subBuff, '=');
-	char* ptrComa = strchr(subBuff, ',');
+	int idx = 0;
+	char caracteresRaros[] = {';', ' ', ':', '=', ',', '(', ')', '[', ']'};
+	char *ptrCaracter;
+	for(idx = 0; idx < strlen(caracteresRaros); idx++) {
+		ptrCaracter = strchr(subBuff, caracteresRaros[idx]);
+		while (ptrCaracter != NULL) {
+			*ptrCaracter = '_';
+			ptrCaracter = strchr(subBuff, caracteresRaros[idx]);
+		}
+	}
 	
-    while (ptrEspacio != NULL || ptrDosPuntos != NULL || ptrPuntoYComa != NULL || ptrIgual != NULL || ptrComa != NULL) {
-        if (ptrEspacio != NULL) {
-			*ptrEspacio = '_';
-		}
-		if (ptrDosPuntos != NULL) {
-			*ptrDosPuntos = '_';
-		}
-		if (ptrPuntoYComa != NULL) {
-			*ptrPuntoYComa = '_';
-		}
-		if (ptrIgual != NULL) {
-			*ptrIgual = '_';
-		}
-		if (ptrComa != NULL) {
-			*ptrComa = '_';
-		}	
-		ptrPuntoYComa = strchr(subBuff, ';');
-		ptrEspacio = strchr(subBuff, ' ');
-		ptrDosPuntos = strchr(subBuff, ':');
-		ptrIgual = strchr(subBuff, '=');
-		ptrComa = strchr(subBuff, ',');
-    }
 	yylval.str_val = strdup(subBuff);
 	if (strlen(subBuff) > LIMITE_STR) {
 		printf("Error: El string supero los 30 caracteres\n\tvariable: %s", yytext);
