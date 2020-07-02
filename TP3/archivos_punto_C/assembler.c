@@ -75,7 +75,7 @@ void generarAssembler(nodo * raiz) {
 }
 
 int generarArchivoAssemblerFinal() {
-    FILE * fpFinal = fopen("./assembler/Final.asm", "w");
+    FILE * fpFinal = fopen("./Final.asm", "w");
 
     char buffer[100];
 	
