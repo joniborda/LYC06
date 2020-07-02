@@ -1,0 +1,11 @@
+DEFVAR
+	FLOAT: a; b; c
+	STRING: d
+ENDVAR
+
+IF (5 > a) {
+	d:="SOY UN,STRING MUY LARGO ???? _";
+} ELSE {
+	b:= 4 + 5;
+	c:= 2 + 4;
+}

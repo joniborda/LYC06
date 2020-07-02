@@ -1,0 +1,20 @@
+DEFVAR
+	INT : a; b; c
+	STRING : var_string
+	FLOAT : fl
+ENDVAR
+
+***/ PROBAMOS TEMA ESPECIAL - BETWEEN /***
+DISPLAY "ingrese un num";
+GET a;
+IF (BETWEEN(a, [1 ; 10])) {
+	DISPLAY "el valor entre 1 y 10";
+} ELSE {
+	DISPLAY "el valor no esta entre 1 y 10";
+}
+
+***/ PROBAMOS TEMA ESPECIAL - COMBINATORIO /***
+DISPLAY "combinatoria de (5,3)";
+c := COMB(5,3);
+DISPLAY "resultado";
+DISPLAY c;

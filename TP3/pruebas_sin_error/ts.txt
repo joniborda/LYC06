@@ -1,0 +1,5 @@
+Nombre                          Tipo         Valor                          Longitud    
+a                               FLOAT        
+mi                              STRING       
+_5                                           5                                          
+_sentencia while simple                      sentencia while simple         22          

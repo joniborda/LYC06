@@ -1,0 +1,10 @@
+DEFVAR
+	INT : a; b; c
+	STRING : miString
+ENDVAR
+IF(BETWEEN(a, [1;1])){
+	z:= 1;	
+}
+
+miString := "sali";
+DISPLAY a;
