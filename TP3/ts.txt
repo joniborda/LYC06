@@ -1,0 +1,59 @@
+Nombre                          Tipo         Valor                            Longitud    
+a                               INTEGER      
+b                               INTEGER      
+c                               INTEGER      
+d                               INTEGER      
+e                               INTEGER      
+f                               INTEGER      
+var_string                      STRING       
+f1                              FLOAT        
+_Compilador_LyC_Grupo06         CTE_STRING   "Compilador LyC Grupo06"         22          
+@STDOUT                         STRING       
+_Sumamos_4_y_2__se_guarda_en_a  CTE_STRING   "Sumamos 4 y 2, se guarda en a"  29          
+_4                              CTE_INTEGER  4                                            
+_2                              CTE_INTEGER  2                                            
+_Divido_a_por_2__se_guarda_en_b CTE_STRING   "Divido a por 2, se guarda en b" 30          
+_6                              CTE_INTEGER  6                                            
+_5                              CTE_INTEGER  5                                            
+_a_mayor_a_5_y_b_menor_a_4      CTE_STRING   "a mayor a 5 y b menor a 4"      25          
+_6_5_por_2__menos_b__por_2_74_  CTE_STRING   "6,5 por 2, menos b, por 2,74:"  29          
+_6_5                            CTE_FLOAT    6.5                                          
+_2_74                           CTE_FLOAT    2.74                                         
+_8                              CTE_INTEGER  8                                            
+_10                             CTE_INTEGER  10                                           
+_3                              CTE_INTEGER  3                                            
+_1                              CTE_INTEGER  1                                            
+_El_valor_de_a_es_              CTE_STRING   "El valor de a es:"              17          
+_Ingrese_un_numero              CTE_STRING   "Ingrese un numero"              17          
+@STDIN                          INTEGER      
+_El_valor_entre_1_y_10          CTE_STRING   "El valor entre 1 y 10"          21          
+_El_valor_no_esta_entre_1_y_10  CTE_STRING   "El valor no esta entre 1 y 10"  29          
+_Factorial_de_4                 CTE_STRING   "Factorial de 4"                 14          
+@NUMFACT                        INTEGER      
+@SUM0                           INTEGER      
+_Resultado_                     CTE_STRING   "Resultado:"                     10          
+_Combinatoria_de__5_3_          CTE_STRING   "Combinatoria de (5,3)"          21          
+@SUM1                           INTEGER      
+@SUM2                           INTEGER      
+@SUM3                           INTEGER      
+@aux1                           INTEGER      
+@aux2                           INTEGER      
+@aux3                           FLOAT        
+@aux4                           FLOAT        
+@aux5                           FLOAT        
+@aux6                           INTEGER      
+@aux7                           INTEGER      
+@aux8                           INTEGER      
+__errorFact                     CTE_STRING   "Error factorial"                16          
+_0                              CTE_INTEGER  0                                            
+@aux9                           INTEGER      
+@aux10                          INTEGER      
+@aux11                          INTEGER      
+@aux12                          INTEGER      
+@aux13                          INTEGER      
+@aux14                          INTEGER      
+@aux15                          INTEGER      
+@aux16                          INTEGER      
+@aux17                          INTEGER      
+@aux18                          INTEGER      
+@aux19                          INTEGER      

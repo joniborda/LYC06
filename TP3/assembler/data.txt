@@ -1,0 +1,87 @@
+	.DATA
+	TRUE equ 1
+	FALSE equ 0
+	MAXTEXTSIZE equ 200
+a                               	dd	?
+b                               	dd	?
+c                               	dd	?
+d                               	dd	?
+e                               	dd	?
+f                               	dd	?
+var_string                      	dd	?
+f1                              	dd	?
+_Compilador_LyC_Grupo06         	db	"Compilador LyC Grupo06",'$', 22 dup (?)
+@STDOUT                         	dd	?
+_Sumamos_4_y_2__se_guarda_en_a  	db	"Sumamos 4 y 2, se guarda en a",'$', 29 dup (?)
+_4                              	dd	4
+_2                              	dd	2
+_Divido_a_por_2__se_guarda_en_b 	db	"Divido a por 2, se guarda en b",'$', 30 dup (?)
+_6                              	dd	6
+_5                              	dd	5
+_a_mayor_a_5_y_b_menor_a_4      	db	"a mayor a 5 y b menor a 4",'$', 25 dup (?)
+_6_5_por_2__menos_b__por_2_74_  	db	"6,5 por 2, menos b, por 2,74:",'$', 29 dup (?)
+_6_5                            	dd	6.5
+_2_74                           	dd	2.74
+_8                              	dd	8
+_10                             	dd	10
+_3                              	dd	3
+_1                              	dd	1
+_El_valor_de_a_es_              	db	"El valor de a es:",'$', 17 dup (?)
+_Ingrese_un_numero              	db	"Ingrese un numero",'$', 17 dup (?)
+@STDIN                          	dd	?
+_El_valor_entre_1_y_10          	db	"El valor entre 1 y 10",'$', 21 dup (?)
+_El_valor_no_esta_entre_1_y_10  	db	"El valor no esta entre 1 y 10",'$', 29 dup (?)
+_Factorial_de_4                 	db	"Factorial de 4",'$', 14 dup (?)
+@NUMFACT                        	dd	?
+@SUM0                           	dd	?
+_Resultado_                     	db	"Resultado:",'$', 10 dup (?)
+_Combinatoria_de__5_3_          	db	"Combinatoria de (5,3)",'$', 21 dup (?)
+@SUM1                           	dd	?
+@SUM2                           	dd	?
+@SUM3                           	dd	?
+@aux1                           	dd	?
+@aux2                           	dd	?
+@aux3                           	dd	?
+@aux4                           	dd	?
+@aux5                           	dd	?
+@aux6                           	dd	?
+@aux7                           	dd	?
+@aux8                           	dd	?
+__errorFact                     	db	"Error factorial",'$', 16 dup (?)
+_0                              	dd	0
+@aux9                           	dd	?
+@aux10                          	dd	?
+@aux11                          	dd	?
+@aux12                          	dd	?
+@aux13                          	dd	?
+@aux14                          	dd	?
+@aux15                          	dd	?
+@aux16                          	dd	?
+@aux17                          	dd	?
+@aux18                          	dd	?
+@aux19                          	dd	?
+
+.CODE
+strlen proc
+	mov bx, 0
+	strLoop:
+		cmp BYTE PTR [si+bx],'$'
+		je strend
+		inc bx
+		jmp strLoop
+	strend:
+		ret
+strlen endp
+assignString proc
+	call strlen
+	cmp bx , MAXTEXTSIZE
+	jle assignStringSizeOk
+	mov bx , MAXTEXTSIZE
+	assignStringSizeOk:
+		mov cx , bx
+		cld
+		rep movsb
+		mov al , '$'
+		mov byte ptr[di],al
+		ret
+assignString endp

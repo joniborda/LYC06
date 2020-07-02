@@ -1,0 +1,11 @@
+
+liberar:
+	ffree
+	mov ax, 4c00h
+	int 21h
+	jmp fin
+showErrorFact:
+	DisplayString __errorFact
+	jmp liberar
+fin:
+	End START

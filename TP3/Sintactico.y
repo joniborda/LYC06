@@ -394,7 +394,7 @@ expresion:
 termino:
     termino OP_MUL {
             apilar(terminoPtr);
-            printRule("<TERMINO>", "<TERMINO> OP_MUL ...");
+            //printRule("<TERMINO>", "<TERMINO> OP_MUL ...");
             // esta a mitad de la regla
         } factor {
             nodo *nodo1 = desapilar();
@@ -404,7 +404,7 @@ termino:
         }
     | termino OP_DIV {
             apilar(terminoPtr);
-            printRule("<TERMINO>", "<TERMINO> OP_DIV ...");
+            //printRule("<TERMINO>", "<TERMINO> OP_DIV ...");
             // esta a mitad de la regla
         } factor {
             nodo *nodo1 = desapilar();

@@ -2,7 +2,7 @@ flex Lexico.l
 pause
 bison -dyv Sintactico.y
 
-gcc.exe lex.yy.c y.tab.c archivos_punto_C/* -o Segunda.exe 
+gcc.exe lex.yy.c y.tab.c archivos_punto_C/* -o Grupo06.exe 
 
 pause
 
@@ -11,7 +11,7 @@ pause
 	@echo --------------------- %%x ---------------------
 	
 	@if	 "ts.txt" NEQ "%%x" (
-		@..\Segunda.exe %%x || (
+		@..\Grupo06.exe %%x || (
 		  	@cd ..\
 		  	@echo .
 		  	@echo /****************** ERROR ***************/
@@ -28,8 +28,8 @@ pause
 	@echo --------------------- %%x ---------------------
 	
 	@if	 "ts.txt" NEQ "%%x" (
-		..\Segunda.exe %%x
-		..\Segunda.exe %%x && (
+		..\Grupo06.exe %%x
+		..\Grupo06.exe %%x && (
 			@del gragh.dot
 		  	@echo .
 		  	@echo /***************** DEBERIA ARROJAR ERROR ***************/

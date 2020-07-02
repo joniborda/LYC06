@@ -1,20 +1,57 @@
 DEFVAR
-	INT : a; b; c
+	INT : a; b; c; d; e; f
 	STRING : var_string
-	FLOAT : fl
+	FLOAT : f1
 ENDVAR
 
-***/ PROBAMOS TEMA ESPECIAL - BETWEEN /***
-DISPLAY "ingrese un num";
-GET a;
-IF (BETWEEN(a, [1 ; 10])) {
-	DISPLAY "el valor entre 1 y 10";
-} ELSE {
-	DISPLAY "el valor no esta entre 1 y 10";
+var_string := "Compilador LyC Grupo06";
+DISPLAY var_string;
+
+DISPLAY "Sumamos 4 y 2, se guarda en a";
+a := 4 + 2;
+DISPLAY a;
+
+DISPLAY "Divido a por 2, se guarda en b";
+b := a / 2;
+DISPLAY b;
+
+IF (a >= 6 OR a < 2) {
+	IF (a > 5 AND b < 4) {
+		DISPLAY "a mayor a 5 y b menor a 4";
+	}
 }
 
+DISPLAY "6,5 por 2, menos b, por 2,74:";
+f1 := (6.5 * 2 - b) * 2.74;
+DISPLAY f1;
+
+f := 8;
+IF (f == 8) {
+	WHILE (f < 10) {
+		a := a * 3;
+		f := f+1;
+	}
+}
+DISPLAY "El valor de a es:";
+DISPLAY a;
+
+***/ PROBAMOS TEMA ESPECIAL - BETWEEN /***
+DISPLAY "Ingrese un numero";
+GET c;
+IF (BETWEEN(c, [1 ; 10])) {
+	DISPLAY "El valor entre 1 y 10";
+} ELSE {
+	DISPLAY "El valor no esta entre 1 y 10";
+}
+
+***/ PROBAMOS TEMA ESPECIAL - FACTORIAL /***
+DISPLAY "Factorial de 4";
+d := FACT(2+2);
+DISPLAY "Resultado:";
+DISPLAY d;
+
 ***/ PROBAMOS TEMA ESPECIAL - COMBINATORIO /***
-DISPLAY "combinatoria de (5,3)";
-c := COMB(5,3);
-DISPLAY "resultado";
-DISPLAY c;
+DISPLAY "Combinatoria de (5,3)";
+e := COMB(5,3);
+DISPLAY "Resultado:";
+DISPLAY e;
